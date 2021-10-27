@@ -13,37 +13,30 @@ import AccountMenuScreen from '../screens/account/AccountMenuScreen'
 const Tab = createBottomTabNavigator()
 
 const options = {
+    navigator: {
+        tabBarActiveTintColor: 'royalblue'
+    },
     home: {
-        tabBarIcon: ({size, color}) => {
-            return <AntDesign name="home" size={size} color={color} />
-        }
+        tabBarIcon: ({size, color}) => (<AntDesign name="home" size={size} color={color} />)
     },
     contact: {
-        tabBarIcon: ({size, color}) => {
-            return <AntDesign name="contacts" size={size} color={color} />
-        }
+        tabBarIcon: ({size, color}) => (<AntDesign name="contacts" size={size} color={color} />)
     },
     calendar: {
-        tabBarIcon: ({size, color}) => {
-            return <AntDesign name="calendar" size={size} color={color} />
-        }
+        tabBarIcon: ({size, color}) => (<AntDesign name="calendar" size={size} color={color} />)
     },
     notification: {
-        tabBarIcon: ({size, color}) => {
-            return <Feather name="bell" size={size} color={color} />
-        }
+        tabBarIcon: ({size, color}) => (<Feather name="bell" size={size} color={color} />)
     },
     account: {
-        tabBarIcon: ({size, color}) => {
-            return <Ionicons name="person-circle-outline" size={size} color={color} />
-        }
+        tabBarIcon: ({size, color}) => (<Ionicons name="person-circle-outline" size={size} color={color} />)
     }
 }
 
 export default function MainNavigator() {
     return (
         <NavigationContainer>
-            <Tab.Navigator>
+            <Tab.Navigator screenOptions={({route}) => (options.navigator)}>
                 <Tab.Screen name="Home" component={HomeScreen} options={options.home} />
                 <Tab.Screen name="Contact" component={ContactListScreen} options={options.contact} />
                 <Tab.Screen name="Calendar" component={CalendarOverviewScreen} options={options.calendar} />
