@@ -1,10 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-import Navigator from './navigators/Main'
-
-export default function App() {
+export default function ContactListScreen() {
     return (
-        <Navigator />
+        <Text>Hello, Contact Screen!</Text>
     )
 }
