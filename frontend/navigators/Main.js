@@ -17,18 +17,23 @@ const options = {
         tabBarActiveTintColor: 'royalblue'
     },
     home: {
+        headerTitle: 'Schedu',
         tabBarIcon: ({size, color}) => (<AntDesign name="home" size={size} color={color} />)
     },
     contact: {
+        headerTitle: 'Contacts',
         tabBarIcon: ({size, color}) => (<AntDesign name="contacts" size={size} color={color} />)
     },
     calendar: {
+        headerTitle: 'My Calendar',
         tabBarIcon: ({size, color}) => (<AntDesign name="calendar" size={size} color={color} />)
     },
     notification: {
+        headerTitle: 'Notification Center',
         tabBarIcon: ({size, color}) => (<Feather name="bell" size={size} color={color} />)
     },
     account: {
+        headerTitle: 'Account',
         tabBarIcon: ({size, color}) => (<Ionicons name="person-circle-outline" size={size} color={color} />)
     }
 }
