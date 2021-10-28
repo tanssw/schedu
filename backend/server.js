@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
 
-app.get('/', (req, res) => {
+app.get('/scheduDB/:id', (req, res) => {
     res.send("Successful!")
 });
+app.get('/')
 
-app.listen(3000, () => console.log("Schedu app is listen on port 3000"))
+app.listen(3000, () => console.log("Schedu app is listening on port 3000"))
