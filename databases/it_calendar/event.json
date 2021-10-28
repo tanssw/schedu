@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "617a8f0d9663b6087b0c9a04"
+  },
+  "title": "รับไทค์ประดับเข็ม",
+  "type": "ประเพณีของคณะ",
+  "comm_method": "nothing",
+  "participants": [
+    "teacher1",
+    "teacher2",
+    "staff1"
+  ],
+  "td_participants": [
+    "student1",
+    "student2"
+  ]
+}]

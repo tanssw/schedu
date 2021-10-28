@@ -1,0 +1,12 @@
+[{
+  "_id": {
+    "$oid": "617ad92e233ec5b2b2570d5d"
+  },
+  "subject": "นัดสอบถามเกี่ยวกับโปรเจค",
+  "sender": "62070000",
+  "receiver": "62070000",
+  "participants": "62070000",
+  "comm_method": "google meet",
+  "comm_url": "googlemeet.loukhin.com",
+  "note": ""
+}]
