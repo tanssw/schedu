@@ -1,0 +1,31 @@
+[{
+  "_id": {
+    "$oid": "617a8f0d9663b6087b0c9a04"
+  },
+  "title": "รับไทค์ประดับเข็ม",
+  "type": "ประเพณีของคณะ",
+  "comm_method": "physical",
+  "participants": [
+    "62070184",
+    "62070074"
+  ],
+  "std_participants": [
+    "62070000",
+    "62070077"
+  ]
+},{
+  "_id": {
+    "$oid": "617be08f64389e9709ea96ab"
+  },
+  "title": "วันไหว้ครู",
+  "type": "วันสำคัญ",
+  "comm_method": "physical",
+  "participants": [
+    "62070184",
+    "62070074"
+  ],
+  "std_participants": [
+    "62070000",
+    "62070077"
+  ]
+}]
