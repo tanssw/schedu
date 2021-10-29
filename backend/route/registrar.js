@@ -2,14 +2,14 @@ const express = require('express');
 const pool = require('../config/mysql')
 const router = express();
 
-//Get all student in mySQL database
+//Get all registrar in mySQL database
 router.get('/all', async(req, res) =>{
     //create connection to mySQL Database
     const conn = await pool.getConnection()
     await conn.beginTransaction()
     
-    //query student from database
-    const result = await conn.query('SELECT * FROM student');
+    //query registrar transaction from database
+    // const result = await conn.query('SELECT * FROM registrar');
 
     //result[0] = data
     res.send(result[0])
