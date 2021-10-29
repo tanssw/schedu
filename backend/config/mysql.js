@@ -1,9 +1,11 @@
 const mysql = require("mysql2/promise")
+//request env value in .env file
+require('dotenv').config({ path: '../.env' })
 
 const pool = mysql.createPool({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
     database: 'register',
 })
 module.exports = pool

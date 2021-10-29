@@ -2,7 +2,8 @@ const express = require('express');
 const pool = require('../config/mysql')
 const router = express();
 
-router.get('/getData', async (req, res) =>{
+
+router.get('/all', async (req, res) =>{
     //create connection to mySQL Database
     const conn = await pool.getConnection()
     await conn.beginTransaction()
