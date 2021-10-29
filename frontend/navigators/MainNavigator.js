@@ -5,10 +5,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { AntDesign, Ionicons, Feather } from "@expo/vector-icons"
 
 import HomeScreen from '../screens/home/HomeScreen'
-import ContactListScreen from '../screens/contact/ContactListScreen'
 import CalendarOverviewScreen from '../screens/calendar/CalendarOverviewScreen'
 import NotificiationCenterScreen from '../screens/notification/NotificationCenterScreen'
 import AccountMenuScreen from '../screens/account/AccountMenuScreen'
+
+import ContactNavigator from './ContactNavigator'
+import CalendarNavigator from './CalendarNavigator'
 
 const Tab = createBottomTabNavigator()
 
@@ -43,8 +45,8 @@ export default function MainNavigator() {
         <NavigationContainer>
             <Tab.Navigator screenOptions={({route}) => (options.navigator)}>
                 <Tab.Screen name="Home" component={HomeScreen} options={options.home} />
-                <Tab.Screen name="Contact" component={ContactListScreen} options={options.contact} />
-                <Tab.Screen name="Calendar" component={CalendarOverviewScreen} options={options.calendar} />
+                <Tab.Screen name="Contact" component={ContactNavigator} options={options.contact} />
+                <Tab.Screen name="Calendar" component={CalendarNavigator} options={options.calendar} />
                 <Tab.Screen name="Notification" component={NotificiationCenterScreen} options={options.notification} />
                 <Tab.Screen name="Account" component={AccountMenuScreen} options={options.account} />
             </Tab.Navigator>
