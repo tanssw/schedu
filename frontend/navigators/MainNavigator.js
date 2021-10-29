@@ -11,6 +11,7 @@ import AccountMenuScreen from '../screens/account/AccountMenuScreen'
 
 import ContactNavigator from './ContactNavigator'
 import CalendarNavigator from './CalendarNavigator'
+import AccountNavigator from './AccountNavigator'
 
 const Tab = createBottomTabNavigator()
 
@@ -48,7 +49,7 @@ export default function MainNavigator() {
                 <Tab.Screen name="Contact" component={ContactNavigator} options={options.contact} />
                 <Tab.Screen name="Calendar" component={CalendarNavigator} options={options.calendar} />
                 <Tab.Screen name="Notification" component={NotificiationCenterScreen} options={options.notification} />
-                <Tab.Screen name="Account" component={AccountMenuScreen} options={options.account} />
+                <Tab.Screen name="Account" component={AccountNavigator} options={options.account} />
             </Tab.Navigator>
         </NavigationContainer>
     )
