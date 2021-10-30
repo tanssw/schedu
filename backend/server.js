@@ -7,6 +7,8 @@ const subject = require("./route/subject")
 const teacher = require("./route/teacher")
 const registrar = require("./route/registrar")
 
+app.use(express.json());
+
 app.use("/student", student)
 app.use("/subject", subject)
 app.use("/teacher", teacher)

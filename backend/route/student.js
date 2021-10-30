@@ -1,3 +1,4 @@
+const { ok } = require('assert');
 const express = require('express');
 const pool = require('../config/mysql')
 const router = express();
@@ -17,5 +18,31 @@ router.get('/all', async(req, res) =>{
     //when fin close connection to database
     conn.release();
 })
+// Add Student by
+router.post('/add', async(req, res) => {
 
+    const student = req.body
+    const id = student.id
+    const year = req.body.year
+    const first_name = req.body.first_name
+    const last_name = req.body.last_name
+
+    const conn = await pool.getConnection()
+    await conn.beginTransaction()
+    
+    try{
+        const result = await conn.query("INSERT INTO student(student_id, year, first_name, last_name) VALUE(?, ?, ?, ?)", [id, year, first_name, last_name])
+        await conn.commit()
+        res.json({message : 'Success'})
+    }
+    catch(error){
+        await conn.rollback()
+        res.send("Can't update student")
+    }
+    finally{
+        conn.release();
+    }
+    
+    
+})
 module.exports = router
