@@ -1,19 +1,26 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import * as Google from 'expo-google-app-auth'
+import Constants from 'expo-constants'
 
 import { background, text } from '../../styles'
-import { auth } from '../../config/firebase'
 
-const authProvider = new GoogleAuthProvider()
+const signInWithGoogleAsync = async () => {
+    try {
+        const result = await Google.logInAsync({
+            iosClientId: Constants.manifest.extra.iosClientId,
+            scopes: ['profile', 'email']
+        })
 
-authProvider.setCustomParameters({
-    hd: 'it.kmitl.ac.th'
-})
+        if (result.type === 'success') {
+            return result.accessToken
+        } else {
+            return { cancelled: true }
+        }
+    } catch (error) {
+        return { error: true }
+    }
 
-const signIn = () => {
-    // TODO: Connect sign-in with google auth
-    signInWithPopup(auth, authProvider)
 }
 
 export default function SignInScreen() {
@@ -23,7 +30,7 @@ export default function SignInScreen() {
                 <Text style={[styles.appTitle, text.lighterBlue]}>Sch</Text>
                 <Text style={styles.appTitle}>edu</Text>
             </View>
-            <TouchableOpacity onPress={signIn} style={styles.buttonSignIn}>
+            <TouchableOpacity onPress={signInWithGoogleAsync} style={styles.buttonSignIn}>
                 <Text style={[styles.textSignIn ,text.lightBlue]}>Sign in with ITKMITL Account</Text>
             </TouchableOpacity>
         </View>

@@ -37,7 +37,8 @@ export default {
             storageBucket: process.env.STORAGE_BUCKET,
             messagingSenderId: process.env.MESSAGIN_SENDER_ID,
             appId: process.env.APP_ID,
-            measurementId: process.env.MEASUREMENT_ID
+            measurementId: process.env.MEASUREMENT_ID,
+            iosClientId: process.env.IOS_CLIENT_ID
         }
     }
 }
