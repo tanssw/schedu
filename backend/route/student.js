@@ -18,14 +18,16 @@ router.get('/all', async(req, res) =>{
     //when fin close connection to database
     conn.release();
 })
-// Add Student by
-router.post('/add', async(req, res) => {
 
+// Add student to Student table
+router.post('/add', async(req, res) => {
+    //query from JSON 
     const student = req.body
+
     const id = student.id
-    const year = req.body.year
-    const first_name = req.body.first_name
-    const last_name = req.body.last_name
+    const year = student.year
+    const first_name = student.first_name
+    const last_name = student.last_name
 
     const conn = await pool.getConnection()
     await conn.beginTransaction()
@@ -35,7 +37,7 @@ router.post('/add', async(req, res) => {
         await conn.commit()
         res.json({message : 'Success'})
     }
-    catch(error){
+    catch{
         await conn.rollback()
         res.send("Can't update student")
     }
