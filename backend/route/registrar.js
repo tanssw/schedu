@@ -9,7 +9,7 @@ router.get('/all', async(req, res) =>{
     await conn.beginTransaction()
     
     //query registrar transaction from database
-    // const result = await conn.query('SELECT * FROM registrar');
+    const result = await conn.query('SELECT * FROM registrar');
 
     //result[0] = data
     res.send(result[0])
