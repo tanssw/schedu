@@ -3,8 +3,8 @@
 --
 -- https://tableplus.com/
 --
--- Database: mock_schedu_sql
--- Generation Time: 2564-11-01 01:20:16.5250
+-- Database: test
+-- Generation Time: 2564-11-01 16:18:07.3280
 -- -------------------------------------------------------------
 
 
@@ -86,6 +86,12 @@ INSERT INTO `registrar` (`student_id`, `section_id`, `subject_id`) VALUES
 (62070077, 2, 6016324),
 (62070077, 2, 6016325),
 (62070077, 602, 90304004),
+(62070101, 1, 6016309),
+(62070101, 1, 6016325),
+(62070101, 2, 6016310),
+(62070101, 2, 6016323),
+(62070101, 2, 6016324),
+(62070101, 602, 90304004),
 (62070184, 1, 6016309),
 (62070184, 1, 6016333),
 (62070184, 1, 6016334),
@@ -134,6 +140,7 @@ INSERT INTO `section` (`section_id`, `subject_id`, `study_start`, `study_end`, `
 
 INSERT INTO `student` (`student_id`, `year`, `first_name`, `last_name`) VALUES
 (62070077, 3, 'Thanakan', 'Boonma'),
+(62070101, 3, 'Nopphadon', 'Phanwong'),
 (62070184, 3, 'Supakit', 'Khawmeewong');
 
 INSERT INTO `subject` (`subject_id`, `title_th`, `title_en`, `year`, `semester`, `plan`, `major`, `minor`, `mid_exam`, `mid_end`, `mid_start`, `final_exam`, `final_end`, `final_start`) VALUES
