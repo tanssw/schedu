@@ -6,6 +6,8 @@
   "dependencies": {
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "mongoose": "^6.0.12",
+    "mongose": "^0.0.2-security",
     "mysql2": "^2.3.2"
   },
   "devDependencies": {
