@@ -9,4 +9,18 @@
   "comm_method": "google meet",
   "comm_url": "meet.loukhin.com",
   "note": ""
+},{
+  "_id": {
+    "$oid": "617fb46c396613a9e99b86ad"
+  },
+  "subject": "นัดปรึกษาโปรเจคในบทที่ 2",
+  "sender": "62070077",
+  "receiver": "62070074",
+  "participants": [
+    "62070184",
+    "62070101"
+  ],
+  "comm_method": "Microsoft Teams",
+  "comm_url": "",
+  "note": ""
 }]
