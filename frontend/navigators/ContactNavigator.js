@@ -8,13 +8,20 @@ import AppointmentEditorScreen from '../screens/appointment/AppointmentEditorScr
 
 const ContactStack = createNativeStackNavigator()
 
+const options = {
+    createAppointment: {
+        headerTitle: "Appointment",
+
+    }
+}
+
 export default function ContactNavigator() {
     return (
         // TODO: Change back initialRoute to ContactList
         <ContactStack.Navigator initialRouteName="CreateAppointment">
             <ContactStack.Screen name="ContactList" component={ContactListScreen} />
             <ContactStack.Screen name="ContactProfile" component={ContactProfileScreen} />
-            <ContactStack.Screen name="CreateAppointment" component={AppointmentEditorScreen} />
+            <ContactStack.Screen name="CreateAppointment" component={AppointmentEditorScreen} options={options.createAppointment} />
         </ContactStack.Navigator>
     )
 }
