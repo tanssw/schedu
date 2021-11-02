@@ -4,16 +4,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import ContactListScreen from '../screens/contact/ContactListScreen'
 import ContactProfileScreen from '../screens/contact/ContactProfileScreen'
-import AppointmentApprovalScreen from '../screens/appointment/AppointmentApprovalScreen'
+import AppointmentEditorScreen from '../screens/appointment/AppointmentEditorScreen'
 
 const ContactStack = createNativeStackNavigator()
 
 export default function ContactNavigator() {
     return (
-        <ContactStack.Navigator initialRouteName="ContactList">
+        // TODO: Change back initialRoute to ContactList
+        <ContactStack.Navigator initialRouteName="CreateAppointment">
             <ContactStack.Screen name="ContactList" component={ContactListScreen} />
             <ContactStack.Screen name="ContactProfile" component={ContactProfileScreen} />
-            <ContactStack.Screen name="RequestApproval" component={AppointmentApprovalScreen} />
+            <ContactStack.Screen name="CreateAppointment" component={AppointmentEditorScreen} />
         </ContactStack.Navigator>
     )
 }

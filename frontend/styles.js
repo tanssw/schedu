@@ -1,27 +1,44 @@
 import { StyleSheet } from "react-native"
 
+const colorCode = {
+    blue: '#001e6a',
+    lightBlue: '#005295',
+    lighterBlue: '#4f89c4',
+}
+
 const background = StyleSheet.create({
     blue: {
-        backgroundColor: '#001e6a'
+        backgroundColor: colorCode.blue
     }
 })
 
 const text = StyleSheet.create({
     blue: {
-        color: '#001e6a'
+        color: colorCode.blue
     },
     lightBlue: {
-        color: '#005295'
+        color: colorCode.lightBlue
     },
     lighterBlue: {
-        color: '#4f89c4'
+        color: colorCode.lighterBlue
     },
     white: {
         color: 'white'
     }
 })
 
+const shadow = StyleSheet.create({
+    box: {
+        shadowColor: 'black',
+        shadowRadius: 8,
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.2
+    }
+})
+
 export {
+    colorCode,
     background,
-    text
+    text,
+    shadow
 }
