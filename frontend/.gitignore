@@ -1,5 +1,6 @@
 .expo/
 dist/
+secrets/
 npm-debug.*
 *.jks
 *.p8
