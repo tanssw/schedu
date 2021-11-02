@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 
 import { Entypo }  from '@expo/vector-icons'
 import RNPickerSelect from 'react-native-picker-select'
 
-import { shadow } from '../../../styles'
+import { background, text, shadow } from '../../../styles'
 
 export default function AppointmentDetail() {
     return (
@@ -33,7 +33,6 @@ export default function AppointmentDetail() {
                     <Entypo name="chevron-down" size={16} color="grey" />
                 </TouchableOpacity>
             </View>
-
             {/* Note to participant Textbox */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Note to participant</Text>
@@ -41,6 +40,10 @@ export default function AppointmentDetail() {
                     <TextInput multiline numberOfLines={4} placeholder="This is a note ..." />
                 </ScrollView>
             </View>
+            {/* Button */}
+            <TouchableOpacity style={[styles.mainButton, background.blue]}>
+                <Text style={text.white}>Create Appointment</Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -81,5 +84,11 @@ const styles = StyleSheet.create({
     },
     spaceBetweenInput: {
         marginBottom: 32
+    },
+    mainButton: {
+        width: '100%',
+        padding: 16,
+        borderRadius: 16,
+        alignItems: 'center'
     }
 })
