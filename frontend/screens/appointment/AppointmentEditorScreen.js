@@ -34,6 +34,7 @@ const AppointmentDetail = () => {
             {/* Communication Method Dropdown & Input */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Communication Method</Text>
+
             </View>
             {/* Note to participant Textbox */}
             <View style={styles.spaceBetweenInput}>
