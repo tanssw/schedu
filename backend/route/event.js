@@ -1,5 +1,5 @@
 const express = require('express');
-const eventMongoDB = require('../config/eventMongoDB')
+const eventMongoDB = require('../models/eventSchema')
 const router = express();
 
 router.get('/all', async(req, res) =>{
