@@ -28,10 +28,16 @@ const text = StyleSheet.create({
 })
 
 const shadow = StyleSheet.create({
-    box: {
+    boxBottomSmall: {
         shadowColor: 'black',
         shadowRadius: 8,
         shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.2
+    },
+    boxTopMedium: {
+        shadowColor: 'black',
+        shadowRadius: 16,
+        shadowOffset: {width: 0, height: -8},
         shadowOpacity: 0.2
     }
 })
