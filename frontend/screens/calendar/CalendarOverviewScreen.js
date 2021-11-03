@@ -3,6 +3,14 @@ import { StyleSheet, Text, View } from 'react-native'
 
 export default function CalendarOverviewScreen() {
     return (
-        <Text>Hello, Calendar Screen!</Text>
+        <View style={styles.calendarContainer}>
+            <Text></Text>
+        </View>
     )
 }
+
+const styles = StyleSheet.create({
+    calendarContainer: {
+
+    }
+})
