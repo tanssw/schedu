@@ -7,5 +7,7 @@ const eventSchema = new Schema({
   participants: [String],
   std_participants: [String],
 })
-const eventModel = mongoose.model('event',eventSchema,'event')
-module.exports = eventModel
+// const eventModel = mongoose.model('event',eventSchema,'event')
+// module.exports = eventModel
+
+module.exports = eventSchema
