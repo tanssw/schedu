@@ -31,7 +31,6 @@
 - localhost:3000/teach/all 
 
 
-
 **Get teach by *subject_id* or *teacher_id* in Subject_Teacher Table**
 - localhost:3000/subject/*subject_id* or *teacher_id*
 ---
@@ -41,3 +40,28 @@
 
 **Get registrar by *student_id* in registrar Table**
 - localhost:3000/subject/*subject_id* or *teacher_id*
+---
+## Event
+**Get all event in mongoDB**
+- localhost:3000/event/all
+
+**Get event by *Object_id* in mongoDB**
+- localhost:3000/event/*Object_id*
+
+**Create event to mongoDB***
+- localhost:3000/event/addEvent
+
+**require object json payload*
+
+
+**Update event by *Object_id* in mongoDB***
+- localhost:3000/event/updateEvent/*Object_id*
+
+**require object json payload*
+
+**Delete event by *Object_id* in mongoDB**
+- localhost:3000/event/delEvent/*Object_id*
+
+
+
+
