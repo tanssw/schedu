@@ -6,7 +6,7 @@ import AppointmentDetail from './components/AppointmentDetail'
 
 export default function AppointmentEditorScreen() {
     return (
-        <ScrollView>
+        <ScrollView nestedScrollEnabled>
             <View style={styles.container}>
                 <TimeSelector />
                 <AppointmentDetail />

@@ -1,11 +1,14 @@
-import React from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native"
-import { Entypo }  from '@expo/vector-icons'
-import RNPickerSelect from 'react-native-picker-select'
+import React, { useState } from 'react'
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from "react-native"
+import { Picker } from 'react-native-woodpicker'
+import { EvilIcons } from '@expo/vector-icons'
 
-import { background, text, shadow } from '../../../styles'
+import { background, text, shadow, colorCode } from '../../../styles'
 
 export default function AppointmentDetail() {
+
+    const [participants, addParticipants] = useState([])
+
     return (
         <View style={[styles.detailContainer, shadow.boxTopMedium]}>
             {/* Subject Input */}
@@ -16,22 +19,30 @@ export default function AppointmentDetail() {
             {/* Participant Input */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Participant</Text>
+                <View style={styles.participantContainer}>
+                    <TouchableOpacity styles={styles.btnAddParticipant}>
+                        <EvilIcons name="plus" size={64} color="grey" />
+                        <Text style={styles.btnAddParticipantText}>Add</Text>
+                    </TouchableOpacity>
+                    <FlatList horizontal data={participants} />
+                </View>
             </View>
             {/* Communication Method Dropdown & Input */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Communication Method</Text>
-                <TouchableOpacity style={styles.commMethodSelector}>
-                    <RNPickerSelect
-                        onValueChange={(value) => console.log(value)}
-                        items={[
-                            {label: 'Face to Face', value: 'face'},
-                            {label: 'Microsoft Teams', value: 'msteam'},
-                            {label: 'Google Meet', value: 'meet'},
-                            {label: 'Zoom Application', value: 'zoom'}
-                        ]}
-                    />
-                    <Entypo name="chevron-down" size={16} color="grey" />
-                </TouchableOpacity>
+                <Picker
+                    onItemChange={(value) => console.log(value)}
+                    items={[
+                        {label: 'Face to Face', value: 'face'},
+                        {label: 'Microsoft Teams', value: 'msteam'},
+                        {label: 'Google Meet', value: 'meet'},
+                        {label: 'Zoom Application', value: 'zoom'}
+                    ]}
+                    title="Communication Methods"
+                    placeholder="Select Data"
+                    isNullable={false}
+                    style={styles.picker}
+                />
             </View>
             {/* Note to participant Textbox */}
             <View style={styles.spaceBetweenInput}>
@@ -61,19 +72,24 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 12
     },
-    commMethodSelector: {
-        borderWidth: 1,
-        borderColor: '#cccccc',
-        borderRadius: 16,
-        padding: 16,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
     inputUnderline: {
         borderBottomWidth: 1,
         borderBottomColor: '#cccccc',
         paddingBottom: 8,
+    },
+    participantContainer: {
+        flexDirection: 'row'
+    },
+    btnAddParticipantText: {
+        textAlign: 'center',
+        marginTop: 4
+    },
+    picker: {
+        flex: 1,
+        padding: 16,
+        borderWidth: 1,
+        borderColor: '#cccccc',
+        borderRadius: 16
     },
     inputBoxBorder: {
         height: 128,

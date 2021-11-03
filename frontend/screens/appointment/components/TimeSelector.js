@@ -1,20 +1,51 @@
 import React from 'react'
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { Feather }  from '@expo/vector-icons'
+import { Picker } from 'react-native-woodpicker'
 
 import { shadow } from '../../../styles'
 
 export default function TimeSelector() {
     return (
         <View style={styles.timeSelectorContainer}>
-            <TouchableOpacity style={[styles.timeSelector, shadow.boxBottomSmall]}>
-                <Text>Start</Text>
+            <View style={[styles.timeSelector, shadow.boxBottomSmall]}>
+                <View style={styles.pickerContainer}>
+                    <Picker
+                        onItemChange={(value) => console.log(value)}
+                        items={[
+                            {label: '09:00', value: '09:00'},
+                            {label: '09:15', value: '09:15'},
+                            {label: '09:30', value: '09:30'},
+                            {label: '09:45', value: '09:45'},
+                            {label: '10:00', value: '10:00'}
+                        ]}
+                        title="Start Time"
+                        placeholder="Select Start Time"
+                        isNullable={false}
+                        style={styles.picker}
+                    />
+                </View>
                 <Feather name="clock" size={24} color="#aaaaaa" />
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.timeSelector, shadow.boxBottomSmall]}>
-                <Text>End</Text>
+            </View>
+            <View style={[styles.timeSelector, shadow.boxBottomSmall]}>
+                <View style={styles.pickerContainer}>
+                    <Picker
+                        onItemChange={(value) => console.log(value)}
+                        items={[
+                            {label: '09:00', value: '09:00'},
+                            {label: '09:15', value: '09:15'},
+                            {label: '09:30', value: '09:30'},
+                            {label: '09:45', value: '09:45'},
+                            {label: '10:00', value: '10:00'}
+                        ]}
+                        title="End Time"
+                        placeholder="Select End Time"
+                        isNullable={false}
+                        style={styles.picker}
+                    />
+                </View>
                 <Feather name="clock" size={24} color="#aaaaaa" />
-            </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -33,8 +64,13 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
         paddingHorizontal: 16,
         paddingVertical: 14,
+    },
+    pickerContainer: {
+        flexGrow: 1
+    },
+    picker: {
+        flex: 1
     },
 })
