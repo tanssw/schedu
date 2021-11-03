@@ -1,16 +1,22 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
+
+import CalendarOverview from './components/CalendarOverview'
+import IncomingRequest from './components/IncomingRequest'
+import MyAppointment from './components/MyAppointment'
 
 export default function CalendarOverviewScreen() {
     return (
-        <View style={styles.calendarContainer}>
-            <Text></Text>
-        </View>
+        <ScrollView style={styles.container}>
+            <CalendarOverview />
+            <IncomingRequest />
+            <MyAppointment />
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    calendarContainer: {
+    container: {
 
     }
 })
