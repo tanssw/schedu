@@ -62,6 +62,73 @@
 **Delete event by *Object_id* in mongoDB**
 - localhost:3000/event/delEvent/*Object_id*
 
+---
 
+## User
+**Get all user in mongoDB**
+- localhost:3000/user/all
+
+**Get user by *Object_id* in mongoDB**
+- localhost:3000/user/*Object_id*
+
+**Create user to mongoDB***
+- localhost:3000/user/addUser
+
+**require object json payload*
+
+
+**Update user by *Object_id* in mongoDB***
+- localhost:3000/user/updateUser/*Object_id*
+
+**require object json payload*
+
+**Delete user by *Object_id* in mongoDB**
+- localhost:3000/user/delUser/*Object_id*
+
+---
+
+## Appointment
+**Get all appointment in mongoDB**
+- localhost:3000/appointment/all
+
+**Get appointment by *Object_id* in mongoDB**
+- localhost:3000/appointment/*Object_id*
+
+**Create appointment to mongoDB***
+- localhost:3000/appointment/addAppointment
+
+**require object json payload*
+
+
+**Update appointment by *Object_id* in mongoDB***
+- localhost:3000/appointment/updateAppointment/*Object_id*
+
+**require object json payload*
+
+**Delete appointment by *Object_id* in mongoDB**
+- localhost:3000/appointment/delAppointment/*Object_id*
+
+---
+
+## notification
+**Get all noti in mongoDB**
+- localhost:3000/noti/all
+
+**Get noti by *Object_id* in mongoDB**
+- localhost:3000/noti/*Object_id*
+
+**Create noti to mongoDB***
+- localhost:3000/noti/addNoti
+
+**require object json payload*
+
+
+**Update noti by *Object_id* in mongoDB***
+- localhost:3000/noti/updateNoti/*Object_id*
+
+**require object json payload*
+
+**Delete noti by *Object_id* in mongoDB**
+- localhost:3000/noti/delNoti/*Object_id*
 
 
