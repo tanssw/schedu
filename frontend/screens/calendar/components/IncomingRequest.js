@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
 
 import { text } from '../../../styles'
@@ -7,6 +7,16 @@ import { text } from '../../../styles'
 export default function IncomingRequest() {
 
     const [requests, updateRequests] = useState([])
+
+    const renderRequest = ({item}) => {
+        return (
+            <Text></Text>
+        )
+    }
+
+    const requestList = (
+        <FlatList data={requests} renderItem={renderRequest} />
+    )
 
     const emptyRequest = (
         <View style={styles.emptyRequestContainer}>
@@ -18,7 +28,7 @@ export default function IncomingRequest() {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Incoming Requests</Text>
-            {false ? '' : emptyRequest}
+            {false ? requestList : emptyRequest}
         </View>
     )
 }

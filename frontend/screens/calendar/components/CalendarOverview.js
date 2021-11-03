@@ -5,16 +5,16 @@ import { Calendar } from 'react-native-calendars'
 import { colorCode } from '../../../styles'
 
 const calendarTheme = {
+    arrowColor: colorCode.blue,
     dayTextColor: '#444444',
-    todayTextColor: colorCode.blue,
+    todayTextColor: 'royalblue',
     textDisabledColor: '#aaaaaa',
-    arrowColor: colorCode.blue
 }
 
-export default function CalendarOverview() {
+export default function CalendarOverview(props) {
     return (
         <View style={styles.container}>
-            <Calendar theme={calendarTheme} />
+            <Calendar theme={calendarTheme} onDayPress={(day) => {props.onDateSelect(day)}} />
         </View>
     )
 }
