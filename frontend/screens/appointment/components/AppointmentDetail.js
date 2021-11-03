@@ -44,7 +44,7 @@ export default function AppointmentDetail() {
                 <Text style={styles.header}>Participant</Text>
                 <View style={styles.participantContainer}>
                     <TouchableOpacity>
-                        <EvilIcons name="plus" size={64} color="grey" />
+                        <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity>
                     <FlatList horizontal data={participants} renderItem={renderParticipant} keyExtractor={person => person.id} />
