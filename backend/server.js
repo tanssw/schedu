@@ -10,14 +10,6 @@ mongoose.connection.on('error', err => {
     console.error('MongoDB error', err)
   })
 
-// app.get('/all', async (req, res) => {
-
-//     const test = await event.find({})
-//     res.json(test)
-
-//   })
-
-
 const student = require("./route/student")
 const subject = require("./route/subject")
 const teacher = require("./route/teacher")
