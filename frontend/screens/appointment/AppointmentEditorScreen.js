@@ -1,8 +1,23 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
+
+import TimeSelector from './components/TimeSelector'
+import AppointmentDetail from './components/AppointmentDetail'
 
 export default function AppointmentEditorScreen() {
     return (
-        <Text>Hello, Appointment Editor Screen!</Text>
+        <ScrollView nestedScrollEnabled>
+            <View style={styles.container}>
+                <TimeSelector />
+                <AppointmentDetail />
+            </View>
+        </ScrollView>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white'
+    }
+})

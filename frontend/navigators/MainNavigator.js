@@ -25,11 +25,12 @@ const options = {
     },
     contact: {
         headerTitle: 'Contacts',
-        tabBarIcon: ({size, color}) => (<AntDesign name="contacts" size={size} color={color} />)
+        tabBarIcon: ({size, color}) => (<AntDesign name="contacts" size={size} color={color} />),
+        headerShown: false
     },
     calendar: {
         headerTitle: 'My Calendar',
-        tabBarIcon: ({size, color}) => (<AntDesign name="calendar" size={size} color={color} />)
+        tabBarIcon: ({size, color}) => (<AntDesign name="calendar" size={size} color={color} />),
     },
     notification: {
         headerTitle: 'Notification Center',

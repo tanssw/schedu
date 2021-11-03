@@ -43,6 +43,7 @@ export default function App() {
 
     return (
         <>
+            {/* TODO: Remove bypass */}
             { true ? <Navigator /> : <SignInScreen onSignIn={signInWithGoogleAsync} /> }
         </>
     )
