@@ -43,7 +43,7 @@ export default function App() {
 
     return (
         <>
-            { userData ? <Navigator /> : <SignInScreen onSignIn={signInWithGoogleAsync} /> }
+            { true ? <Navigator /> : <SignInScreen onSignIn={signInWithGoogleAsync} /> }
         </>
     )
 }

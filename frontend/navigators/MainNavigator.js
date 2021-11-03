@@ -37,7 +37,8 @@ const options = {
     },
     account: {
         headerTitle: 'Account',
-        tabBarIcon: ({size, color}) => (<Ionicons name="person-circle-outline" size={size} color={color} />)
+        tabBarIcon: ({size, color}) => (<Ionicons name="person-circle-outline" size={size} color={color} />),
+        headerShown: false        
     }
 }
 
