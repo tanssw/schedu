@@ -1,13 +1,36 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from "react-native"
 import { Picker } from 'react-native-woodpicker'
-import { EvilIcons } from '@expo/vector-icons'
+import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 
 import { background, text, shadow, colorCode } from '../../../styles'
 
 export default function AppointmentDetail() {
 
-    const [participants, addParticipants] = useState([])
+    const [participants, updateParticipants] = useState([
+        {id: 1, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+        {id: 2, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+        {id: 3, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+        {id: 4, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+        {id: 5, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+        {id: 6, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+        {id: 7, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+        {id: 8, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+        {id: 9, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+    ])
+
+    const tests = [
+        {id: 1, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+    ]
+
+    const renderParticipant = ({item}) => {
+        return (
+            <View>
+                <FontAwesome name="user-circle-o" size={44} color="grey" style={styles.personImage} />
+                <Text style={styles.personName}>{item.firstname}</Text>
+            </View>
+        )
+    }
 
     return (
         <View style={[styles.detailContainer, shadow.boxTopMedium]}>
@@ -20,11 +43,11 @@ export default function AppointmentDetail() {
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Participant</Text>
                 <View style={styles.participantContainer}>
-                    <TouchableOpacity styles={styles.btnAddParticipant}>
+                    <TouchableOpacity>
                         <EvilIcons name="plus" size={64} color="grey" />
-                        <Text style={styles.btnAddParticipantText}>Add</Text>
+                        <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity>
-                    <FlatList horizontal data={participants} />
+                    <FlatList horizontal data={participants} renderItem={renderParticipant} keyExtractor={person => person.id} />
                 </View>
             </View>
             {/* Communication Method Dropdown & Input */}
@@ -80,9 +103,14 @@ const styles = StyleSheet.create({
     participantContainer: {
         flexDirection: 'row'
     },
-    btnAddParticipantText: {
+    personName: {
         textAlign: 'center',
         marginTop: 4
+    },
+    personImage: {
+        textAlign: 'center',
+        marginVertical: 3,
+        marginHorizontal: 12
     },
     picker: {
         flex: 1,
