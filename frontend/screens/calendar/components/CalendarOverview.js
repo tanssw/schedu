@@ -14,7 +14,12 @@ const calendarTheme = {
 export default function CalendarOverview(props) {
     return (
         <View style={styles.container}>
-            <Calendar theme={calendarTheme} onDayPress={(day) => {props.onDateSelect(day)}} />
+            <Calendar
+                theme={calendarTheme}
+                onDayPress={(day) => {
+                    props.onDateSelect(day)
+                }}
+            />
         </View>
     )
 }

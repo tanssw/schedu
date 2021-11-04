@@ -30,6 +30,9 @@ const text = StyleSheet.create({
     },
     lightGrey: {
         color: 'lightgrey'
+    },
+    bold: {
+        fontWeight: 'bold'
     }
 })
 

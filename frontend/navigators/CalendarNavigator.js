@@ -8,19 +8,23 @@ import AppointmentScreen from '../screens/appointment/AppointmentScreen'
 
 const CalendarStack = createNativeStackNavigator()
 
-const options = {
-    overview: {
-        headerTitle: 'Calendar'
-    }
-}
-
 export default function CalendarNavigator() {
     return (
         <CalendarStack.Navigator initialRouteName="CalendarOverview">
-            <CalendarStack.Screen name="CalendarOverview" component={CalendarOverviewScreen} options={options.overview} />
-            <CalendarStack.Screen name="CalendarDetail" component={CalendarDetailScreen} options={
-                ({route}) => ({headerTitle: route.params.title})
-            } />
+            <CalendarStack.Screen name="CalendarOverview" component={CalendarOverviewScreen}
+                options={
+                    {
+                        headerTitle: 'Calendar'
+                    }
+                }
+            />
+            <CalendarStack.Screen name="CalendarDetail" component={CalendarDetailScreen}
+                options={
+                    ({route}) => ({
+                        headerTitle: route.params.title
+                    })
+                }
+            />
             <CalendarStack.Screen name="Appointment" component={AppointmentScreen} />
         </CalendarStack.Navigator>
     )
