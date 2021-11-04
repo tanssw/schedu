@@ -24,6 +24,15 @@ const text = StyleSheet.create({
     },
     white: {
         color: 'white'
+    },
+    grey: {
+        color: 'grey'
+    },
+    lightGrey: {
+        color: 'lightgrey'
+    },
+    bold: {
+        fontWeight: 'bold'
     }
 })
 

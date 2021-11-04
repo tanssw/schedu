@@ -31,6 +31,7 @@ const options = {
     calendar: {
         headerTitle: 'My Calendar',
         tabBarIcon: ({size, color}) => (<AntDesign name="calendar" size={size} color={color} />),
+        headerShown: false
     },
     notification: {
         headerTitle: 'Notification Center',
