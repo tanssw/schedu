@@ -2,6 +2,9 @@ import React from "react";
 
 import { StyleSheet, Image, Text, View, TouchableOpacity } from "react-native";
 
+// style by tanssw.com
+import { text, shadow } from "../../styles";
+
 export default function AccountMenuScreen({ navigation }) {
     return (
         <View style={styles.container}>
@@ -14,26 +17,37 @@ export default function AccountMenuScreen({ navigation }) {
             ></Image>
 
             {/* user fullname */}
-            <Text style={styles.userFullname}>Thanakan Boonma</Text>
+            <Text style={[styles.userFullname, text.blue]}>
+                Thanakan Boonma
+            </Text>
 
             {/* user role */}
             <Text style={styles.userRole}>Student</Text>
-
-            <View style={styles.userAccountNav}>
+            <View style={[styles.userAccountNav, shadow.boxTopMedium]}>
                 {/* profile navigation */}
-                <TouchableOpacity
-                    style={styles.menuBtn}
-                    onPress={() => navigation.navigate("Profile")}
-                >
-                    <Text style={styles.menuText}>Profile / Contact</Text>
-                </TouchableOpacity>
+                <View>
+                    <TouchableOpacity
+                        style={styles.menuBtn}
+                        onPress={() => navigation.navigate("Profile")}
+                    >
+                        <Text style={styles.menuText}>Profile</Text>
+                    </TouchableOpacity>
 
-                {/* setting navigation */}
+                    {/* setting navigation */}
+                    <TouchableOpacity
+                        style={styles.menuBtn}
+                        onPress={() => navigation.navigate("Setting")}
+                    >
+                        <Text style={styles.menuText}>Settings</Text>
+                    </TouchableOpacity>
+                </View>
                 <TouchableOpacity
-                    style={styles.menuBtn}
-                    onPress={() => navigation.navigate("Setting")}
+                    style={[styles.signOutBtn]}
+                    onPress={() => {
+                        console.log("Sign out");
+                    }}
                 >
-                    <Text style={styles.menuText}>Settings</Text>
+                    <Text style={styles.signOutBtnText}>Sign Out</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -51,10 +65,10 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         padding: 32,
-        borderTopLeftRadius: 50,
-        borderTopRightRadius: 50,
-        backgroundColor: "#CCC",
-        shadowColor: "black",
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        backgroundColor: "white",
+        justifyContent: "space-between",
     },
     // image profile style
     profileImage: {
@@ -66,7 +80,6 @@ const styles = StyleSheet.create({
     // user data styles
     userFullname: {
         fontWeight: "bold",
-        color: "darkblue",
     },
     userRole: {
         marginTop: 5,
@@ -75,13 +88,24 @@ const styles = StyleSheet.create({
     },
     // menus styles
     menuBtn: {
-        borderBottomColor: "#555",
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
+        borderColor: "#cccccc",
         paddingTop: 20,
         paddingBottom: 20,
     },
     menuText: {
         fontWeight: "bold",
-        color: "#555",
+    },
+    signOutBtnText: {
+        fontWeight: "bold",
+        color: "red",
+    },
+    signOutBtn: {
+        width: "100%",
+        padding: 16,
+        borderRadius: 16,
+        borderWidth: 1,
+        borderColor: "red",
+        alignItems: "center",
     },
 });
