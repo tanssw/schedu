@@ -16,32 +16,19 @@ router.get("/all", async (req, res) => {
   //when fin close connection to database
   conn.release();
 });
+//Get student by id in Student mySQL database
+router.get("/:id", async (req, res) => {
+  const {id} = req.params
+  //create connection to mySQL Database
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
 
-// Add student to Student table
-// router.post("/add", async (req, res) => {
-//   //query from JSON
-//   const student = req.body;
+  const result = await conn.query("SELECT * FROM student WHERE student_id = ?", [id]);
 
-//   const id = student.id;
-//   const year = student.year;
-//   const first_name = student.first_name;
-//   const last_name = student.last_name;
+  //result[0] = data
+  res.send(result[0]);
+  //when fin close connection to database
+  conn.release();
+});
 
-//   const conn = await pool.getConnection();
-//   await conn.beginTransaction();
-
-//   try {
-//     const result = await conn.query(
-//       "INSERT INTO student(student_id, year, first_name, last_name) VALUE(?, ?, ?, ?)",
-//       [id, year, first_name, last_name]
-//     );
-//     await conn.commit();
-//     res.json({ message: "Success" });
-//   } catch {
-//     await conn.rollback();
-//     res.send("Can't update student");
-//   } finally {
-//     conn.release();
-//   }
-// });
 module.exports = router;
