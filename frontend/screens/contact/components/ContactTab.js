@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet,Text,View,TextInput,FlatList,TouchableOpacity} from "react-native";
 
 import {
-  AntDesign,
-  Fontisto,
   FontAwesome,
-  Ionicons,
 } from "@expo/vector-icons";
 
 
@@ -84,13 +81,28 @@ export default function ContactTab(){
       <View style={styles.ContactTab}>
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>Contact</Text>
       <View style={styles.listContainer}>
-          <FlatList
+          {/* <FlatList
             data={participants}
             renderItem={renderParticipantList}
             keyExtractor={(person) => person.id}
             horizontal={false}
             inverted={true}
-          />
+          /> */}
+          {participants.map(({id, firstname, lastname, role}) => (
+              <View style={styles.listItem} key={id}>
+              <FontAwesome 
+                name="user-circle-o"
+                size={44}
+                color="grey"
+                style={styles.personImage}
+              />
+              <View>
+              <Text style={[styles.personName, styles.flex = 1]}>{firstname}  {lastname}</Text>
+              <Text style={[styles.personRole]}>{role}</Text>
+              </View>
+            </View>
+          ))}
+          
         </View>
         </View> 
 
@@ -121,7 +133,6 @@ const styles = StyleSheet.create({
         margin: 15,
       },
       listContainer: {
-        // flexDirection: "row",
         marginTop: 15,
         marginBottom: 20,
       },

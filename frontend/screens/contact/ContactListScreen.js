@@ -1,5 +1,5 @@
 import React from "react";
-import {View} from "react-native";
+import {View, ScrollView} from "react-native";
 
 import SuggestBar from './components/SuggestBar'
 import SearchBar from './components/SearchBar'
@@ -10,7 +10,7 @@ export default function ContactListScreen() {
 
   
   return (
-    <View>
+    <ScrollView nestedScrollEnabled>
       {/* SearchBar tab*/}
       <SearchBar/>
       {/* Suggested Bar */}
@@ -19,6 +19,6 @@ export default function ContactListScreen() {
         <QueryBar/>
       {/* contact tab */}
       <ContactTab/>
-    </View>
+    </ScrollView>
   );
 }
