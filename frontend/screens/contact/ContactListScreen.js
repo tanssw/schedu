@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet,Text,View,TextInput,FlatList,TouchableOpacity, ScrollView} from "react-native";
-import { background, colorCode } from "../../styles";
+import { StyleSheet,Text,View,TextInput,FlatList,TouchableOpacity} from "react-native";
+
 import {
   AntDesign,
   Fontisto,
   FontAwesome,
   Ionicons,
-  MaterialIcons,
 } from "@expo/vector-icons";
 
 import SuggestBar from './components/SuggestBar'
+import SearchBar from './components/SearchBar'
+import QueryBar from "./components/QueryBar";
 
 export default function ContactListScreen() {
 
@@ -80,56 +81,14 @@ export default function ContactListScreen() {
       </View>
     );
   };
-
-  const [search, updateSearch] = useState("");
   return (
     <View>
       {/* SearchBar tab*/}
-      <View
-        style={[styles.searchTab, (styles.backgroundColor = background.blue)]}
-      >
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search"
-          value={search}
-          onChange={updateSearch}
-        />
-        <TouchableOpacity onPress={test}>
-          <Fontisto
-            style={styles.iconHistory}
-            name="history"
-            size={22}
-            color="white"
-          />
-        </TouchableOpacity>
-        <AntDesign
-          style={styles.iconStart}
-          name="staro"
-          size={24}
-          color="#DDA448"
-        />
-      </View>
+      <SearchBar/>
       {/* Suggested Bar */}
         <SuggestBar/>
       {/* queryTab */}
-      <View style={styles.queryTab}>
-        <TouchableOpacity onPress={test}>
-          <Ionicons name="ios-people-sharp" size={50} color="black" />
-          <Text style={styles.TextIcon}>All</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={test}>
-          <Ionicons name="md-people-circle" size={50} color="black" />
-          <Text style={[styles.TextIcon]}>Professor</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={test}>
-        <Ionicons name="people-outline" size={50} color="black" />
-          <Text style={styles.TextIcon}>Officer</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={test}>
-          <Ionicons name="ios-people-circle-outline" size={50} color="black" />
-          <Text style={styles.TextIcon}>Student</Text>
-        </TouchableOpacity>
-      </View>
+        <QueryBar/>
       {/* contact tab */}
       <View style={styles.ContactTab}>
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>Contact</Text>
@@ -151,36 +110,6 @@ export default function ContactListScreen() {
 }
 
 const styles = StyleSheet.create({
-  searchTab: {
-    flexDirection: "row",
-    width: 400,
-    height: 55,
-    // backgroundColor: background.blue,
-    justifyContent: "flex-start",
-  },
-  searchBar: {
-    height: 30,
-    width: 270,
-    backgroundColor: "white",
-    borderRadius: 10,
-    marginLeft: 10,
-    margin: 13,
-    paddingLeft: 5,
-  },
-  iconHistory: {
-    width: 30,
-    margin: 10,
-    marginTop: 17,
-    marginLeft: 14,
-  },
-  iconStart: {
-    width: 30,
-    marginLeft: 5,
-    marginTop: 16,
-  },
-  suggestTab: {
-    margin: 15,
-  },
   participantContainer: {
     flexDirection: "row",
     marginTop: 15,
@@ -197,13 +126,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 3,
     marginHorizontal: 20,
-  },
-  queryTab: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-  },
-  TextIcon: {
-    textAlign: "center",
   },
   ContactTab:{
     margin: 15,

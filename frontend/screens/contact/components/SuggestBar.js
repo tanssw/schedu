@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet,Text,View,TextInput,FlatList,TouchableOpacity, ScrollView} from "react-native";
-import {
-    AntDesign,
-    Fontisto,
-    FontAwesome,
-    Ionicons,
-    MaterialIcons,
-  } from "@expo/vector-icons";
+import { StyleSheet,Text,View, FlatList} from "react-native";
+import {FontAwesome,} from "@expo/vector-icons";
 
 export default function SuggestBar(){
     const [participants, updateParticipants] = useState([
