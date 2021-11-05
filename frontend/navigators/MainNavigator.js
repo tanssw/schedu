@@ -31,14 +31,16 @@ const options = {
     calendar: {
         headerTitle: 'My Calendar',
         tabBarIcon: ({size, color}) => (<AntDesign name="calendar" size={size} color={color} />),
+        headerShown: false
     },
     notification: {
         headerTitle: 'Notification Center',
         tabBarIcon: ({size, color}) => (<Feather name="bell" size={size} color={color} />)
     },
     account: {
-        headerTitle: 'Account',
-        tabBarIcon: ({size, color}) => (<Ionicons name="person-circle-outline" size={size} color={color} />)
+        headerTitle: 'UserAccount',
+        tabBarIcon: ({size, color}) => (<Ionicons name="person-circle-outline" size={size} color={color} />),
+        headerShown: false        
     }
 }
 
@@ -50,7 +52,7 @@ export default function MainNavigator() {
                 <Tab.Screen name="Contact" component={ContactNavigator} options={options.contact} />
                 <Tab.Screen name="Calendar" component={CalendarNavigator} options={options.calendar} />
                 <Tab.Screen name="Notification" component={NotificiationCenterScreen} options={options.notification} />
-                <Tab.Screen name="Account" component={AccountNavigator} options={options.account} />
+                <Tab.Screen name="UserAccount" component={AccountNavigator} options={options.account} />
             </Tab.Navigator>
         </NavigationContainer>
     )
