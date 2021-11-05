@@ -60,34 +60,10 @@ export default function ContactTab(){
           },
       ]);
 
-    const renderParticipantList = ({ item }) => {
-        return (
-          <View style={styles.listItem}>
-            <FontAwesome 
-              name="user-circle-o"
-              size={44}
-              color="grey"
-              style={styles.personImage}
-            />
-            <View>
-            <Text style={[styles.personName, styles.flex = 1]}>{item.firstname} {item.lastname}</Text>
-            <Text style={[styles.personRole]}>{item.role}</Text>
-            </View>
-          </View>
-        );
-      };
-
     return(
       <View style={styles.ContactTab}>
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>Contact</Text>
       <View style={styles.listContainer}>
-          {/* <FlatList
-            data={participants}
-            renderItem={renderParticipantList}
-            keyExtractor={(person) => person.id}
-            horizontal={false}
-            inverted={true}
-          /> */}
           {participants.map(({id, firstname, lastname, role}) => (
               <View style={styles.listItem} key={id}>
               <FontAwesome 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet,Text,View,TextInput,TouchableOpacity, SafeAreaView} from "react-native";
+import { SearchBar } from 'react-native-elements';
 import { background } from '../../../styles'
 
 import {
@@ -8,10 +9,13 @@ import {
   } from "@expo/vector-icons";
 
 
-export default function SearchBar(){
+export default function SearchTab(){
 
     const [search, updateSearch] = useState("");
 
+    useEffect(() =>{
+        
+    }, [search])
     return(
         <SafeAreaView>
         <View
@@ -20,8 +24,9 @@ export default function SearchBar(){
         <TextInput
           style={styles.searchBar}
           placeholder="Search"
-          onChange={updateSearch}
+          onChangeText={updateSearch}
         />
+          <Text>{search}</Text>
         <TouchableOpacity onPress={test}>
           <Fontisto
             style={styles.iconHistory}

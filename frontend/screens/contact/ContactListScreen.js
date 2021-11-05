@@ -2,12 +2,12 @@ import React from "react";
 import {View, ScrollView} from "react-native";
 
 import SuggestBar from './components/SuggestBar'
-import SearchBar from './components/SearchBar'
+import SearchBar from './components/SearchTab'
 import QueryBar from "./components/QueryBar";
 import ContactTab from "./components/ContactTab";
 
 export default function ContactListScreen() {
-
+    
   
   return (
     <ScrollView nestedScrollEnabled>
