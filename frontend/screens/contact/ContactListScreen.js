@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet,Text,View,TextInput,FlatList,TouchableOpacity, ScrollView} from "react-native";
 import { background, colorCode } from "../../styles";
 import {
   AntDesign,
@@ -16,71 +9,61 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 
+import SuggestBar from './components/SuggestBar'
+
 export default function ContactListScreen() {
-  const [participants, updateParticipants] = useState([
-    {
-      id: 1,
-      business_id: "62070074",
-      firstname: "Tasanai",
-      lastname: "Srisawat",
-      role: "Student"
-    },
-    {
-      id: 2,
-      business_id: "62070074",
-      firstname: "Tasanai",
-      lastname: "Srisawat",
-      role: "Student"
-    },
-    {
-      id: 3,
-      business_id: "62070074",
-      firstname: "Tasanai",
-      lastname: "Srisawat",
-      role: "Student"
-    },
-    {
-      id: 4,
-      business_id: "62070074",
-      firstname: "Tasanai",
-      lastname: "Srisawat",
-      role: "Student"
-    },
-    {
-        id: 5,
-        business_id: "62070074",
-        firstname: "Tasanai",
-        lastname: "Srisawat",
-        role: "Student"
-      },
-      {
-        id: 6,
-        business_id: "62070074",
-        firstname: "Tasanai",
-        lastname: "Srisawat",
-        role: "Student"
-      },
-      {
-        id: 7,
-        business_id: "62070074",
-        firstname: "Tasanai",
-        lastname: "Srisawat",
-        role: "Student"
-      },
-  ]);
-  const renderParticipant = ({ item }) => {
-    return (
-      <View>
-        <FontAwesome
-          name="user-circle-o"
-          size={44}
-          color="grey"
-          style={styles.personImage}
-        />
-        <Text style={styles.personName}>{item.firstname}</Text>
-      </View>
-    );
-  };
+
+    const [participants, updateParticipants] = useState([
+        {
+          id: 1,
+          business_id: "62070074",
+          firstname: "Tasanai",
+          lastname: "Srisawat",
+          role: "Student"
+        },
+        {
+          id: 2,
+          business_id: "62070074",
+          firstname: "Tasanai",
+          lastname: "Srisawat",
+          role: "Student"
+        },
+        {
+          id: 3,
+          business_id: "62070074",
+          firstname: "Tasanai",
+          lastname: "Srisawat",
+          role: "Student"
+        },
+        {
+          id: 4,
+          business_id: "62070074",
+          firstname: "Tasanai",
+          lastname: "Srisawat",
+          role: "Student"
+        },
+        {
+            id: 5,
+            business_id: "62070074",
+            firstname: "Tasanai",
+            lastname: "Srisawat",
+            role: "Student"
+          },
+          {
+            id: 6,
+            business_id: "62070074",
+            firstname: "Tasanai",
+            lastname: "Srisawat",
+            role: "Student"
+          },
+          {
+            id: 7,
+            business_id: "62070074",
+            firstname: "Tasanai",
+            lastname: "Srisawat",
+            role: "Student"
+          },
+      ]);
   const renderParticipantList = ({ item }) => {
     return (
       <View style={styles.listItem}>
@@ -127,17 +110,7 @@ export default function ContactListScreen() {
         />
       </View>
       {/* Suggested Bar */}
-      <View style={styles.suggestTab}>
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>Suggested</Text>
-        <View style={styles.participantContainer}>
-          <FlatList
-            horizontal
-            data={participants}
-            renderItem={renderParticipant}
-            keyExtractor={(person) => person.id}
-          />
-        </View>
-      </View>
+        <SuggestBar/>
       {/* queryTab */}
       <View style={styles.queryTab}>
         <TouchableOpacity onPress={test}>
@@ -157,6 +130,7 @@ export default function ContactListScreen() {
           <Text style={styles.TextIcon}>Student</Text>
         </TouchableOpacity>
       </View>
+      {/* contact tab */}
       <View style={styles.ContactTab}>
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>Contact</Text>
       <View style={styles.listContainer}>
@@ -165,9 +139,7 @@ export default function ContactListScreen() {
             renderItem={renderParticipantList}
             keyExtractor={(person) => person.id}
             horizontal={false}
-            getItemLayout={(data, index) => (
-                {length: 50, offset: 50 * index, index}
-              )}
+            inverted={true}
           />
         </View>
         </View> 
@@ -237,7 +209,7 @@ const styles = StyleSheet.create({
     margin: 15,
   },
   listContainer: {
-    flexDirection: "row",
+    // flexDirection: "row",
     marginTop: 15,
     marginBottom: 20,
   },
