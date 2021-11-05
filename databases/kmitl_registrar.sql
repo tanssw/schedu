@@ -3,8 +3,8 @@
 --
 -- https://tableplus.com/
 --
--- Database: test
--- Generation Time: 2564-11-01 16:18:07.3280
+-- Database: schedu
+-- Generation Time: 2564-11-05 15:27:10.7350
 -- -------------------------------------------------------------
 
 
@@ -80,6 +80,12 @@ CREATE TABLE `teacher` (
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `registrar` (`student_id`, `section_id`, `subject_id`) VALUES
+(62070074, 1, 6016309),
+(62070074, 1, 6016324),
+(62070074, 1, 6016325),
+(62070074, 2, 6016310),
+(62070074, 2, 6016323),
+(62070074, 601, 90304004),
 (62070077, 1, 6016310),
 (62070077, 2, 6016309),
 (62070077, 2, 6016323),
@@ -139,6 +145,7 @@ INSERT INTO `section` (`section_id`, `subject_id`, `study_start`, `study_end`, `
 (603, 90304004, '13:00:00', '16:00:00', 'R');
 
 INSERT INTO `student` (`student_id`, `year`, `first_name`, `last_name`) VALUES
+(62070074, 3, 'Tasanai', 'Srisawat'),
 (62070077, 3, 'Thanakan', 'Boonma'),
 (62070101, 3, 'Nopphadon', 'Phanwong'),
 (62070184, 3, 'Supakit', 'Khawmeewong');
