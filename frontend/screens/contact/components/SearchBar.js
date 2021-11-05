@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet,Text,View,TextInput,TouchableOpacity} from "react-native";
+import { StyleSheet,Text,View,TextInput,TouchableOpacity, SafeAreaView} from "react-native";
 import { background } from '../../../styles'
 
 import {
@@ -13,6 +13,7 @@ export default function SearchBar(){
     const [search, updateSearch] = useState("");
 
     return(
+        <SafeAreaView>
         <View
         style={[styles.searchTab, styles.backgroundColor = background.blue]}
       >
@@ -36,6 +37,7 @@ export default function SearchBar(){
           color="#DDA448"
         />
       </View>
+      </SafeAreaView>
     )
     function test() {
         alert("history");
