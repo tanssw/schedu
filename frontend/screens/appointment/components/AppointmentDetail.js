@@ -7,21 +7,14 @@ import { background, text, shadow, colorCode } from '../../../styles'
 
 export default function AppointmentDetail() {
 
+    const [subject, setSubject] = useState("")
+    const [commMethod, setCommMethod] = useState("")
+    const [commLink, setCommLink] = useState("")
+    const [note, setNote] = useState("")
+
     const [participants, updateParticipants] = useState([
         {id: 1, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 2, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 3, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 4, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 5, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 6, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 7, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 8, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 9, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
     ])
-
-    const tests = [
-        {id: 1, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-    ]
 
     const renderParticipant = ({item}) => {
         return (
@@ -37,13 +30,13 @@ export default function AppointmentDetail() {
             {/* Subject Input */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Subject</Text>
-                <TextInput placeholder="Tomato Meeting" style={[styles.inputUnderline]}/>
+                <TextInput onChangeText={text => setSubject(text)} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/>
             </View>
             {/* Participant Input */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Participant</Text>
                 <View style={styles.participantContainer}>
-                    <TouchableOpacity>
+                    <TouchableOpacity style={styles.participantAdder}>
                         <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity>
@@ -54,7 +47,7 @@ export default function AppointmentDetail() {
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Communication Method</Text>
                 <Picker
-                    onItemChange={(value) => console.log(value)}
+                    onItemChange={(value) => setCommMethod(value.value)}
                     items={[
                         {label: 'Face to Face', value: 'face'},
                         {label: 'Microsoft Teams', value: 'msteam'},
@@ -66,12 +59,13 @@ export default function AppointmentDetail() {
                     isNullable={false}
                     style={styles.picker}
                 />
+                <TextInput onChangeText={text => setCommLink(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/>
             </View>
             {/* Note to participant Textbox */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Note to participant</Text>
                 <ScrollView contentContainerStyle={styles.inputBoxBorder}>
-                    <TextInput multiline numberOfLines={4} placeholder="This is a note ..." />
+                    <TextInput onChangeText={text => setNote(text)} multiline numberOfLines={4} placeholder="This is a note ..." />
                 </ScrollView>
             </View>
             {/* Button */}
@@ -101,7 +95,8 @@ const styles = StyleSheet.create({
         paddingBottom: 8,
     },
     participantContainer: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     personName: {
         textAlign: 'center',
@@ -117,7 +112,8 @@ const styles = StyleSheet.create({
         padding: 16,
         borderWidth: 1,
         borderColor: '#cccccc',
-        borderRadius: 16
+        borderRadius: 16,
+        marginBottom: 24
     },
     inputBoxBorder: {
         height: 128,
