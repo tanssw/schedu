@@ -1,16 +1,20 @@
-const express = require('express');
+const express = require('express')
 const mongoose = require('mongoose')
+
 const appointmentSchema = require('../Schema/appointmentSchema')
 var conn = require('../config/connectionMongoDB/ScheduConnect')
-const router = express();
 
-const appointmentModel = conn.model('appointment' , appointmentSchema, 'appointment')
+const router = express()
 
-//Get all appointment in mongoDB
+const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
+
+// Get all appointments
+// TODO: Get all that associate with request's user only
 router.get('/all', async(req, res) =>{
     const appointment = await appointmentModel.find({})
     res.json(appointment)
 })
+
 //Get appointment by appointment object id
 router.get('/:id', async(req, res) =>{
     const { id } = req.params

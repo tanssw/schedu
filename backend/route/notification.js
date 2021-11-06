@@ -1,11 +1,11 @@
-const express = require('express');
-const mongoose = require('mongoose')
+const express = require('express')
+
 const notificationSchema = require('../Schema/notificationSchema')
 var conn = require('../config/connectionMongoDB/ScheduConnect')
-const router = express();
 
+const router = express()
 
-const notiModel = conn.model('notification' , notificationSchema, 'notification')
+const notiModel = conn.model('notifications', notificationSchema, process.env.NOTIFICATIONS_COLLECTION)
 
 //Get all noti in mongoDB
 router.get('/all', async(req, res) =>{
