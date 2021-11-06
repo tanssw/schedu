@@ -1,8 +1,12 @@
-const express = require('express');
-const pool = require('./config/mysql')
-const mongoose = require('mongoose')
-const app = express();
+require('dotenv').config({ path: './.env' })
 
+const express = require('express')
+const morgan = require('morgan')
+
+const app = express()
+
+// Logging incoming request into the console
+app.use(morgan('tiny'))
 
 const student = require("./route/student")
 const subject = require("./route/subject")
@@ -12,9 +16,9 @@ const teach = require("./route/subject_teacher")
 const event = require("./route/event")
 const user = require("./route/users")
 const appointment = require("./route/appointment")
-const noti = require("./route/notification")
+const notification = require("./route/notification")
 
-app.use(express.json());
+app.use(express.json())
 
 app.use("/student", student)
 app.use("/subject", subject)
@@ -24,7 +28,7 @@ app.use("/teach", teach)
 app.use("/event", event)
 app.use("/user", user)
 app.use("/appointment", appointment)
-app.use("/noti", noti)
+app.use("/notification", notification)
 
 app.get('/health', (req, res) => {
     res.send("Express server is good")

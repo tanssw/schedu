@@ -1,28 +1,47 @@
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from "react-native"
 import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 
 import { background, text, shadow, colorCode } from '../../../styles'
 
-export default function AppointmentDetail() {
+function AppointmentDetail(props, ref) {
 
-    const [participants, updateParticipants] = useState([
-        {id: 1, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 2, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 3, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 4, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 5, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 6, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 7, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 8, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-        {id: 9, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+    // Component's States
+    const [subject, setSubject] = useState()
+    const [commMethod, setCommMethod] = useState()
+    const [commUrl, setCommUrl] = useState()
+    const [note, setNote] = useState()
+
+    const [participants, setParticipants] = useState([
+        {id: 1, business_id: '62070184', firstname: 'Loukhin', lastname: 'Dotcom'},
     ])
 
-    const tests = [
-        {id: 1, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
-    ]
+    useImperativeHandle(ref, () => ({
+        resetChildState() { resetState() }
+    }), [])
 
+    // FUNCTION: to reset all form state
+    const resetState = () => {
+        setSubject()
+        setCommMethod()
+        setCommUrl()
+        setNote()
+    }
+
+    // FUNCTION: to structure appointment data
+    const createAppointment = () => {
+        const data = {
+            subject: subject,
+            participants: participants.map(participant => participant.business_id),
+            commMethod: commMethod ? commMethod.value : undefined,
+            commUrl: commUrl,
+            note: note
+        }
+        props.onCreateAppointment(data)
+    }
+
+    // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({item}) => {
         return (
             <View>
@@ -37,13 +56,13 @@ export default function AppointmentDetail() {
             {/* Subject Input */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Subject</Text>
-                <TextInput placeholder="Tomato Meeting" style={[styles.inputUnderline]}/>
+                <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/>
             </View>
             {/* Participant Input */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Participant</Text>
                 <View style={styles.participantContainer}>
-                    <TouchableOpacity>
+                    <TouchableOpacity style={styles.participantAdder}>
                         <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity>
@@ -54,7 +73,8 @@ export default function AppointmentDetail() {
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Communication Method</Text>
                 <Picker
-                    onItemChange={(value) => console.log(value)}
+                    onItemChange={setCommMethod}
+                    item={commMethod}
                     items={[
                         {label: 'Face to Face', value: 'face'},
                         {label: 'Microsoft Teams', value: 'msteam'},
@@ -62,25 +82,28 @@ export default function AppointmentDetail() {
                         {label: 'Zoom Application', value: 'zoom'}
                     ]}
                     title="Communication Methods"
-                    placeholder="Select Data"
-                    isNullable={false}
+                    placeholder="Choose method ..."
+                    isNullable={true}
                     style={styles.picker}
                 />
+                <TextInput onChangeText={text => setCommUrl(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/>
             </View>
             {/* Note to participant Textbox */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Note to participant</Text>
                 <ScrollView contentContainerStyle={styles.inputBoxBorder}>
-                    <TextInput multiline numberOfLines={4} placeholder="This is a note ..." />
+                    <TextInput onChangeText={text => setNote(text)} value={note} multiline numberOfLines={4} placeholder="This is a note ..." />
                 </ScrollView>
             </View>
             {/* Button */}
-            <TouchableOpacity style={[styles.mainButton, background.blue]}>
+            <TouchableOpacity onPressOut={createAppointment} style={[styles.mainButton, background.blue]}>
                 <Text style={text.white}>Create Appointment</Text>
             </TouchableOpacity>
         </View>
     )
 }
+
+export default forwardRef(AppointmentDetail)
 
 const styles = StyleSheet.create({
     detailContainer: {
@@ -101,7 +124,8 @@ const styles = StyleSheet.create({
         paddingBottom: 8,
     },
     participantContainer: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     personName: {
         textAlign: 'center',
@@ -117,7 +141,8 @@ const styles = StyleSheet.create({
         padding: 16,
         borderWidth: 1,
         borderColor: '#cccccc',
-        borderRadius: 16
+        borderRadius: 16,
+        marginBottom: 24
     },
     inputBoxBorder: {
         height: 128,

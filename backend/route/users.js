@@ -1,11 +1,11 @@
-const express = require('express');
-const mongoose = require('mongoose')
+const express = require('express')
+
 const usersSchema = require('../Schema/usersSchema')
 var conn = require('../config/connectionMongoDB/ScheduConnect')
-const router = express();
 
+const router = express()
 
-const userModel = conn.model('users' , usersSchema, 'users')
+const userModel = conn.model('users', usersSchema, process.env.USERS_COLLECTION)
 
 //Get all users in mongoDB
 router.get('/all', async(req, res) =>{

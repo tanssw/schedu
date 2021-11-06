@@ -1,30 +1,68 @@
-const express = require('express');
+const express = require('express')
 const mongoose = require('mongoose')
+
 const appointmentSchema = require('../Schema/appointmentSchema')
 var conn = require('../config/connectionMongoDB/ScheduConnect')
-const router = express();
 
-const appointmentModel = conn.model('appointment' , appointmentSchema, 'appointment')
+const router = express()
 
-//Get all appointment in mongoDB
+const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
+
+// Get all appointments
+// TODO: Get all that associate with request's user only
 router.get('/all', async(req, res) =>{
     const appointment = await appointmentModel.find({})
     res.json(appointment)
 })
-//Get appointment by appointment object id
+
+// Get appointment by appointment object id
 router.get('/:id', async(req, res) =>{
     const { id } = req.params
     const appointment = await appointmentModel.findById(id)
     res.json(appointment)
 })
-//Add New appointment in mongoDB
-router.post('/addAppointment', async(req, res) =>{
+
+// Create new Appointment
+router.post('/', async(req, res) => {
     const payload = req.body
-    const appointment = new appointmentModel(payload)
-    await appointment.save()
-    res.json({Message: "Success"})
+
+    // Mapping business_id of participants to an Object with some logic keys
+    let participants = payload.participants.map(participant => {
+        return {businessId: participant, main: false, confirmed: false}
+    })
+
+    // Structuring payload data before saving into the database
+    const data = {
+        subject: payload.subject,
+        sender: payload.sender,
+        participants: [
+            {businessId: payload.receiver, main: true, confirmed: false},
+            ...participants
+        ],
+        startAt: payload.startAt,
+        endAt: payload.endAt,
+        commMethod: payload.commMethod,
+        commUrl: payload.commUrl,
+        note: payload.note
+    }
+
+    console.log(data)
+
+    // TODO: Do the validation before saving into the database
+
+    // Save into the database
+    const appointment = new appointmentModel(data)
+    try {
+        const result = await appointment.save()
+        res.json({message: `Successfully create new appointment (ID: ${result._id})`})
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
+    }
+
 })
-//Update appointment in mongoDB
+
+// Update appointment in mongoDB
 router.put('/updateAppointment/:id', async(req, res) =>{
     const payload = req.body
     const { id } = req.params
@@ -32,7 +70,8 @@ router.put('/updateAppointment/:id', async(req, res) =>{
     res.json(appointment)
 
 })
-//Delete appointment in mongoDB
+
+// Delete appointment in mongoDB
 router.delete('/delAppointment/:id', async(req, res) => {
     const { id } = req.params
     await appointmentModel.findByIdAndDelete(id)
