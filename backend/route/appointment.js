@@ -22,25 +22,35 @@ router.get('/:id', async(req, res) =>{
     res.json(appointment)
 })
 
-// Add New appointment in mongoDB
+// Create new Appointment
 router.post('/', async(req, res) => {
     const payload = req.body
+
+    // Mapping business_id of participants to an Object with some logic keys
+    let participants = payload.participants.map(participant => {
+        return {business_id: participant, main: false, confirmed: false}
+    })
+
+    // Structuring payload data before saving into the database
     const data = {
         subject: payload.subject,
         sender: payload.sender,
-        receiver: payload.receiver,
-        participants: payload.participants,
+        participants: [
+            {business_id: payload.receiver, main: true, confirmed: false},
+            ...participants
+        ],
         comm_method: payload.comm_method,
         comm_url: payload.comm_url,
         note: payload.note
     }
 
     // TODO: Do the validation before saving into the database
-    const appointment = new appointmentModel(data)
 
+    // Save into the database
+    const appointment = new appointmentModel(data)
     try {
         const result = await appointment.save()
-        res.json({message: `Successfully create new appointment with ID: XXXX`})
+        res.json({message: `Successfully create new appointment (ID: ${result._id})`})
     } catch (error) {
         console.log(error)
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})

@@ -4,8 +4,11 @@ const Schema = mongoose.Schema
 const appointmentSchema = new Schema({
     subject: String,
     sender: String,
-    receiver: String,
-    participants: Array,
+    participants: [{
+        business_id: String,
+        main: Boolean,
+        confirmed: Boolean
+    }],
     comm_method: String,
     comm_url: String,
     note: String

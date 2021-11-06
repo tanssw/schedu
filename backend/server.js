@@ -1,3 +1,5 @@
+require('dotenv').config({ path: './.env' })
+
 const express = require('express')
 const pool = require('./config/mysql')
 const mongoose = require('mongoose')
