@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useImperativeHandle, forwardRef, useState } from 'react'
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { Feather }  from '@expo/vector-icons'
 import { Picker } from 'react-native-woodpicker'
@@ -10,23 +10,37 @@ import { shadow } from '../../../styles'
 
 dayjs.extend(utc)
 
-export default function TimeSelector(props) {
+function TimeSelector(props, ref) {
 
+    // Component's States
     const [start, setStart] = useState(null)
     const [end, setEnd] = useState(null)
 
+    useImperativeHandle(ref, () => ({
+        resetChildState() { resetState() }
+    }), [])
+
+    // FUNCTION: to reset all form state
+    const resetState = () => {
+        setStart()
+        setEnd()
+    }
+
+    // FUNCTION: to format the time into JS time string
     const formatTime = (time) => {
         const current = dayjs().format('YYYY-MM-DD')
         const formatted = dayjs(`${current} ${time}`, 'YYYY-MM-DD HH:mm').utcOffset(7).format()
         return formatted
     }
 
+    // FUNCTION: to handle the changing of starting time
     const handleStartChange = (value) => {
         setStart(value)
         const time = formatTime(value.value)
         props.onStartChange(time)
     }
 
+    // FUNCTION: to handle the changing of ending time
     const handleEndChange = (value) => {
         setEnd(value)
         const time = formatTime(value.value)
@@ -78,6 +92,8 @@ export default function TimeSelector(props) {
         </View>
     )
 }
+
+export default forwardRef(TimeSelector)
 
 const styles = StyleSheet.create({
     timeSelectorContainer: {

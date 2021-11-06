@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from "react-native"
 import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 
 import { background, text, shadow, colorCode } from '../../../styles'
 
-export default function AppointmentDetail(props) {
+function AppointmentDetail(props, ref) {
 
+    // Component's States
     const [subject, setSubject] = useState()
     const [commMethod, setCommMethod] = useState()
     const [commUrl, setCommUrl] = useState()
@@ -16,17 +17,31 @@ export default function AppointmentDetail(props) {
         {id: 1, business_id: '62070184', firstname: 'Loukhin', lastname: 'Dotcom'},
     ])
 
+    useImperativeHandle(ref, () => ({
+        resetChildState() { resetState() }
+    }), [])
+
+    // FUNCTION: to reset all form state
+    const resetState = () => {
+        setSubject()
+        setCommMethod()
+        setCommUrl()
+        setNote()
+    }
+
+    // FUNCTION: to structure appointment data
     const createAppointment = () => {
         const data = {
             subject: subject,
             participants: participants.map(participant => participant.business_id),
-            commMethod: commMethod.value,
+            commMethod: commMethod ? commMethod.value : undefined,
             commUrl: commUrl,
             note: note
         }
         props.onCreateAppointment(data)
     }
 
+    // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({item}) => {
         return (
             <View>
@@ -41,7 +56,7 @@ export default function AppointmentDetail(props) {
             {/* Subject Input */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Subject</Text>
-                <TextInput onChangeText={text => setSubject(text)} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/>
+                <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/>
             </View>
             {/* Participant Input */}
             <View style={styles.spaceBetweenInput}>
@@ -77,7 +92,7 @@ export default function AppointmentDetail(props) {
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Note to participant</Text>
                 <ScrollView contentContainerStyle={styles.inputBoxBorder}>
-                    <TextInput onChangeText={text => setNote(text)} multiline numberOfLines={4} placeholder="This is a note ..." />
+                    <TextInput onChangeText={text => setNote(text)} value={note} multiline numberOfLines={4} placeholder="This is a note ..." />
                 </ScrollView>
             </View>
             {/* Button */}
@@ -87,6 +102,8 @@ export default function AppointmentDetail(props) {
         </View>
     )
 }
+
+export default forwardRef(AppointmentDetail)
 
 const styles = StyleSheet.create({
     detailContainer: {
