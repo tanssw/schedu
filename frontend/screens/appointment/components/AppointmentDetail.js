@@ -13,7 +13,7 @@ export default function AppointmentDetail(props) {
     const [note, setNote] = useState("")
 
     const [participants, setParticipants] = useState([
-        {id: 1, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
+        {id: 1, business_id: '62070184', firstname: 'Loukhin', lastname: 'Dotcom'},
     ])
 
     const createAppointment = () => {

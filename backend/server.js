@@ -1,9 +1,12 @@
 require('dotenv').config({ path: './.env' })
 
 const express = require('express')
-const pool = require('./config/mysql')
-const mongoose = require('mongoose')
+const morgan = require('morgan')
+
 const app = express()
+
+// Logging incoming request into the console
+app.use(morgan('tiny'))
 
 const student = require("./route/student")
 const subject = require("./route/subject")
