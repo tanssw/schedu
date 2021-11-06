@@ -15,20 +15,40 @@ router.get('/all', async(req, res) =>{
     res.json(appointment)
 })
 
-//Get appointment by appointment object id
+// Get appointment by appointment object id
 router.get('/:id', async(req, res) =>{
     const { id } = req.params
     const appointment = await appointmentModel.findById(id)
     res.json(appointment)
 })
-//Add New appointment in mongoDB
-router.post('/addAppointment', async(req, res) =>{
+
+// Add New appointment in mongoDB
+router.post('/', async(req, res) => {
     const payload = req.body
-    const appointment = new appointmentModel(payload)
-    await appointment.save()
-    res.json({Message: "Success"})
+    const data = {
+        subject: payload.subject,
+        sender: payload.sender,
+        receiver: payload.receiver,
+        participants: payload.participants,
+        comm_method: payload.comm_method,
+        comm_url: payload.comm_url,
+        note: payload.note
+    }
+
+    // TODO: Do the validation before saving into the database
+    const appointment = new appointmentModel(data)
+
+    try {
+        const result = await appointment.save()
+        res.json({message: `Successfully create new appointment with ID: XXXX`})
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
+    }
+
 })
-//Update appointment in mongoDB
+
+// Update appointment in mongoDB
 router.put('/updateAppointment/:id', async(req, res) =>{
     const payload = req.body
     const { id } = req.params
@@ -36,7 +56,8 @@ router.put('/updateAppointment/:id', async(req, res) =>{
     res.json(appointment)
 
 })
-//Delete appointment in mongoDB
+
+// Delete appointment in mongoDB
 router.delete('/delAppointment/:id', async(req, res) => {
     const { id } = req.params
     await appointmentModel.findByIdAndDelete(id)
