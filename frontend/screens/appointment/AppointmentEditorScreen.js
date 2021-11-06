@@ -1,6 +1,8 @@
 import React from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 
+import axios from 'axios'
+
 import TimeSelector from './components/TimeSelector'
 import AppointmentDetail from './components/AppointmentDetail'
 

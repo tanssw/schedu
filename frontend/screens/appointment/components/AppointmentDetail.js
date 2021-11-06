@@ -9,7 +9,7 @@ export default function AppointmentDetail(props) {
 
     const [subject, setSubject] = useState("")
     const [commMethod, setCommMethod] = useState("")
-    const [commLink, setCommLink] = useState("")
+    const [commUrl, setCommUrl] = useState("")
     const [note, setNote] = useState("")
 
     const [participants, setParticipants] = useState([
@@ -19,9 +19,9 @@ export default function AppointmentDetail(props) {
     const createAppointment = () => {
         const data = {
             subject: subject,
-            participants: participants,
+            participants: participants.map(participant => participant.business_id),
             commMethod: commMethod,
-            commLink: commLink,
+            commUrl: commUrl,
             note: note
         }
         props.onCreateAppointment(data)
@@ -66,11 +66,11 @@ export default function AppointmentDetail(props) {
                         {label: 'Zoom Application', value: 'zoom'}
                     ]}
                     title="Communication Methods"
-                    placeholder="Select Data"
-                    isNullable={false}
+                    placeholder="Choose method ..."
+                    isNullable={true}
                     style={styles.picker}
                 />
-                <TextInput onChangeText={text => setCommLink(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/>
+                <TextInput onChangeText={text => setCommUrl(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/>
             </View>
             {/* Note to participant Textbox */}
             <View style={styles.spaceBetweenInput}>
