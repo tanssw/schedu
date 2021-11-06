@@ -7,10 +7,10 @@ import { background, text, shadow, colorCode } from '../../../styles'
 
 export default function AppointmentDetail(props) {
 
-    const [subject, setSubject] = useState("")
-    const [commMethod, setCommMethod] = useState("")
-    const [commUrl, setCommUrl] = useState("")
-    const [note, setNote] = useState("")
+    const [subject, setSubject] = useState()
+    const [commMethod, setCommMethod] = useState()
+    const [commUrl, setCommUrl] = useState()
+    const [note, setNote] = useState()
 
     const [participants, setParticipants] = useState([
         {id: 1, business_id: '62070184', firstname: 'Loukhin', lastname: 'Dotcom'},
@@ -20,7 +20,7 @@ export default function AppointmentDetail(props) {
         const data = {
             subject: subject,
             participants: participants.map(participant => participant.business_id),
-            commMethod: commMethod,
+            commMethod: commMethod.value,
             commUrl: commUrl,
             note: note
         }
@@ -58,7 +58,8 @@ export default function AppointmentDetail(props) {
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Communication Method</Text>
                 <Picker
-                    onItemChange={(value) => setCommMethod(value.value)}
+                    onItemChange={setCommMethod}
+                    item={commMethod}
                     items={[
                         {label: 'Face to Face', value: 'face'},
                         {label: 'Microsoft Teams', value: 'msteam'},

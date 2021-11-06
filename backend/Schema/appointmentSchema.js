@@ -5,12 +5,14 @@ const appointmentSchema = new Schema({
     subject: String,
     sender: String,
     participants: [{
-        business_id: String,
+        businessId: String,
         main: Boolean,
         confirmed: Boolean
     }],
-    comm_method: String,
-    comm_url: String,
+    startAt: Date,
+    endAt: Date,
+    commMethod: String,
+    commUrl: String,
     note: String
 })
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import Constants from 'expo-constants'
 
@@ -11,24 +11,35 @@ const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function AppointmentEditorScreen() {
 
+    const [formattedStart, setFormattedStart] = useState()
+    const [formattedEnd, setFormattedEnd] = useState()
+
     const createAppointmentHandler = async (data) => {
         const payload = {
             subject: data.subject,
             sender: "62070074",
             receiver: "62070077",
             participants: data.participants,
-            comm_method: data.comm_method,
-            comm_url: data.comm_url,
+            startAt: formattedStart,
+            endAt: formattedEnd,
+            commMethod: data.commMethod,
+            commUrl: data.commUrl,
             note: data.note
         }
-        const result = await axios.post(`${API_SERVER_DOMAIN}/appointment`, payload)
-        console.log(result)
+
+        console.log(payload)
+
+        try {
+            const result = await axios.post(`${API_SERVER_DOMAIN}/appointment`, payload)
+        } catch (error) {
+
+        }
     }
 
     return (
         <ScrollView nestedScrollEnabled>
             <View style={styles.container}>
-                <TimeSelector />
+                <TimeSelector onStartChange={setFormattedStart} onEndChange={setFormattedEnd} />
                 <AppointmentDetail onCreateAppointment={createAppointmentHandler} />
             </View>
         </ScrollView>

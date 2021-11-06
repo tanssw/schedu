@@ -28,7 +28,7 @@ router.post('/', async(req, res) => {
 
     // Mapping business_id of participants to an Object with some logic keys
     let participants = payload.participants.map(participant => {
-        return {business_id: participant, main: false, confirmed: false}
+        return {businessId: participant, main: false, confirmed: false}
     })
 
     // Structuring payload data before saving into the database
@@ -36,13 +36,17 @@ router.post('/', async(req, res) => {
         subject: payload.subject,
         sender: payload.sender,
         participants: [
-            {business_id: payload.receiver, main: true, confirmed: false},
+            {businessId: payload.receiver, main: true, confirmed: false},
             ...participants
         ],
-        comm_method: payload.comm_method,
-        comm_url: payload.comm_url,
+        startAt: payload.startAt,
+        endAt: payload.endAt,
+        commMethod: payload.commMethod,
+        commUrl: payload.commUrl,
         note: payload.note
     }
+
+    console.log(data)
 
     // TODO: Do the validation before saving into the database
 
