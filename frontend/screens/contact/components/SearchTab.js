@@ -6,15 +6,16 @@ import { background } from '../../../styles'
 import {
     AntDesign,
     Fontisto,
+    FontAwesome,
   } from "@expo/vector-icons";
 
 
-export default function SearchTab(){
+export default function SearchTab(props){
 
     const [search, updateSearch] = useState("");
 
     useEffect(() =>{
-        
+      
     }, [search])
     return(
         <SafeAreaView>
@@ -24,10 +25,17 @@ export default function SearchTab(){
         <TextInput
           style={styles.searchBar}
           placeholder="Search"
+          onChange={props.closeUpper}
           onChangeText={updateSearch}
         />
-          <Text>{search}</Text>
-        <TouchableOpacity onPress={test}>
+        <TouchableOpacity>
+        <FontAwesome 
+        style={styles.iconSearch}
+        name="search" 
+        size={24} 
+        color="white" />
+          </TouchableOpacity>
+        <TouchableOpacity>
           <Fontisto
             style={styles.iconHistory}
             name="history"
@@ -50,29 +58,40 @@ export default function SearchTab(){
 }
 const styles = StyleSheet.create({
     searchTab: {
+        flex:1,
         flexDirection: "row",
-        width: 400,
-        height: 55,
+        padding: 10,
         justifyContent: "flex-start",
       },
       searchBar: {
-        height: 30,
-        width: 270,
+        flex:1,
+        height: 35,
         backgroundColor: "white",
         borderRadius: 10,
-        marginLeft: 10,
         margin: 13,
-        paddingLeft: 5,
       },
       iconHistory: {
         width: 30,
         margin: 10,
-        marginTop: 17,
-        marginLeft: 14,
+        // marginTop: 17,
+        // marginLeft: 14,
+        padding: 5,
+        paddingTop: 10
       },
       iconStart: {
         width: 30,
-        marginLeft: 5,
-        marginTop: 16,
+        margin: 10,
+        // marginLeft: 5,
+        // marginTop: 16,
+        padding: 5,
+        paddingTop: 8
+      },
+      iconSearch: {
+        width: 30,
+        margin: 10,
+        // marginLeft: 5,
+        // marginTop: 16,
+        padding: 5,
+        paddingTop: 8
       },
 })

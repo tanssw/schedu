@@ -8,31 +8,41 @@ import {
     Ionicons,
   } from "@expo/vector-icons";
 
-export default function QueryBar(){
+export default function QueryBar(props){
 
     return(
         <View style={styles.queryTab}>
-        <TouchableOpacity onPress={test}>
+        <TouchableOpacity onPress={all}>
           <Ionicons name="ios-people-sharp" size={50} color="black" />
           <Text style={styles.TextIcon}>All</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={test}>
+        <TouchableOpacity onPress={professor}>
           <Ionicons name="md-people-circle" size={50} color="black" />
           <Text style={[styles.TextIcon]}>Professor</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={test}>
+        <TouchableOpacity onPress={officer}>
         <Ionicons name="people-outline" size={50} color="black" />
           <Text style={styles.TextIcon}>Officer</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={test}>
+        <TouchableOpacity onPress={student}>
           <Ionicons name="ios-people-circle-outline" size={50} color="black" />
           <Text style={styles.TextIcon}>Student</Text>
         </TouchableOpacity>
       </View>
     )
-    function test() {
-        alert("history");
+    function all() {
+        // alert("all");
+        props.query("all")
       }
+    function professor() {
+        alert("Professor");
+    }
+    function officer(){
+        alert("Officer")
+    }
+    function student(){
+        alert("Student")
+    }
 }
 const styles = StyleSheet.create({
     queryTab: {
