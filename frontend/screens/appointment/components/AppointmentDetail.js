@@ -5,16 +5,27 @@ import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 
 import { background, text, shadow, colorCode } from '../../../styles'
 
-export default function AppointmentDetail() {
+export default function AppointmentDetail(props) {
 
     const [subject, setSubject] = useState("")
     const [commMethod, setCommMethod] = useState("")
     const [commLink, setCommLink] = useState("")
     const [note, setNote] = useState("")
 
-    const [participants, updateParticipants] = useState([
+    const [participants, setParticipants] = useState([
         {id: 1, business_id: '62070074', firstname: 'Tasanai', lastname: 'Srisawat'},
     ])
+
+    const createAppointment = () => {
+        const data = {
+            subject: subject,
+            participants: participants,
+            commMethod: commMethod,
+            commLink: commLink,
+            note: note
+        }
+        props.onCreateAppointment(data)
+    }
 
     const renderParticipant = ({item}) => {
         return (
@@ -69,7 +80,7 @@ export default function AppointmentDetail() {
                 </ScrollView>
             </View>
             {/* Button */}
-            <TouchableOpacity style={[styles.mainButton, background.blue]}>
+            <TouchableOpacity onPressOut={createAppointment} style={[styles.mainButton, background.blue]}>
                 <Text style={text.white}>Create Appointment</Text>
             </TouchableOpacity>
         </View>

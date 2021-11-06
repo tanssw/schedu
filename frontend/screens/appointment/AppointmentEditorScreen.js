@@ -5,11 +5,16 @@ import TimeSelector from './components/TimeSelector'
 import AppointmentDetail from './components/AppointmentDetail'
 
 export default function AppointmentEditorScreen() {
+
+    const createAppointmentHandler = (data) => {
+        console.log(data)
+    }
+
     return (
         <ScrollView nestedScrollEnabled>
             <View style={styles.container}>
                 <TimeSelector />
-                <AppointmentDetail />
+                <AppointmentDetail onCreateAppointment={createAppointmentHandler} />
             </View>
         </ScrollView>
     )
