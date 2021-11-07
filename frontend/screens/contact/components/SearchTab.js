@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet,Text,View,TextInput,TouchableOpacity, SafeAreaView} from "react-native";
-import { SearchBar } from 'react-native-elements';
 import { background } from '../../../styles'
 
 import {
@@ -10,7 +9,7 @@ import {
   } from "@expo/vector-icons";
 
 
-export default function SearchTab(props){
+export default function SearchTab(props, {router, navigation}){
 
     const [search, updateSearch] = useState("");
 
@@ -28,14 +27,14 @@ export default function SearchTab(props){
           onChange={props.closeUpper}
           onChangeText={updateSearch}
         />
-        <TouchableOpacity onPress={props.searchWord}>
+        <TouchableOpacity onPress={test}>
         <FontAwesome 
         style={styles.iconSearch}
         name="search" 
         size={24} 
         color="white" />
           </TouchableOpacity>
-        <TouchableOpacity onPress={props.historyQuery}>
+        <TouchableOpacity onPress={() => navigation.navigate("ContactHistory")}>
           <Fontisto
             style={styles.iconHistory}
             name="history"

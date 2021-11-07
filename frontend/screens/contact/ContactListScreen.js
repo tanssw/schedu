@@ -6,7 +6,7 @@ import SearchBar from './components/SearchTab'
 import QueryBar from "./components/QueryBar";
 import ContactTab from "./components/ContactTab";
 
-export default function ContactListScreen() {
+export default function ContactListScreen({navigation}) {
 
     const [headerText, updateHeaderText] = useState("Contact")
 
@@ -105,7 +105,7 @@ export default function ContactListScreen() {
     <SafeAreaView>
     <ScrollView nestedScrollEnabled>
       {/* SearchBar tab*/}
-      <SearchBar searchWord={getSearch} closeUpper={closeUpper} historyQuery={historyQuery} StarQuery={StarQuery}/>
+      <SearchBar searchWord={getSearch} closeUpper={closeUpper} historyQuery={historyQuery} StarQuery={StarQuery} navigation={navigation}/>
       {/* Suggested Bar */}
         {/* <SuggestBar/> */}
         {suggestDisplay()}
