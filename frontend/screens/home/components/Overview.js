@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     counter: {
-        fontSize: 24
+        fontSize: 24,
+        color: colorCode.lightBlue
     }
 })
