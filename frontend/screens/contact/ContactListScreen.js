@@ -5,10 +5,12 @@ import SuggestBar from './components/SuggestBar'
 import SearchBar from './components/SearchTab'
 import QueryBar from "./components/QueryBar";
 import ContactTab from "./components/ContactTab";
+import { NavigationContainer } from "@react-navigation/native";
 
-export default function ContactListScreen({navigation}) {
+export default function ContactListScreen() {
 
     const [headerText, updateHeaderText] = useState("Contact")
+    const [search, updateSearch] = useState("")
 
     const [participants, updateParticipants] = useState([
         {
@@ -65,7 +67,7 @@ export default function ContactListScreen({navigation}) {
     const [toggleSuggest, updateToggleSuggest] = useState(0)
     const [toggleQuery, updateToggleQuery] = useState(0)
     const getSearch = () => {
-        alert("Search")
+        alert(search)
       };
     const getQueryPeople = (queryData) =>{
         alert("For parent" + queryData)
@@ -105,7 +107,7 @@ export default function ContactListScreen({navigation}) {
     <SafeAreaView>
     <ScrollView nestedScrollEnabled>
       {/* SearchBar tab*/}
-      <SearchBar searchWord={getSearch} closeUpper={closeUpper} historyQuery={historyQuery} StarQuery={StarQuery} navigation={navigation}/>
+      <SearchBar searchWord={updateSearch} closeUpper={closeUpper} historyQuery={historyQuery} StarQuery={StarQuery} alertWord={getSearch}/>
       {/* Suggested Bar */}
         {/* <SuggestBar/> */}
         {suggestDisplay()}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet,Text,View,TextInput,TouchableOpacity, SafeAreaView} from "react-native";
 import { background } from '../../../styles'
+import { useNavigation } from '@react-navigation/native';
 
 import {
     AntDesign,
@@ -9,13 +10,9 @@ import {
   } from "@expo/vector-icons";
 
 
-export default function SearchTab(props, {router, navigation}){
+export default function SearchTab(props){
+    const navigation = useNavigation()
 
-    const [search, updateSearch] = useState("");
-
-    useEffect(() =>{
-      
-    }, [search])
     return(
         <SafeAreaView>
         <View
@@ -25,15 +22,18 @@ export default function SearchTab(props, {router, navigation}){
           style={styles.searchBar}
           placeholder="Search"
           onChange={props.closeUpper}
-          onChangeText={updateSearch}
+          onChangeText={props.searchWord}
+          keyboardType={'default'}
+          multiline={false}
+          onSubmitEditing={props.alertWord}
         />
-        <TouchableOpacity onPress={test}>
+        {/* <TouchableOpacity onPress={props.alertWord}>
         <FontAwesome 
         style={styles.iconSearch}
         name="search" 
         size={24} 
         color="white" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         <TouchableOpacity onPress={() => navigation.navigate("ContactHistory")}>
           <Fontisto
             style={styles.iconHistory}
@@ -42,19 +42,14 @@ export default function SearchTab(props, {router, navigation}){
             color="white"
           />
         </TouchableOpacity>
-        <TouchableOpacity onPres={test}>
-        <AntDesign
-          style={styles.iconStart}
-          name="staro"
-          size={24}
-          color="#DDA448"
-        />
+        <TouchableOpacity onPress={test}>
+        <AntDesign style={styles.iconStart} name="star" size={24} color="#ffcc00" />
         </TouchableOpacity>
       </View>
       </SafeAreaView>
     )
     function test() {
-        alert("history");
+        props.alertWord
       }
 }
 const styles = StyleSheet.create({

@@ -15,12 +15,13 @@ const options = {
 
     }
 }
+    
 
 export default function ContactNavigator() {
     return (
         // TODO: Change back initialRoute to ContactList
         <ContactStack.Navigator initialRouteName="ContactList">
-            <ContactStack.Screen options={{headerShown: false}} name="ContactList" component={ContactListScreen} />
+            <ContactStack.Screen options={{headerShown: false}} name="ContactList" component={ContactListScreen}/>
             <ContactStack.Screen name="ContactHistory" component={ContactHistoryScreen} />
             <ContactStack.Screen options={{headerShown: false}} name="ContactProfile" component={ContactProfileScreen} />
             <ContactStack.Screen options={{headerShown: false}} name="CreateAppointment" component={AppointmentEditorScreen} options={options.createAppointment} />
