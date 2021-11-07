@@ -6,65 +6,16 @@ import {
 } from "@expo/vector-icons";
 
 
-export default function ContactTab(){
+export default function ContactTab(props){
 
-    const [participants, updateParticipants] = useState([
-        {
-          id: 1,
-          business_id: "62070074",
-          firstname: "Tasanai",
-          lastname: "Srisawat",
-          role: "Student"
-        },
-        {
-          id: 2,
-          business_id: "62070074",
-          firstname: "Tasanai",
-          lastname: "Srisawat",
-          role: "Student"
-        },
-        {
-          id: 3,
-          business_id: "62070074",
-          firstname: "Tasanai",
-          lastname: "Srisawat",
-          role: "Student"
-        },
-        {
-          id: 4,
-          business_id: "62070074",
-          firstname: "Tasanai",
-          lastname: "Srisawat",
-          role: "Student"
-        },
-        {
-            id: 5,
-            business_id: "62070074",
-            firstname: "Tasanai",
-            lastname: "Srisawat",
-            role: "Student"
-          },
-          {
-            id: 6,
-            business_id: "62070074",
-            firstname: "Tasanai",
-            lastname: "Srisawat",
-            role: "Student"
-          },
-          {
-            id: 7,
-            business_id: "62070074",
-            firstname: "Tasanai",
-            lastname: "Srisawat",
-            role: "Student"
-          },
-      ]);
+    const [headerText, updateHeaderText] = useState("Contact")
+
 
     return(
       <View style={styles.ContactTab}>
-      <Text style={{ fontSize: 20, fontWeight: "bold" }}>Contact</Text>
+      <Text style={{ fontSize: 20, fontWeight: "bold" }}>{props.headerText}</Text>
       <View style={styles.listContainer}>
-          {participants.map(({id, firstname, lastname, role}) => (
+          {props.participants.map(({id, firstname, lastname, role}) => (
               <View style={styles.listItem} key={id}>
               <FontAwesome 
                 name="user-circle-o"
@@ -106,7 +57,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
       },
       ContactTab:{
-        margin: 15,
+        // margin: 15,
+        padding: 16
       },
       listContainer: {
         marginTop: 15,

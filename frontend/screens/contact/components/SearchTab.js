@@ -28,14 +28,14 @@ export default function SearchTab(props){
           onChange={props.closeUpper}
           onChangeText={updateSearch}
         />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={props.searchWord}>
         <FontAwesome 
         style={styles.iconSearch}
         name="search" 
         size={24} 
         color="white" />
           </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={props.historyQuery}>
           <Fontisto
             style={styles.iconHistory}
             name="history"
@@ -43,12 +43,14 @@ export default function SearchTab(props){
             color="white"
           />
         </TouchableOpacity>
+        <TouchableOpacity onPres={test}>
         <AntDesign
           style={styles.iconStart}
           name="staro"
           size={24}
           color="#DDA448"
         />
+        </TouchableOpacity>
       </View>
       </SafeAreaView>
     )

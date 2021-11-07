@@ -46,6 +46,7 @@ export default function QueryBar(props){
 }
 const styles = StyleSheet.create({
     queryTab: {
+        padding: 10,
         flexDirection: "row",
         justifyContent: "space-evenly",
       },
