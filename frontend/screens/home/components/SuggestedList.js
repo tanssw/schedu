@@ -34,7 +34,8 @@ const styles = StyleSheet.create({
     },
     header: {
         fontWeight: 'bold',
-        marginBottom: 24
+        fontSize: 16,
+        marginBottom: 18
     },
     footer: {
         marginBottom: 32
@@ -48,6 +49,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 12
     },
     personName: {
-        textAlign: 'center'
+        textAlign: 'center',
+        fontWeight: '300'
     }
 })
