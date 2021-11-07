@@ -5,7 +5,8 @@ const colorCode = {
     lightBlue: '#005295',
     lighterBlue: '#4f89c4',
     grey: 'grey',
-    yellow: '#ffaa54'
+    yellow: '#ffaa54',
+    green: '#23644e'
 }
 
 const background = StyleSheet.create({
@@ -38,6 +39,9 @@ const text = StyleSheet.create({
     },
     yellow: {
         color: colorCode.yellow
+    },
+    green: {
+        color: colorCode.green
     }
 })
 
