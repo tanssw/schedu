@@ -4,6 +4,8 @@ import { StyleSheet, Text, View } from 'react-native'
 import { shadow } from '../../styles'
 
 import NotificationCard from './components/NotificationCard'
+import RecentlyList from './components/RecentlyList'
+import SuggestedList from './components/SuggestedList'
 
 export default function HomeScreen({navigation}) {
 
@@ -15,7 +17,8 @@ export default function HomeScreen({navigation}) {
         <View style={styles.container}>
             <NotificationCard onAppointmentPress={gotoMyCalendar} />
             <View style={[styles.mainContainer, shadow.boxTopMedium]}>
-                <Text>asdasd</Text>
+                <SuggestedList />
+                <RecentlyList />
             </View>
         </View>
     )

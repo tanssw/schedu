@@ -4,7 +4,8 @@ const colorCode = {
     blue: '#001e6a',
     lightBlue: '#005295',
     lighterBlue: '#4f89c4',
-    grey: 'grey'
+    grey: 'grey',
+    yellow: '#ffaa54'
 }
 
 const background = StyleSheet.create({
@@ -34,6 +35,9 @@ const text = StyleSheet.create({
     },
     bold: {
         fontWeight: 'bold'
+    },
+    yellow: {
+        color: colorCode.yellow
     }
 })
 
