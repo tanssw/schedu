@@ -4,6 +4,7 @@ const colorCode = {
     blue: '#001e6a',
     lightBlue: '#005295',
     lighterBlue: '#4f89c4',
+    grey: 'grey'
 }
 
 const background = StyleSheet.create({
