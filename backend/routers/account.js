@@ -3,8 +3,9 @@ const axios = require('axios')
 
 const { isAllowEmailDomain } = require('../validators/authValidator')
 
-const usersSchema = require('../schema/usersSchema')
+const usersSchema = require('../schema/userSchema')
 const conn = require('../config/connectionMongoDB/ScheduConnect')
+const { getTokenData } = require('../helpers/googleApis')
 
 const userModel = conn.model('users', usersSchema, process.env.USERS_COLLECTION)
 
@@ -18,17 +19,17 @@ router.post('/auth', async (req, res) => {
     if (!isAllowEmailDomain(emailDomain)) res.status(400)
 
     try {
-        const tokenResult = await axios.post(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${authData.accessToken}`)
-        const tokenData = tokenResult.data
+        const tokenData = await getTokenData(authData.accessToken)
 
         // If user id in token data not match with requested one, then reject it.
         if (tokenData.user_id !== authData.user.id) res.status(400).send({error: 'Authentication ID not match.'})
 
-        //
+        // TODO: If not user inside the collection then create one.
 
-        res.json({
-            user: 'test'
-        })
+
+        // TODO: Get user data from the database and response back to user.
+
+        res.json({user: 'test'})
     } catch (error) {
         console.log(error)
         res.status(400).send({error: 'Authentication Error'})
