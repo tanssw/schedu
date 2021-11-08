@@ -9,14 +9,15 @@ const { initializeApp } = require('firebase/app')
 const firebaseConfig = require('./secrets/firebaseConfig')
 
 // Routers
+const account = require("./routers/account")
+const appointment = require("./routers/appointment")
+
 const student = require("./routers/student")
 const subject = require("./routers/subject")
 const teacher = require("./routers/teacher")
 const registrar = require("./routers/registrar")
 const teach = require("./routers/subject_teacher")
 const event = require("./routers/event")
-const user = require("./routers/users")
-const appointment = require("./routers/appointment")
 const notification = require("./routers/notification")
 
 const PORT = process.env.PORT
@@ -31,7 +32,7 @@ app.use(express.json())
 
 // Active Routers
 app.use("/appointment", appointment)
-app.use("/user", user)
+app.use("/account", account)
 
 // Inactive Routers
 app.use("/student", student)

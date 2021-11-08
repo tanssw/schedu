@@ -16,10 +16,11 @@ router.post('/auth', (req, res) => {
     console.log(authData) // TODO: Remove
 
     const emailDomain = authData.email.split('@')[1]
-    if (!isAllowEmailDomain(emailDomain)) res.status(400).json({message: 'This Google Account has no permission to use the system.'})
+    console.log(emailDomain) // TODO: Remove
+    if (!isAllowEmailDomain(emailDomain)) res.status(400)
 
-    const auth = getAuth()
-    signInWithCustomToken()
+    // const auth = getAuth()
+    // signInWithCustomToken()
 
     res.json({'message': 'received!'})
 })
