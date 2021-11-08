@@ -1,28 +1,39 @@
 const express = require('express')
+const axios = require('axios')
 
-const { getAuth, signInWithCustomToken } = require('firebase/auth')
+const { isAllowEmailDomain } = require('../validators/authValidator')
 
 const usersSchema = require('../schema/usersSchema')
 const conn = require('../config/connectionMongoDB/ScheduConnect')
-const { isAllowEmailDomain } = require('../validators/authValidator')
 
 const userModel = conn.model('users', usersSchema, process.env.USERS_COLLECTION)
 
 const router = express()
 
-router.post('/auth', (req, res) => {
+// Account Authentication with Google Sign-in
+router.post('/auth', async (req, res) => {
     const authData = req.body
+    const emailDomain = authData.user.email.split('@')[1]
 
-    console.log(authData) // TODO: Remove
-
-    const emailDomain = authData.email.split('@')[1]
-    console.log(emailDomain) // TODO: Remove
     if (!isAllowEmailDomain(emailDomain)) res.status(400)
 
-    // const auth = getAuth()
-    // signInWithCustomToken()
+    try {
+        const tokenResult = await axios.post(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${authData.accessToken}`)
+        const tokenData = tokenResult.data
 
-    res.json({'message': 'received!'})
+        // If user id in token data not match with requested one, then reject it.
+        if (tokenData.user_id !== authData.user.id) res.status(400).send({error: 'Authentication ID not match.'})
+
+        //
+
+        res.json({
+            user: 'test'
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({error: 'Authentication Error'})
+    }
+
 })
 
 /* -------------------------- INACTIVE ROUTES -------------------------- */
