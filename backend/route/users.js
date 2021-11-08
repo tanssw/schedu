@@ -7,25 +7,37 @@ const router = express()
 
 const userModel = conn.model('users', usersSchema, process.env.USERS_COLLECTION)
 
-//Get all users in mongoDB
+router.post('/auth', (req, res) => {
+    const authData = req.body
+
+    console.log(authData)
+
+
+
+    res.json({'message': 'received!'})
+})
+
+/* -------------------------- NOT USING YET -------------------------- */
+
+// Get all users in mongoDB
 router.get('/all', async(req, res) =>{
     const user = await userModel.find({})
     res.json(user)
 })
-//Get user by user object id
+// Get user by user object id
 router.get('/:id', async(req, res) =>{
     const { id } = req.params
     const user = await userModel.findById(id)
     res.json(user)
 })
-//Add New user in mongoDB
+// Add New user in mongoDB
 router.post('/addUser', async(req, res) =>{
     const payload = req.body
     const user = new userModel(payload)
     await user.save()
     res.json({Message: "Success"})
 })
-//Update user in mongoDB
+// Update user in mongoDB
 router.put('/updateUser/:id', async(req, res) =>{
     const payload = req.body
     const { id } = req.params
@@ -33,7 +45,7 @@ router.put('/updateUser/:id', async(req, res) =>{
     res.json(user)
 
 })
-//Delete user in mongoDB
+// Delete user in mongoDB
 router.delete('/delUser/:id', async(req, res) => {
     const { id } = req.params
     await userModel.findByIdAndDelete(id)

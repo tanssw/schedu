@@ -3,15 +3,12 @@ import { LogBox, StyleSheet, Text, View } from 'react-native'
 import Constants from 'expo-constants'
 
 import * as Google from 'expo-google-app-auth'
-// import { initializeApp } from 'firebase/app'
-// import { getAuth, onAuthStateChanged, signInWithCredential, signInWithCustomToken, GoogleAuthProvider } from 'firebase/auth'
-// import { firebaseConfig } from './config/firebase'
 
 import Navigator from './navigators/MainNavigator'
 import SignInScreen from './screens/account/SignInScreen'
+import axios from 'axios'
 
-// initializeApp(firebaseConfig)
-// const auth = getAuth()
+const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 // Disable Yellow box warning
 LogBox.ignoreLogs(['AsyncStorage'])
@@ -19,13 +16,6 @@ LogBox.ignoreLogs(['AsyncStorage'])
 export default function App() {
 
     const [userData, setUserData] = useState(null)
-
-    // useEffect(() => {
-    //     onAuthStateChanged(auth, user => {
-    //         console.log(user)
-    //         user ? setUserData(user) : setUserData(null)
-    //     })
-    // })
 
     const signInWithGoogleAsync = async () => {
         try {
@@ -35,6 +25,8 @@ export default function App() {
             })
             if (result.type === 'success') {
                 setUserData(result.user)
+                const user = await axios.post(`${API_SERVER_DOMAIN}/user/auth`, result)
+                console.log(user)
             }
         } catch (error) {
             console.log(error)
@@ -44,7 +36,7 @@ export default function App() {
     return (
         <>
             {/* TODO: Remove bypass */}
-            { true ? <Navigator /> : <SignInScreen onSignIn={signInWithGoogleAsync} /> }
+            { false ? <Navigator /> : <SignInScreen onSignIn={signInWithGoogleAsync} /> }
         </>
     )
 }
