@@ -6,7 +6,7 @@ const morgan = require('morgan')
 
 // Firebase
 const { initializeApp } = require('firebase/app')
-const { firebaseConfig } = require('./secrets/firebaseConfig')
+const firebaseConfig = require('./secrets/firebaseConfig')
 
 // Routers
 const student = require("./route/student")
