@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+    Text,
+    View,
+    StyleSheet,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+} from "react-native";
+
+// Redux
+import { useSelector, useDispatch } from "react-redux";
+import { updateData } from "./../../store/actions/userAction";
 
 // style by tanssw.com
 import { text, shadow } from "../../styles";
@@ -8,59 +19,104 @@ import { text, shadow } from "../../styles";
 import UserData from "./components/UserData";
 
 export default function ProfileScreen({ navigation }) {
-    const [newName, setNewName] = useState("Thanakan Boonma");
-    const [newPoneNumber, setNewPhoneNumber] = useState("0812345678");
+    const userData = useSelector((state) => state.user.userData);
 
-    const updateData = () => {
-        alert("Profile Updated");
-        navigation.navigate("Profile");
+    const [newFirstName, setNewFirstName] = useState(userData.firstName);
+    const [newLastName, setNewLastName] = useState(userData.lastName);
+    const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel);
+
+    const updateDataHandler = (data) => {
+        switch (data.topic) {
+            case "First name":
+                setNewFirstName(data.data);
+                break;
+            case "Last name":
+                setNewLastName(data.data);
+                break;
+            case "Phone number":
+                setNewPhoneNumber(data.data);
+                break;
+        }
+        console.log(data);
     };
 
+    const dispatch = useDispatch();
+
+    const update = () => {
+        dispatch(
+            updateData({
+                firstName: newFirstName,
+                lastName: newLastName,
+                tel: newPhoneNumber,
+            })
+        );
+
+        alert("Profile Updated");
+        navigation.navigate("AccountMenuScreen");
+    };
+
+    // const updateDataWithApi = () => {
+
+    // }
+
     return (
-        <View style={styles.container}>
-            <Image
-                style={styles.profileImage}
-                source={{
-                    url: "https://lh3.googleusercontent.com/a/AATXAJwtwryT19EjwXDGUmiB_Y8C34GOlwfRu8S1dplb=s96-c",
-                }}
-            />
-            <View style={[styles.userProfileContainer, shadow.boxTopMedium]}>
-                <View style={styles.dataBlock}>
-                    <Text style={styles.userProfileMenu}>General</Text>
-                    <UserData
-                        topicData={"Name"}
-                        data={newName}
-                        editState={true}
-                    />
-                    <UserData
-                        topicData={"Role"}
-                        data={"Student"}
-                        editState={false}
-                    />
-                </View>
-                <View style={styles.dataBlock}>
-                    <Text style={styles.userProfileMenu}>Contact</Text>
-                    <UserData
-                        topicData={"Email"}
-                        data={"62070077@it.kmitl.ac.th"}
-                        editState={false}
-                    />
-                    <UserData
-                        topicData={"Phone number"}
-                        data={newPoneNumber}
-                        editState={true}
-                    />
-                </View>
-                <TouchableOpacity
-                    style={[styles.updateBtn]}
-                    onPress={updateData}
+        <ScrollView nestedScrollEnabled>
+            <View style={styles.container}>
+                <Image
+                    style={styles.profileImage}
+                    source={{
+                        url: userData.image,
+                    }}
+                />
+                <View
+                    style={[styles.userProfileContainer, shadow.boxTopMedium]}
                 >
-                    <Text style={(text.blue, styles.updateBtnText)}>
-                        Update Profile
-                    </Text>
-                </TouchableOpacity>
+                    <View style={styles.dataBlock}>
+                        <Text style={styles.userProfileMenu}>General</Text>
+                        <UserData
+                            topicData={"First name"}
+                            data={userData.firstName}
+                            editState={true}
+                            update={updateDataHandler}
+                        />
+                        <UserData
+                            topicData={"Last name"}
+                            data={userData.lastName}
+                            editState={true}
+                            update={updateDataHandler}
+                        />
+
+                        <UserData
+                            topicData={"Role"}
+                            data={userData.role}
+                            editState={false}
+                        />
+                    </View>
+                    <View style={styles.dataBlock}>
+                        <Text style={styles.userProfileMenu}>Contact</Text>
+                        <UserData
+                            topicData={"Email"}
+                            data={userData.contact.email}
+                            editState={false}
+                        />
+                        <UserData
+                            topicData={"Phone number"}
+                            data={newPhoneNumber}
+                            editState={true}
+                            update={updateDataHandler}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        style={[styles.updateBtn]}
+                        onPress={update}
+                    >
+                        <Text style={(text.blue, styles.updateBtnText)}>
+                            Update Profile
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -80,7 +136,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
     },
     dataBlock: {
-        marginBottom: 20,
+        marginBottom: 32,
     },
     // image profile style
     profileImage: {

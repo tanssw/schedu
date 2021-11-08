@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "react-native";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -8,23 +8,30 @@ import ProfileScreen from "../screens/account/ProfileScreen";
 import EditProfileScreen from "../screens/account/EditProfileScreen";
 import SettingScreen from "../screens/account/SettingScreen";
 
+
+
 const AccountStack = createNativeStackNavigator();
 
 export default function AccountNavigator({ route, navigation }) {
     const [editState, setEditState] = useState(false);
+
     // let state = { editState: false }
     return (
-        <AccountStack.Navigator initialRouteName="AccountMenu">
-            <AccountStack.Screen name="Account" component={AccountMenuScreen} />
+        <AccountStack.Navigator initialRouteName="AccountMenuScreen">
+            <AccountStack.Screen
+                name="AccountMenuScreen"
+                component={AccountMenuScreen}
+                options={{ headerTitle: "Account" }}
+            />
             <AccountStack.Screen
                 name="Profile"
                 component={ProfileScreen}
-                initialParams={{editState}}
+                initialParams={{ editState }}
                 options={{
                     headerRight: () => (
                         <Button
                             onPress={() => {
-                                navigation.navigate("EditProfile")
+                                navigation.navigate("EditProfile");
                             }}
                             title="edit"
                         />

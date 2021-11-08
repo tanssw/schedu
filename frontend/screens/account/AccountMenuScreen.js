@@ -1,28 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { StyleSheet, Image, Text, View, TouchableOpacity } from "react-native";
+
+// Redux
+import { useSelector } from "react-redux";
 
 // style by tanssw.com
 import { text, shadow } from "../../styles";
 
 export default function AccountMenuScreen({ navigation }) {
+    const userData = useSelector((state) => state.user.userData);
+
     return (
         <View style={styles.container}>
             {/* user profile image */}
             <Image
                 style={styles.profileImage}
                 source={{
-                    url: "https://lh3.googleusercontent.com/a/AATXAJwtwryT19EjwXDGUmiB_Y8C34GOlwfRu8S1dplb=s96-c",
+                    url: userData.image,
                 }}
             ></Image>
 
             {/* user fullname */}
             <Text style={[styles.userFullname, text.blue]}>
-                Thanakan Boonma
+                {userData.firstName + " " + userData.lastName}
             </Text>
 
             {/* user role */}
-            <Text style={styles.userRole}>Student</Text>
+            <Text style={styles.userRole}>{userData.role}</Text>
             <View style={[styles.userAccountNav, shadow.boxTopMedium]}>
                 {/* profile navigation */}
                 <View>

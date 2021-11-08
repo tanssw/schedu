@@ -1,13 +1,34 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet, Image, TextInput } from "react-native";
 
 export default function UserData(props) {
-    let editState = props.editState
+    const [topic, setTopic] = useState(props.topicData);
+    const [data, setdata] = useState(props.data);
+
+    const changeDataHandler = (text) => {
+        props.update({ topic: topic, data: text });
+    };
+
+    let editState = props.editState;
     return (
         <View style={[styles.bottomLine, styles.userData]}>
-            <Text style={[styles.textComponentStyle, editState ? styles.editable : styles.textComponentStyle]}>{props.topicData}</Text>
-            <TextInput style={[styles.textComponentStyle, editState ? styles.editable : styles.textComponentStyle]} editable={editState}>
-                {props.data}
+            <Text
+                style={[
+                    styles.textComponentStyle,
+                    editState ? styles.editable : styles.textComponentStyle,
+                ]}
+            >
+                {topic}
+            </Text>
+            <TextInput
+                style={[
+                    styles.textComponentStyle,
+                    editState ? styles.editable : styles.textComponentStyle,
+                ]}
+                editable={editState}
+                onChangeText={changeDataHandler}
+            >
+                {data}
             </TextInput>
         </View>
     );
@@ -32,5 +53,5 @@ const styles = StyleSheet.create({
     },
     editable: {
         color: "black",
-    }
-})
+    },
+});
