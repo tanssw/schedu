@@ -4,10 +4,6 @@ require('dotenv').config({ path: './.env' })
 const express = require('express')
 const morgan = require('morgan')
 
-// Firebase
-const { initializeApp } = require('firebase/app')
-const firebaseConfig = require('./secrets/firebaseConfig')
-
 // Routers
 const account = require("./routers/account")
 const appointment = require("./routers/appointment")
@@ -21,9 +17,6 @@ const event = require("./routers/event")
 const notification = require("./routers/notification")
 
 const PORT = process.env.PORT
-
-// Initialize Firebase Application
-initializeApp(firebaseConfig)
 
 // Initialize Express Application
 const app = express()

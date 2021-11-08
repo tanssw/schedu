@@ -19,14 +19,14 @@ export default function App() {
 
     const signInWithGoogleAsync = async () => {
         try {
-            const result = await Google.logInAsync({
+            const googleResult = await Google.logInAsync({
                 iosClientId: Constants.manifest.extra.iosClientId,
                 scopes: ['profile', 'email']
             })
-            if (result.type === 'success') {
-                setUserData(result.user)
-                const user = await axios.post(`${API_SERVER_DOMAIN}/user/auth`, result.user)
-                console.log(user)
+            if (googleResult.type === 'success') {
+                setUserData(googleResult.user)
+                const authResult = await axios.post(`${API_SERVER_DOMAIN}/account/auth`, googleResult)
+                console.log(authResult.data)
             }
         } catch (error) {
             console.log(error)
