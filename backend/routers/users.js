@@ -1,23 +1,30 @@
 const express = require('express')
 
-const usersSchema = require('../Schema/usersSchema')
-var conn = require('../config/connectionMongoDB/ScheduConnect')
+const { getAuth, signInWithCustomToken } = require('firebase/auth')
 
-const router = express()
+const usersSchema = require('../schema/usersSchema')
+const conn = require('../config/connectionMongoDB/ScheduConnect')
+const { isAllowEmailDomain } = require('../validators/authValidator')
 
 const userModel = conn.model('users', usersSchema, process.env.USERS_COLLECTION)
+
+const router = express()
 
 router.post('/auth', (req, res) => {
     const authData = req.body
 
-    console.log(authData)
+    console.log(authData) // TODO: Remove
 
+    const emailDomain = authData.email.split('@')[1]
+    if (!isAllowEmailDomain(emailDomain)) res.status(400).json({message: 'This Google Account has no permission to use the system.'})
 
+    const auth = getAuth()
+    signInWithCustomToken()
 
     res.json({'message': 'received!'})
 })
 
-/* -------------------------- NOT USING YET -------------------------- */
+/* -------------------------- INACTIVE ROUTES -------------------------- */
 
 // Get all users in mongoDB
 router.get('/all', async(req, res) =>{

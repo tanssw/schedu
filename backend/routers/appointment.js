@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
-const appointmentSchema = require('../Schema/appointmentSchema')
+const appointmentSchema = require('../schema/appointmentSchema')
 var conn = require('../config/connectionMongoDB/ScheduConnect')
 
 const router = express()

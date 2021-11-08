@@ -25,7 +25,7 @@ export default function App() {
             })
             if (result.type === 'success') {
                 setUserData(result.user)
-                const user = await axios.post(`${API_SERVER_DOMAIN}/user/auth`, result)
+                const user = await axios.post(`${API_SERVER_DOMAIN}/user/auth`, result.user)
                 console.log(user)
             }
         } catch (error) {

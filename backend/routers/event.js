@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose')
-const eventSchema = require('../Schema/eventSchema')
+const eventSchema = require('../schema/eventSchema')
 var conn = require('../config/connectionMongoDB/IT_CalendarConnect')
 const router = express();
 
