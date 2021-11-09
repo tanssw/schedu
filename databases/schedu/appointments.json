@@ -1,26 +1,68 @@
 [{
   "_id": {
-    "$oid": "617ad92e233ec5b2b2570d5d"
+    "$oid": "618630574265b7a00daf5f81"
   },
-  "subject": "นัดสอบถามเกี่ยวกับโปรเจค",
-  "sender": "62070000",
-  "receiver": "62070077",
-  "participants": "62070074",
-  "comm_method": "google meet",
-  "comm_url": "meet.loukhin.com",
-  "note": ""
+  "subject": "Potato Meeting",
+  "sender": "62070074",
+  "participants": [
+    {
+      "businessId": "62070077",
+      "main": true,
+      "confirmed": false,
+      "_id": {
+        "$oid": "618630574265b7a00daf5f82"
+      }
+    },
+    {
+      "businessId": "62070184",
+      "main": false,
+      "confirmed": false,
+      "_id": {
+        "$oid": "618630574265b7a00daf5f83"
+      }
+    }
+  ],
+  "startAt": {
+    "$date": "2021-04-23T02:00:00Z"
+  },
+  "endAt": {
+    "$date": "2021-04-23T02:15:00Z"
+  },
+  "commMethod": "meet",
+  "commUrl": "",
+  "note": "Hello there! Welcome to the potato meeting.",
+  "__v": 0
 },{
   "_id": {
-    "$oid": "617fb46c396613a9e99b86ad"
+    "$oid": "6186723f1ea86dd633a6a2a6"
   },
-  "subject": "นัดปรึกษาโปรเจคในบทที่ 2",
-  "sender": "62070077",
-  "receiver": "62070074",
+  "subject": "Tst Mettneg",
+  "sender": "62070074",
   "participants": [
-    "62070184",
-    "62070101"
+    {
+      "businessId": "62070077",
+      "main": true,
+      "confirmed": false,
+      "_id": {
+        "$oid": "6186723f1ea86dd633a6a2a7"
+      }
+    },
+    {
+      "businessId": "62070184",
+      "main": false,
+      "confirmed": false,
+      "_id": {
+        "$oid": "6186723f1ea86dd633a6a2a8"
+      }
+    }
   ],
-  "comm_method": "Microsoft Teams",
-  "comm_url": "",
-  "note": ""
+  "startAt": {
+    "$date": "2021-11-06T02:00:00Z"
+  },
+  "endAt": {
+    "$date": "2021-11-06T02:30:00Z"
+  },
+  "commMethod": "face",
+  "note": "Asdasd",
+  "__v": 0
 }]

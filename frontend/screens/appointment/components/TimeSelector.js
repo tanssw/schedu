@@ -1,17 +1,59 @@
-import React from 'react'
+import React, { useImperativeHandle, forwardRef, useState } from 'react'
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { Feather }  from '@expo/vector-icons'
 import { Picker } from 'react-native-woodpicker'
 
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+
 import { shadow } from '../../../styles'
 
-export default function TimeSelector() {
+dayjs.extend(utc)
+
+function TimeSelector(props, ref) {
+
+    // Component's States
+    const [start, setStart] = useState(null)
+    const [end, setEnd] = useState(null)
+
+    useImperativeHandle(ref, () => ({
+        resetChildState() { resetState() }
+    }), [])
+
+    // FUNCTION: to reset all form state
+    const resetState = () => {
+        setStart()
+        setEnd()
+    }
+
+    // FUNCTION: to format the time into JS time string
+    const formatTime = (time) => {
+        const current = dayjs().format('YYYY-MM-DD')
+        const formatted = dayjs(`${current} ${time}`, 'YYYY-MM-DD HH:mm').utcOffset(7).format()
+        return formatted
+    }
+
+    // FUNCTION: to handle the changing of starting time
+    const handleStartChange = (value) => {
+        setStart(value)
+        const time = formatTime(value.value)
+        props.onStartChange(time)
+    }
+
+    // FUNCTION: to handle the changing of ending time
+    const handleEndChange = (value) => {
+        setEnd(value)
+        const time = formatTime(value.value)
+        props.onEndChange(time)
+    }
+
     return (
         <View style={styles.timeSelectorContainer}>
             <View style={[styles.timeSelector, shadow.boxBottomSmall]}>
                 <View style={styles.pickerContainer}>
                     <Picker
-                        onItemChange={(value) => console.log(value)}
+                        onItemChange={handleStartChange}
+                        item={start}
                         items={[
                             {label: '09:00', value: '09:00'},
                             {label: '09:15', value: '09:15'},
@@ -20,8 +62,8 @@ export default function TimeSelector() {
                             {label: '10:00', value: '10:00'}
                         ]}
                         title="Start Time"
-                        placeholder="Select Start Time"
-                        isNullable={false}
+                        placeholder="Start"
+                        isNullable={true}
                         style={styles.picker}
                     />
                 </View>
@@ -30,7 +72,8 @@ export default function TimeSelector() {
             <View style={[styles.timeSelector, shadow.boxBottomSmall]}>
                 <View style={styles.pickerContainer}>
                     <Picker
-                        onItemChange={(value) => console.log(value)}
+                        onItemChange={handleEndChange}
+                        item={end}
                         items={[
                             {label: '09:00', value: '09:00'},
                             {label: '09:15', value: '09:15'},
@@ -39,8 +82,8 @@ export default function TimeSelector() {
                             {label: '10:00', value: '10:00'}
                         ]}
                         title="End Time"
-                        placeholder="Select End Time"
-                        isNullable={false}
+                        placeholder="End"
+                        isNullable={true}
                         style={styles.picker}
                     />
                 </View>
@@ -49,6 +92,8 @@ export default function TimeSelector() {
         </View>
     )
 }
+
+export default forwardRef(TimeSelector)
 
 const styles = StyleSheet.create({
     timeSelectorContainer: {
