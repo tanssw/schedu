@@ -1,6 +1,6 @@
-const userSchema = require('../schema/accountSchema')
+const accountSchema = require('../schema/accountSchema')
 const conn = require('../config/connectionMongoDB/ScheduConnect')
-const userModel = conn.model('users', userSchema, process.env.USERS_COLLECTION)
+const accountModel = conn.model('accounts', accountSchema, process.env.ACCOUNTS_COLLECTION)
 
 DEFAULT_START_AT = '08:30'
 DEFAULT_END_AT = '16:30'
@@ -35,7 +35,7 @@ const createNewUser = async (data) => {
         }
     }
 
-    const user = new userModel(document)
+    const user = new accountModel(document)
     try {
         const result = await user.save()
         return result
@@ -48,7 +48,7 @@ const createNewUser = async (data) => {
 // Check if google id is already exist in the collection
 const getUserByGoogleId = async (googleId) => {
     try {
-        const user = await userModel.findOne({googleId: googleId})
+        const user = await accountModel.findOne({googleId: googleId})
         return user
     } catch (error) {
         console.log(`Error occured in isUserExist() of userDatabase.js`)
