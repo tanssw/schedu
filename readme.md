@@ -16,7 +16,7 @@ MEASUREMENT_ID=
 // Get it from .plist in Firebase Project. Can download from Firebase Website
 IOS_CLIENT_ID=
 
-// Hostname and Port of your backend server.
+// Hostname and Port of your backend server. (Example: http://localhost:3000) <= No '/' at the end
 API_SERVER_DOMAIN=
 ```
 **.plist File with IOS_CLIENT_ID inside.**
