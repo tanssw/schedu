@@ -61,7 +61,7 @@ export default function ContactHistoryScreen() {
 
     return (
     <View style={styles.ContactTab}>
-      <Text style={{ fontSize: 20, fontWeight: "bold" }}>History</Text>
+      <Text style={{ fontSize: 20, fontWeight: "bold" }}>Favorite</Text>
       <View style={styles.listContainer}>
           {participants.map(({id, firstname, lastname, role}) => (
               <View style={styles.listItem} key={id}>

@@ -10,7 +10,7 @@ import {
   } from "@expo/vector-icons";
 
 
-export default function SearchTab(props){
+export default function SearchTab(props) {
     const navigation = useNavigation()
 
     return(
@@ -34,7 +34,7 @@ export default function SearchTab(props){
         size={24} 
         color="white" />
           </TouchableOpacity> */}
-        <TouchableOpacity onPress={() => navigation.navigate("ContactHistory")}>
+        <TouchableOpacity onPress={() => {navigation.navigate("ContactHistory")}}>
           <Fontisto
             style={styles.iconHistory}
             name="history"
@@ -42,14 +42,19 @@ export default function SearchTab(props){
             color="white"
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={test}>
-        <AntDesign style={styles.iconStart} name="star" size={24} color="#ffcc00" />
+        <TouchableOpacity onPress={() => navigation.navigate("ContactFavorite")}>
+        <FontAwesome 
+        style={styles.iconStart}
+        name="star" 
+        size={24} 
+        color="orange" />
         </TouchableOpacity>
       </View>
       </SafeAreaView>
     )
     function test() {
-        props.alertWord
+        // props.alertWord
+        alert("test")
       }
 }
 const styles = StyleSheet.create({
@@ -80,7 +85,7 @@ const styles = StyleSheet.create({
         // marginLeft: 5,
         // marginTop: 16,
         padding: 5,
-        paddingTop: 8
+        paddingTop: 9
       },
       iconSearch: {
         width: 30,

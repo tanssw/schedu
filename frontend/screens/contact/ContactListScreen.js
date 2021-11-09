@@ -100,7 +100,7 @@ export default function ContactListScreen() {
     }
     const closeUpper = () =>{
         updateToggleSuggest(1)
-        // updateToggleQuery(1)
+        updateToggleQuery(1)
     }
   
   return (
