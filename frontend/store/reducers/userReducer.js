@@ -2,7 +2,7 @@ import { SIGN_IN, UPDATE_DATA, TOGGLE_SETTING } from "../actions/userAction"
 
 const initialState = {
     userData: {
-        bussinessId: "62070077",
+        businessId: "62070077",
         firstName: "นายธนกานต์",
         lastName: "บุญมา",
         role: "student",
