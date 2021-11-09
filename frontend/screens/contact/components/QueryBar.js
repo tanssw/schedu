@@ -32,7 +32,7 @@ export default function QueryBar(props){
     )
     function all() {
         // alert("all");
-        props.query()
+        props.all()
       }
     function professor() {
         props.professor

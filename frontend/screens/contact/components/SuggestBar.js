@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet,Text,View, FlatList} from "react-native";
+import { StyleSheet,Text,View, FlatList, TouchableOpacity} from "react-native";
 import {FontAwesome,} from "@expo/vector-icons";
+import { useNavigation } from '@react-navigation/native';
 
 export default function SuggestBar(){
+    const navigation = useNavigation()
     const [participants, updateParticipants] = useState([
         {
           id: 1,
@@ -57,6 +59,7 @@ export default function SuggestBar(){
 
       const renderParticipant = ({ item }) => {
         return (
+          <TouchableOpacity onPress={() => {navigation.navigate("ContactProfile")}}>
           <View>
             <FontAwesome
               name="user-circle-o"
@@ -66,6 +69,7 @@ export default function SuggestBar(){
             />
             <Text style={styles.personName}>{item.firstname}</Text>
           </View>
+          </TouchableOpacity>
         );
       };
 

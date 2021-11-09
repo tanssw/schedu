@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet,Text,View,TextInput,FlatList,TouchableOpacity} from "react-native";
+import { useNavigation } from '@react-navigation/native';
 
 import {
   FontAwesome,
@@ -9,6 +10,7 @@ import {
 export default function ContactTab(props){
 
     const [headerText, updateHeaderText] = useState("Contact")
+    const navigation = useNavigation()
 
 
     return(
@@ -16,6 +18,7 @@ export default function ContactTab(props){
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>{props.headerText}</Text>
       <View style={styles.listContainer}>
           {props.participants.map(({bussiness_id, firstName, lastName, role}) => (
+             <TouchableOpacity onPress={() => {navigation.navigate("ContactProfile")}}>
               <View style={styles.listItem} key={bussiness_id}>
               <FontAwesome 
                 name="user-circle-o"
@@ -28,6 +31,7 @@ export default function ContactTab(props){
               <Text style={[styles.personRole]}>{role}</Text>
               </View>
             </View>
+            </TouchableOpacity>
           ))}
           
         </View>

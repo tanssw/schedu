@@ -25,7 +25,7 @@ export default function ContactNavigator() {
             <ContactStack.Screen options={{headerShown: false}} name="ContactList" component={ContactListScreen}/>
             <ContactStack.Screen name="ContactHistory" component={ContactHistoryScreen} />
             <ContactStack.Screen name="ContactFavorite" component={ContactFavorite} />
-            <ContactStack.Screen options={{headerShown: false}} name="ContactProfile" component={ContactProfileScreen} />
+            <ContactStack.Screen name="ContactProfile" component={ContactProfileScreen} />
             <ContactStack.Screen options={{headerShown: false}} name="CreateAppointment" component={AppointmentEditorScreen} options={options.createAppointment} />
         </ContactStack.Navigator>
     )
