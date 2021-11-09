@@ -1,6 +1,6 @@
 const express = require('express')
 
-const notificationSchema = require('../Schema/notificationSchema')
+const notificationSchema = require('../schema/notificationSchema')
 var conn = require('../config/connectionMongoDB/ScheduConnect')
 
 const router = express()
