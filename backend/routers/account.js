@@ -6,7 +6,7 @@ const conn = require('../config/connectionMongoDB/ScheduConnect')
 
 const { isAllowEmailDomain } = require('../validators/authValidator')
 const { getTokenData } = require('../helpers/googleApis')
-const { createNewUser } = require('../helpers/userDatabase')
+const { createNewUser, getUserByGoogleId } = require('../helpers/userDatabase')
 
 const userModel = conn.model('users', usersSchema, process.env.USERS_COLLECTION)
 
@@ -22,16 +22,14 @@ router.post('/auth', async (req, res) => {
     try {
         const tokenData = await getTokenData(authData.accessToken)
 
-        // If user id in token data not match with requested one, then reject it.
+        // If user id in token data not match with requested one, then reject it
         if (tokenData.user_id !== authData.user.id) res.status(400).send({error: 'Authentication ID not match.'})
 
-        // TODO: If not user inside the collection then create one.
-        const user = await createNewUser(authData.user)
-        console.log(user)
+        // If not user inside the collection then create one and response back the user data
+        let user = await getUserByGoogleId(authData.user.id)
+        if (user == null) user = await createNewUser(authData.user)
+        res.json({user: user})
 
-        // TODO: Get user data from the database and response back to user.
-
-        res.json({user: 'asdasdasd'})
     } catch (error) {
         console.log(error)
         res.status(400).send({error: 'Authentication Error'})

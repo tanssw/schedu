@@ -46,6 +46,18 @@ const createNewUser = async (data) => {
     }
 }
 
+// Check if google id is already exist in the collection
+const getUserByGoogleId = async (googleId) => {
+    try {
+        const user = await userModel.findOne({googleId: googleId})
+        return user
+    } catch (error) {
+        console.log(`Error occured in isUserExist() of userDatabase.js`)
+        throw error
+    }
+}
+
 module.exports = {
-    createNewUser
+    createNewUser,
+    getUserByGoogleId
 }
