@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
-const usersSchema = new Schema({
+
+const accountSchema = new Schema({
     googleId: String,
     businessId: String,
     firstName: String,
@@ -21,4 +22,4 @@ const usersSchema = new Schema({
     }
 })
 
-module.exports = usersSchema
+module.exports = accountSchema

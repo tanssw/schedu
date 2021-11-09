@@ -1,13 +1,14 @@
 const express = require('express')
 
-const usersSchema = require('../schema/userSchema')
+const accountSchema = require('../schema/accountSchema')
 const conn = require('../config/connectionMongoDB/ScheduConnect')
 
 const { isAllowEmailDomain } = require('../validators/authValidator')
 const { getTokenData } = require('../helpers/googleApis')
-const { createNewUser, getUserByGoogleId } = require('../helpers/userDatabase')
+const { createNewUser, getUserByGoogleId } = require('../helpers/account')
+const { generateAuthToken } = require('../helpers/auth')
 
-const userModel = conn.model('users', usersSchema, process.env.USERS_COLLECTION)
+const userModel = conn.model('accounts', accountSchema, process.env.ACCOUNTS_COLLECTION)
 
 const router = express()
 
@@ -16,7 +17,7 @@ router.post('/auth', async (req, res) => {
     const authData = req.body
     const emailDomain = authData.user.email.split('@')[1]
 
-    if (!isAllowEmailDomain(emailDomain)) res.status(400)
+    if (!isAllowEmailDomain(emailDomain)) res.status(400).send({error: 'This account has no permission to perform the authentication.'})
 
     try {
         const tokenData = await getTokenData(authData.accessToken)
@@ -27,6 +28,8 @@ router.post('/auth', async (req, res) => {
         // If not user inside the collection then create one and response back the user data
         let user = await getUserByGoogleId(authData.user.id)
         if (user == null) user = await createNewUser(authData.user)
+
+        generateAuthToken()
 
         res.json({user: user, token: ''})
 

@@ -1,6 +1,6 @@
-const usersSchema = require('../schema/userSchema')
+const userSchema = require('../schema/accountSchema')
 const conn = require('../config/connectionMongoDB/ScheduConnect')
-const userModel = conn.model('users', usersSchema, process.env.USERS_COLLECTION)
+const userModel = conn.model('users', userSchema, process.env.USERS_COLLECTION)
 
 DEFAULT_START_AT = '08:30'
 DEFAULT_END_AT = '16:30'
