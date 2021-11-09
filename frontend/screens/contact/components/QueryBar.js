@@ -32,16 +32,16 @@ export default function QueryBar(props){
     )
     function all() {
         // alert("all");
-        props.query("all")
+        props.query()
       }
     function professor() {
-        alert("Professor");
+        props.professor
     }
     function officer(){
-        alert("Officer")
+        props.officer
     }
     function student(){
-        alert("Student")
+        props.student
     }
 }
 const styles = StyleSheet.create({

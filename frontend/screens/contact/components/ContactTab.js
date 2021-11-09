@@ -15,8 +15,8 @@ export default function ContactTab(props){
       <View style={styles.ContactTab}>
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>{props.headerText}</Text>
       <View style={styles.listContainer}>
-          {props.participants.map(({id, firstname, lastname, role}) => (
-              <View style={styles.listItem} key={id}>
+          {props.participants.map(({bussiness_id, firstName, lastName, role}) => (
+              <View style={styles.listItem} key={bussiness_id}>
               <FontAwesome 
                 name="user-circle-o"
                 size={44}
@@ -24,7 +24,7 @@ export default function ContactTab(props){
                 style={styles.personImage}
               />
               <View>
-              <Text style={[styles.personName, styles.flex = 1]}>{firstname}  {lastname}</Text>
+              <Text style={[styles.personName, styles.flex = 1]}>{firstName}  {lastName}</Text>
               <Text style={[styles.personRole]}>{role}</Text>
               </View>
             </View>
