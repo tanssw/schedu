@@ -1,11 +1,11 @@
-import React, { useState } from "react"
-import { Text, View, StyleSheet, TextInput } from "react-native"
+import React, { useState } from 'react'
+import { Text, View, StyleSheet, TextInput } from 'react-native'
 
 export default function UserData(props) {
     const [topic, setTopic] = useState(props.topicData)
     const [data, setdata] = useState(props.data)
 
-    const changeDataHandler = (text) => {
+    const changeDataHandler = text => {
         props.update({ topic: topic, data: text })
     }
 
@@ -15,7 +15,7 @@ export default function UserData(props) {
             <Text
                 style={[
                     styles.textComponentStyle,
-                    editState ? styles.editable : styles.textComponentStyle,
+                    editState ? styles.editable : styles.textComponentStyle
                 ]}
             >
                 {topic}
@@ -23,7 +23,7 @@ export default function UserData(props) {
             <TextInput
                 style={[
                     styles.textComponentStyle,
-                    editState ? styles.editable : styles.textComponentStyle,
+                    editState ? styles.editable : styles.textComponentStyle
                 ]}
                 editable={editState}
                 onChangeText={changeDataHandler}
@@ -40,18 +40,18 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         marginTop: 10,
 
-        flexDirection: "row",
-        justifyContent: "space-between",
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     bottomLine: {
         borderBottomWidth: 1,
-        borderColor: "#cccccc",
+        borderColor: '#cccccc'
     },
     textComponentStyle: {
         fontSize: 15,
-        color: "#555",
+        color: '#555'
     },
     editable: {
-        color: "black",
-    },
+        color: 'black'
+    }
 })
