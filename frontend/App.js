@@ -4,10 +4,10 @@ import Constants from 'expo-constants'
 import * as SecureStore from 'expo-secure-store'
 
 import * as Google from 'expo-google-app-auth'
+import axios from 'axios'
 
 import Navigator from './navigators/MainNavigator'
 import SignInScreen from './screens/account/SignInScreen'
-import axios from 'axios'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 const AUTH_TOKEN_KEY = 'authtoken'
@@ -19,6 +19,14 @@ export default function App() {
 
     const [userData, setUserData] = useState(null)
 
+    useEffect(async () => {
+        // Get authentication token from Secure Store
+        const tokenResult = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
+        if (!tokenResult) return
+
+        await axios.post(`${API_SERVER_DOMAIN}/auth/token`)
+    })
+
     const signInWithGoogleAsync = async () => {
         try {
             const googleResult = await Google.logInAsync({
@@ -26,11 +34,13 @@ export default function App() {
                 scopes: ['profile', 'email']
             })
             if (googleResult.type === 'success') {
-                const authResult = await axios.post(`${API_SERVER_DOMAIN}/account/auth`, googleResult)
+                const authResult = await axios.post(`${API_SERVER_DOMAIN}/auth`, googleResult)
                 const user = authResult.data.user
                 setUserData(user)
 
-                // await SecureStore.setItemAsync(AUTH_TOKEN_KEY, )
+                const token = authResult.data.token
+                console.log(token)
+                await SecureStore.setItemAsync(AUTH_TOKEN_KEY, token)
             }
         } catch (error) {
             console.log("Authentication Error")
