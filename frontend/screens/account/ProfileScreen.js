@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
-import { Text, View, StyleSheet, Image, TextInput } from "react-native";
+import React from "react"
+import { Text, View, StyleSheet, Image } from "react-native"
 
 // Redux
-import { useSelector } from "react-redux";
+import { useSelector } from "react-redux"
 
 // style by tanssw.com
-import { shadow } from "../../styles";
+import { shadow } from "../../styles"
 
 // import components
-import UserData from "./components/UserData";
+import UserData from "./components/UserData"
 
-export default function ProfileScreen({ route, navigation }) {
-    const userData = useSelector((state) => state.user.userData);
+export default function ProfileScreen() {
+    const userData = useSelector((state) => state.user.userData)
 
     return (
         <View style={styles.container}>
@@ -27,9 +27,13 @@ export default function ProfileScreen({ route, navigation }) {
                     <UserData
                         topicData={"Name"}
                         data={userData.firstName + " " + userData.lastName}
-                        edit={route.params.editState}
+                        edit={false}
                     />
-                    <UserData topicData={"Role"} data={userData.role} />
+                    <UserData
+                        topicData={"Role"}
+                        data={userData.role}
+                        edit={false}
+                    />
                 </View>
 
                 <View style={styles.dataBlock}>
@@ -37,15 +41,17 @@ export default function ProfileScreen({ route, navigation }) {
                     <UserData
                         topicData={"Email"}
                         data={userData.contact.email}
+                        edit={false}
                     />
                     <UserData
                         topicData={"Phone number"}
                         data={userData.contact.tel}
+                        edit={false}
                     />
                 </View>
             </View>
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -77,4 +83,4 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#000",
     },
-});
+})

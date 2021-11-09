@@ -1,23 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from "react"
 
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
+import { NavigationContainer } from "@react-navigation/native"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { AntDesign, Ionicons, Feather } from "@expo/vector-icons"
 
-import HomeScreen from "../screens/home/HomeScreen";
-import CalendarOverviewScreen from "../screens/calendar/CalendarOverviewScreen";
-import NotificiationCenterScreen from "../screens/notification/NotificationCenterScreen";
-import AccountMenuScreen from "../screens/account/AccountMenuScreen";
+import HomeScreen from "../screens/home/HomeScreen"
+import CalendarOverviewScreen from "../screens/calendar/CalendarOverviewScreen"
+import NotificiationCenterScreen from "../screens/notification/NotificationCenterScreen"
+import AccountMenuScreen from "../screens/account/AccountMenuScreen"
 
-import ContactNavigator from "./ContactNavigator";
-import CalendarNavigator from "./CalendarNavigator";
-import AccountNavigator from "./AccountNavigator";
+import ContactNavigator from "./ContactNavigator"
+import CalendarNavigator from "./CalendarNavigator"
+import AccountNavigator from "./AccountNavigator"
 
 // Redux
-import { useDispatch } from "react-redux";
-import { signIn } from "../store/actions/userAction";
+import { useDispatch } from "react-redux"
+import { signIn } from "../store/actions/userAction"
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator()
 
 const options = {
     navigator: {
@@ -56,7 +56,7 @@ const options = {
         ),
         headerShown: false,
     },
-};
+}
 
 export default function MainNavigator(props) {
     // const signInHandler = () => {
@@ -70,7 +70,7 @@ export default function MainNavigator(props) {
     // useEffect(() => {
     //     dispatch(signIn(props.userData));
     // });
-    
+
     return (
         <NavigationContainer>
             <Tab.Navigator screenOptions={({ route }) => options.navigator}>
@@ -101,5 +101,5 @@ export default function MainNavigator(props) {
                 />
             </Tab.Navigator>
         </NavigationContainer>
-    );
+    )
 }

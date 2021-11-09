@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react"
 
-import { StyleSheet, Image, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Image, Text, View, TouchableOpacity } from "react-native"
 
 // Redux
-import { useSelector } from "react-redux";
+import { useSelector } from "react-redux"
 
 // style by tanssw.com
-import { text, shadow } from "../../styles";
+import { text, shadow } from "../../styles"
 
 export default function AccountMenuScreen({ navigation }) {
-    const userData = useSelector((state) => state.user.userData);
+    const userData = useSelector((state) => state.user.userData)
 
     return (
         <View style={styles.container}>
@@ -49,14 +49,14 @@ export default function AccountMenuScreen({ navigation }) {
                 <TouchableOpacity
                     style={[styles.signOutBtn]}
                     onPress={() => {
-                        console.log("Sign out");
+                        console.log("Sign out")
                     }}
                 >
                     <Text style={styles.signOutBtnText}>Sign Out</Text>
                 </TouchableOpacity>
             </View>
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -113,4 +113,4 @@ const styles = StyleSheet.create({
         borderColor: "red",
         alignItems: "center",
     },
-});
+})

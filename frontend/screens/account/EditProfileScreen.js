@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
     Text,
     View,
@@ -6,41 +6,40 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-} from "react-native";
+} from "react-native"
 
 // Redux
-import { useSelector, useDispatch } from "react-redux";
-import { updateData } from "./../../store/actions/userAction";
+import { useSelector, useDispatch } from "react-redux"
+import { updateData } from "./../../store/actions/userAction"
 
 // style by tanssw.com
-import { text, shadow } from "../../styles";
+import { text, shadow } from "../../styles"
 
 // import components
-import UserData from "./components/UserData";
+import UserData from "./components/UserData"
 
 export default function ProfileScreen({ navigation }) {
-    const userData = useSelector((state) => state.user.userData);
+    const userData = useSelector((state) => state.user.userData)
 
-    const [newFirstName, setNewFirstName] = useState(userData.firstName);
-    const [newLastName, setNewLastName] = useState(userData.lastName);
-    const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel);
+    const [newFirstName, setNewFirstName] = useState(userData.firstName)
+    const [newLastName, setNewLastName] = useState(userData.lastName)
+    const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel)
 
     const updateDataHandler = (data) => {
         switch (data.topic) {
             case "First name":
-                setNewFirstName(data.data);
-                break;
+                setNewFirstName(data.data)
+                break
             case "Last name":
-                setNewLastName(data.data);
-                break;
+                setNewLastName(data.data)
+                break
             case "Phone number":
-                setNewPhoneNumber(data.data);
-                break;
+                setNewPhoneNumber(data.data)
+                break
         }
-        console.log(data);
-    };
+    }
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
     const update = () => {
         dispatch(
@@ -49,15 +48,11 @@ export default function ProfileScreen({ navigation }) {
                 lastName: newLastName,
                 tel: newPhoneNumber,
             })
-        );
+        )
 
-        alert("Profile Updated");
-        navigation.navigate("AccountMenuScreen");
-    };
-
-    // const updateDataWithApi = () => {
-
-    // }
+        alert("Profile Updated")
+        navigation.navigate("Profile", {})
+    }
 
     return (
         <ScrollView nestedScrollEnabled>
@@ -76,20 +71,20 @@ export default function ProfileScreen({ navigation }) {
                         <UserData
                             topicData={"First name"}
                             data={userData.firstName}
-                            editState={true}
+                            edit={true}
                             update={updateDataHandler}
                         />
                         <UserData
                             topicData={"Last name"}
                             data={userData.lastName}
-                            editState={true}
+                            edit={true}
                             update={updateDataHandler}
                         />
 
                         <UserData
                             topicData={"Role"}
                             data={userData.role}
-                            editState={false}
+                            edit={false}
                         />
                     </View>
                     <View style={styles.dataBlock}>
@@ -97,12 +92,12 @@ export default function ProfileScreen({ navigation }) {
                         <UserData
                             topicData={"Email"}
                             data={userData.contact.email}
-                            editState={false}
+                            edit={false}
                         />
                         <UserData
                             topicData={"Phone number"}
                             data={newPhoneNumber}
-                            editState={true}
+                            edit={true}
                             update={updateDataHandler}
                         />
                     </View>
@@ -117,7 +112,7 @@ export default function ProfileScreen({ navigation }) {
                 </View>
             </View>
         </ScrollView>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -160,4 +155,4 @@ const styles = StyleSheet.create({
     updateBtnText: {
         fontWeight: "bold",
     },
-});
+})

@@ -2,7 +2,7 @@
   "_id": {
     "$oid": "617ace4e233ec5b2b2570d4f"
   },
-  "bussiness_id": "62070000",
+  "businessId": "62070000",
   "firstName": "Onion",
   "lastName": "shoulder",
   "role": "staff",
@@ -12,18 +12,18 @@
   },
   "image": "image.jpg",
   "setting": {
-    "display_tel": true,
-    "weekend_receive": true,
-    "active_time": {
-      "start_at": "8:30AM",
-      "end_at": "16:30AM"
+    "displayTel": true,
+    "weekendReceive": true,
+    "activeTime": {
+      "startAt": "8:30AM",
+      "endAt": "16:30AM"
     }
   }
 },{
   "_id": {
     "$oid": "617be0c164389e9709ea96b0"
   },
-  "bussiness_id": "62070077",
+  "businessId": "62070077",
   "firstName": "thanakan",
   "lastName": "boonma",
   "role": "student",
@@ -33,18 +33,18 @@
   },
   "image": "image.jpg",
   "setting": {
-    "display_tel": true,
-    "weekend_receive": true,
-    "active_time": {
-      "start_at": "8:30AM",
-      "end_at": "16:30AM"
+    "displayTel": true,
+    "weekendReceive": true,
+    "activeTime": {
+      "startAt": "8:30AM",
+      "endAt": "16:30AM"
     }
   }
 },{
   "_id": {
     "$oid": "617be0eb64389e9709ea96b1"
   },
-  "bussiness_id": "62070184",
+  "businessId": "62070184",
   "firstName": "Supakit",
   "lastName": "Khawmeewong",
   "role": "student",
@@ -54,18 +54,18 @@
   },
   "image": "image.jpg",
   "setting": {
-    "display_tel": true,
-    "weekend_receive": true,
-    "active_time": {
-      "start_at": "8:30AM",
-      "end_at": "16:30AM"
+    "displayTel": true,
+    "weekendReceive": true,
+    "activeTime": {
+      "startAt": "8:30AM",
+      "endAt": "16:30AM"
     }
   }
 },{
   "_id": {
     "$oid": "617be2d364389e9709ea96be"
   },
-  "bussiness_id": "62070074",
+  "businessId": "62070074",
   "firstName": "Tasanai",
   "lastName": "Srisawat",
   "role": "teacher",
@@ -75,18 +75,18 @@
   },
   "image": "image.jpg",
   "setting": {
-    "display_tel": true,
-    "weekend_receive": true,
-    "active_time": {
-      "start_at": "8:30AM",
-      "end_at": "16:30AM"
+    "displayTel": true,
+    "weekendReceive": true,
+    "activeTime": {
+      "startAt": "8:30AM",
+      "endAt": "16:30AM"
     }
   }
 },{
   "_id": {
     "$oid": "617fb3f0396613a9e99b86a8"
   },
-  "bussiness_id": "62070101",
+  "businessId": "62070101",
   "firstName": "Nopphadon",
   "lastName": "Phanwong",
   "role": "student",
@@ -96,11 +96,11 @@
   },
   "image": "image.jpg",
   "setting": {
-    "display_tel": true,
-    "weekend_receive": true,
-    "active_time": {
-      "start_at": "8:30AM",
-      "end_at": "16:30AM"
+    "displayTel": true,
+    "weekendReceive": true,
+    "activeTime": {
+      "startAt": "8:30AM",
+      "endAt": "16:30AM"
     }
   }
 }]

@@ -1,40 +1,49 @@
-import React from "react";
-import { Text, View, StyleSheet, Switch } from "react-native";
+import React from "react"
+import { Text, View, StyleSheet } from "react-native"
+
+// Redux
+import { useSelector } from "react-redux"
 
 // import components
-import SettingData from "./components/SettingData";
+import SettingData from "./components/SettingData"
 
-export default function SettingScreen({ route, navigation }) {
+export default function SettingScreen() {
+    const settings = useSelector((state) => state.user.userData.setting)
+
     return (
         <View style={styles.container}>
             <View style={styles.dataBlock}>
                 <Text style={styles.settingMenu}>Calendar</Text>
                 <SettingData
                     topicData={"Active time"}
-                    data={"08:30 AM - 04:30 PM"}
-                    type={"date"}
+                    data={
+                        settings.activeTime.startAt +
+                        " - " +
+                        settings.activeTime.endAt
+                    }
+                    type={"time"}
                 />
                 <SettingData
                     topicData={"Receive weekend appointment"}
-                    data={"false"}
+                    data={settings.weekendReceive}
                 />
             </View>
             <View style={styles.dataBlock}>
-                <Text style={styles.settingMenu}>Calendar</Text>
+                <Text style={styles.settingMenu}>Privacy</Text>
                 <SettingData
                     topicData={"Display phone number"}
-                    data={"false"}
+                    data={settings.displayTel}
                 />
             </View>
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 32,
-        backgroundColor: "white"
+        backgroundColor: "white",
     },
     settingMenu: {
         fontWeight: "bold",
@@ -43,4 +52,4 @@ const styles = StyleSheet.create({
     dataBlock: {
         marginBottom: 20,
     },
-});
+})

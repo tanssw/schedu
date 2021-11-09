@@ -1,10 +1,7 @@
-import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from "react"
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 
-
-import { background, text } from '../../styles'
-
-
+import { background, text } from "../../styles"
 
 export default function SignInScreen(props) {
     return (
@@ -13,8 +10,13 @@ export default function SignInScreen(props) {
                 <Text style={[styles.appTitle, text.lighterBlue]}>Sch</Text>
                 <Text style={styles.appTitle}>edu</Text>
             </View>
-            <TouchableOpacity onPress={props.onSignIn} style={styles.buttonSignIn}>
-                <Text style={[styles.textSignIn ,text.lightBlue]}>Sign in with ITKMITL Account</Text>
+            <TouchableOpacity
+                onPress={props.onSignIn}
+                style={styles.buttonSignIn}
+            >
+                <Text style={[styles.textSignIn, text.lightBlue]}>
+                    Sign in with ITKMITL Account
+                </Text>
             </TouchableOpacity>
         </View>
     )
@@ -27,23 +29,23 @@ const styles = StyleSheet.create({
     },
     appTitleContainer: {
         flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
     },
     appTitle: {
         fontSize: 64,
-        fontWeight: '200',
-        color: 'white'
+        fontWeight: "200",
+        color: "white",
     },
     buttonSignIn: {
-        backgroundColor: 'white',
-        width: '100%',
+        backgroundColor: "white",
+        width: "100%",
         padding: 16,
         borderRadius: 16,
-        alignItems: 'center',
+        alignItems: "center",
     },
     textSignIn: {
-        fontSize: 16
-    }
+        fontSize: 16,
+    },
 })
