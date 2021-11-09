@@ -1,5 +1,4 @@
 const express = require('express')
-const axios = require('axios')
 
 const usersSchema = require('../schema/userSchema')
 const conn = require('../config/connectionMongoDB/ScheduConnect')
@@ -28,7 +27,8 @@ router.post('/auth', async (req, res) => {
         // If not user inside the collection then create one and response back the user data
         let user = await getUserByGoogleId(authData.user.id)
         if (user == null) user = await createNewUser(authData.user)
-        res.json({user: user})
+
+        res.json({user: user, token: ''})
 
     } catch (error) {
         console.log(error)

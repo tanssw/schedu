@@ -16,4 +16,4 @@ const appointmentSchema = new Schema({
     note: String
 })
 
-module.exports = appointmentSchema;
+module.exports = appointmentSchema

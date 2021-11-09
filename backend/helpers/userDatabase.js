@@ -11,7 +11,6 @@ const createNewUser = async (data) => {
     const emailAccount = data.email.split('@')[0]
 
     const isStudent = !isNaN(emailAccount)
-    console.log(isStudent, emailAccount)
     const businessId = isStudent ? emailAccount : ''
     const role = isStudent ? 'student' : 'teacher'
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { LogBox, StyleSheet, Text, View } from 'react-native'
 import Constants from 'expo-constants'
+import * as SecureStore from 'expo-secure-store'
 
 import * as Google from 'expo-google-app-auth'
 
@@ -9,6 +10,7 @@ import SignInScreen from './screens/account/SignInScreen'
 import axios from 'axios'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
+const AUTH_TOKEN_KEY = 'authtoken'
 
 // Disable Yellow box warning
 LogBox.ignoreLogs(['AsyncStorage'])
@@ -24,19 +26,20 @@ export default function App() {
                 scopes: ['profile', 'email']
             })
             if (googleResult.type === 'success') {
-                setUserData(googleResult.user)
                 const authResult = await axios.post(`${API_SERVER_DOMAIN}/account/auth`, googleResult)
-                console.log(authResult.data)
+                const user = authResult.data.user
+                setUserData(user)
+
+                // await SecureStore.setItemAsync(AUTH_TOKEN_KEY, )
             }
         } catch (error) {
-            console.log(error)
+            console.log("Authentication Error")
         }
     }
 
     return (
         <>
-            {/* TODO: Remove bypass */}
-            { false ? <Navigator /> : <SignInScreen onSignIn={signInWithGoogleAsync} /> }
+            { userData ? <Navigator /> : <SignInScreen onSignIn={signInWithGoogleAsync} /> }
         </>
     )
 }
