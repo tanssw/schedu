@@ -5,6 +5,7 @@ const express = require('express')
 const morgan = require('morgan')
 
 // Routers
+const auth = require('./routers/auth')
 const account = require("./routers/account")
 const appointment = require("./routers/appointment")
 
@@ -24,6 +25,7 @@ app.use(morgan('tiny'))
 app.use(express.json())
 
 // Active Routers
+app.use("/auth", auth)
 app.use("/appointment", appointment)
 app.use("/account", account)
 
