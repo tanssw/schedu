@@ -1,11 +1,12 @@
 const express = require('express')
 const axios = require('axios')
 
-const { isAllowEmailDomain } = require('../validators/authValidator')
-
 const usersSchema = require('../schema/userSchema')
 const conn = require('../config/connectionMongoDB/ScheduConnect')
+
+const { isAllowEmailDomain } = require('../validators/authValidator')
 const { getTokenData } = require('../helpers/googleApis')
+const { createNewUser } = require('../helpers/userDatabase')
 
 const userModel = conn.model('users', usersSchema, process.env.USERS_COLLECTION)
 
@@ -25,11 +26,12 @@ router.post('/auth', async (req, res) => {
         if (tokenData.user_id !== authData.user.id) res.status(400).send({error: 'Authentication ID not match.'})
 
         // TODO: If not user inside the collection then create one.
-
+        const user = await createNewUser(authData.user)
+        console.log(user)
 
         // TODO: Get user data from the database and response back to user.
 
-        res.json({user: 'test'})
+        res.json({user: 'asdasdasd'})
     } catch (error) {
         console.log(error)
         res.status(400).send({error: 'Authentication Error'})
