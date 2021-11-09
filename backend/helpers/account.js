@@ -40,7 +40,7 @@ const createNewUser = async (data) => {
         const result = await user.save()
         return result
     } catch (error) {
-        console.log(`Error occured in createNewUser() of userDatabase.js`)
+        console.log(`Error occured in createNewUser() of helper/user.js`)
         throw error
     }
 }
@@ -51,12 +51,24 @@ const getUserByGoogleId = async (googleId) => {
         const user = await accountModel.findOne({googleId: googleId})
         return user
     } catch (error) {
-        console.log(`Error occured in isUserExist() of userDatabase.js`)
+        console.log(`Error occured in getUserByGoogleId() of helper/user.js`)
+        throw error
+    }
+}
+
+// Get user data from its own object id
+const getUserByObjectId = async (objectId) => {
+    try {
+        const user = await accountModel.findOne({_id: objectId})
+        return user
+    } catch (error) {
+        console.log(`Error occured in getUserByObjectId() of helper/user.js`)
         throw error
     }
 }
 
 module.exports = {
     createNewUser,
-    getUserByGoogleId
+    getUserByGoogleId,
+    getUserByObjectId
 }

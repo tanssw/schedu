@@ -24,8 +24,16 @@ export default function App() {
         const tokenResult = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
         if (!tokenResult) return
 
-        await axios.post(`${API_SERVER_DOMAIN}/auth/token`)
-    })
+        const requestBody = {token: tokenResult}
+        try {
+            const authResult = await axios.post(`${API_SERVER_DOMAIN}/auth/token`, requestBody)
+            const user = authResult.data.user
+            setUserData(user)
+        } catch (error) {
+            // Clear stored token in Secure Store
+            await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY, {})
+        }
+    }, [])
 
     const signInWithGoogleAsync = async () => {
         try {
@@ -39,7 +47,6 @@ export default function App() {
                 setUserData(user)
 
                 const token = authResult.data.token
-                console.log(token)
                 await SecureStore.setItemAsync(AUTH_TOKEN_KEY, token)
             }
         } catch (error) {
