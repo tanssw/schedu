@@ -4,7 +4,7 @@ const eventSchema = require('../schema/eventSchema')
 var conn = require('../config/connectionMongoDB/IT_CalendarConnect')
 const router = express();
 
-const eventModel = conn.model('event' , eventSchema, 'event')
+const eventModel = conn.model('events' , eventSchema, process.env.EVENTS_COLLECTION)
 
 //Get all event in mongoDB
 router.get('/all', async(req, res) =>{
