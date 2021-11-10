@@ -17,62 +17,12 @@ export default function ContactListScreen() {
     useEffect(() => {
       getQueryAllPeople()
     }, []);
-    // const [participants, updateParticipants] = useState([
-    //     {
-    //       id: 1,
-    //       business_id: "62070101",
-    //       firstname: "Nopphadon",
-    //       lastname: "Phanwong",
-    //       role: "Student"
-    //     },
-    //     {
-    //       id: 2,
-    //       business_id: "62070074",
-    //       firstname: "Tasanai",
-    //       lastname: "Srisawat",
-    //       role: "Student"
-    //     },
-    //     {
-    //       id: 3,
-    //       business_id: "62070074",
-    //       firstname: "Tasanai",
-    //       lastname: "Srisawat",
-    //       role: "Student"
-    //     },
-    //     {
-    //       id: 4,
-    //       business_id: "62070074",
-    //       firstname: "Tasanai",
-    //       lastname: "Srisawat",
-    //       role: "Student"
-    //     },
-    //     {
-    //         id: 5,
-    //         business_id: "62070074",
-    //         firstname: "Tasanai",
-    //         lastname: "Srisawat",
-    //         role: "Student"
-    //       },
-    //       {
-    //         id: 6,
-    //         business_id: "62070074",
-    //         firstname: "Tasanai",
-    //         lastname: "Srisawat",
-    //         role: "Student"
-    //       },
-    //       {
-    //         id: 7,
-    //         business_id: "62070074",
-    //         firstname: "Tasanai",
-    //         lastname: "Srisawat",
-    //         role: "Student"
-    //       },
-    //   ]);
 
     const [toggleSuggest, updateToggleSuggest] = useState(0)
     const [toggleQuery, updateToggleQuery] = useState(0)
     const getSearch = () => {
-        alert(search)
+        const user = await axios.get(`http://localhost:3000/account/${search}`)
+        updateParticipants(user.data)
       };
       // All btn for query data
     const getQueryAllPeople = async () =>{
@@ -119,15 +69,22 @@ export default function ContactListScreen() {
         }
     }
     const closeUpper = () =>{
-        updateToggleSuggest(1)
-        updateToggleQuery(1)
+        if(search == ''){
+          updateToggleSuggest(0)
+          updateToggleQuery(0)
+        }
+        else{
+          updateToggleSuggest(1)
+          updateToggleQuery(1)
+        }
+        
     }
   
   return (
     <SafeAreaView>
     <ScrollView nestedScrollEnabled>
       {/* SearchBar tab*/}
-      <SearchBar searchWord={updateSearch} closeUpper={closeUpper} historyQuery={historyQuery} StarQuery={StarQuery} alertWord={getSearch}/>
+      <SearchBar searchWord={updateSearch} closeUpper={closeUpper} historyQuery={historyQuery} StarQuery={StarQuery} find={getSearch}/>
       {/* Suggested Bar */}
         {/* <SuggestBar/> */}
         {suggestDisplay()}

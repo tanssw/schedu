@@ -21,11 +21,11 @@ export default function SearchTab(props) {
         <TextInput
           style={styles.searchBar}
           placeholder="Search"
-          onChange={props.closeUpper}
+          onChange={props.closeUpper()}
           onChangeText={props.searchWord}
           keyboardType={'default'}
           multiline={false}
-          onSubmitEditing={props.alertWord}
+          onSubmitEditing={props.find}
         />
         {/* <TouchableOpacity onPress={props.alertWord}>
         <FontAwesome 

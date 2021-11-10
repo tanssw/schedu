@@ -11,14 +11,12 @@ export default function ContactTab(props){
 
     const [headerText, updateHeaderText] = useState("Contact")
     const navigation = useNavigation()
-
-
     return(
       <View style={styles.ContactTab}>
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>{props.headerText}</Text>
       <View style={styles.listContainer}>
           {props.participants.map(({businessId, firstName, lastName, role}, index) => (
-             <TouchableOpacity onPress={() => {navigation.navigate("ContactProfile")}}>
+             <TouchableOpacity onPress={() => {navigation.navigate("ContactProfile" ,{ businessId: businessId })}}>
               <View style={styles.listItem} key={`${index}${businessId}`}>
               <FontAwesome 
                 name="user-circle-o"
@@ -27,7 +25,7 @@ export default function ContactTab(props){
                 style={styles.personImage}
               />
               <View>
-              <Text style={[styles.personName, styles.flex = 1]}>{firstName} {`${index} - ${businessId}`} {lastName}</Text>
+              <Text style={[styles.personName, styles.flex = 1]}>{firstName} {lastName}</Text>
               <Text style={[styles.personRole]}>{role}</Text>
               </View>
             </View>
