@@ -11,32 +11,33 @@ const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 function MyAppointment(props, ref) {
 
-    const [myAppointments, updateMyAppointments] = useState([
-        {id: 1, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
-        {id: 2, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
-        {id: 3, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
-        {id: 4, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
-    ])
+    const [myAppointments, updateMyAppointments] = useState([])
 
     useImperativeHandle(ref, () => ({
         async loadAppointments() {
             // Request my appointments from server
             const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/6189ea797b52117c02879274`)
             const appointments = appointmentResult.data.appointments
-            // TODO: update state with new appointments
-            console.log(appointments)
+            // Update state with new appointments
+            updateMyAppointments(appointments)
         }
     }), [])
 
     const renderAppointment = (appointment) => {
         return (
-            <View key={appointment.id} style={styles.appointmentItem}>
+            <View key={appointment._id} style={styles.appointmentItem}>
                 <View>
                     <View style={styles.appointmentDesc}>
-                        <Text style={styles.appointmentDate}>{dayjs(appointment.date).format('DD MMM YYYY')}</Text>
-                        <Text style={styles.appointmentTime}>{appointment.start} - {appointment.end}</Text>
+                        <Text style={styles.appointmentDate}>
+                            {dayjs(appointment.date).format('DD MMM YYYY')}
+                        </Text>
+                        <Text style={styles.appointmentTime}>
+                            {dayjs(appointment.startAt).format('HH:mm')} - {dayjs(appointment.endAt).format('HH:mm')}
+                        </Text>
                     </View>
-                    <Text style={styles.appointmentParticipant}>Participant: {appointment.participant.join(', ')}</Text>
+                    <Text style={styles.appointmentParticipant}>
+                        Participant: {appointment.participants.map((participant, index) => `${index ? ', ' : ''}${participant.firstName}`)}
+                    </Text>
                 </View>
                 <TouchableOpacity style={styles.viewButton}>
                     <Text style={styles.viewButtonText}>View</Text>
@@ -61,7 +62,7 @@ function MyAppointment(props, ref) {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>My Appointments</Text>
-            {true ? appointmentList : emptyRequest}
+            {myAppointments.length ? appointmentList : emptyRequest}
         </View>
     )
 }
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         padding: 16,
-        marginTop: 8
+        marginTop: 8,
     },
     header: {
         fontWeight: 'bold',
