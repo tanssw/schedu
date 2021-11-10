@@ -30,7 +30,6 @@ const getUserIdFromToken = async (token) => {
         const userObjectId = result.userId
         return userObjectId
     } catch (error) {
-        console.log('Error occured in getUserIdFromToken() in helper/auth.js')
         throw error
     }
 }

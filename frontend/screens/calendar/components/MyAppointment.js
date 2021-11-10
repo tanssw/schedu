@@ -1,10 +1,13 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import Constants from 'expo-constants'
 import { FontAwesome5 } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 
 import { colorCode, text } from '../../../styles'
 import axios from 'axios'
+
+const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 function MyAppointment(props, ref) {
 
@@ -16,9 +19,12 @@ function MyAppointment(props, ref) {
     ])
 
     useImperativeHandle(ref, () => ({
-        loadAppointments() {
-            // TODO: Request my appointments from server
-            console.log("Loading appointments ...")
+        async loadAppointments() {
+            // Request my appointments from server
+            const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/6189ea797b52117c02879274`)
+            const appointments = appointmentResult.data.appointments
+            // TODO: update state with new appointments
+            console.log(appointments)
         }
     }), [])
 
