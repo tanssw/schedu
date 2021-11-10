@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import dayjs from 'dayjs'
 
@@ -7,6 +7,12 @@ import IncomingRequest from './components/IncomingRequest'
 import MyAppointment from './components/MyAppointment'
 
 export default function CalendarOverviewScreen({navigation}) {
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            console.log('Calendar Overview is loaded.')
+        })
+    })
 
     const viewMonthly = (day) => {
         let formattedDay = dayjs(`${day.year}-${day.month}-${day.day}`).format('MMMM YYYY')
