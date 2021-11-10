@@ -3,6 +3,7 @@ const Schema = mongoose.Schema
 
 const appointmentSchema = new Schema({
     subject: String,
+    status: String,
     sender: String,
     participants: [{
         userId: String,

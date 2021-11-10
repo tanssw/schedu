@@ -16,6 +16,7 @@ function MyAppointment(props, ref) {
     useImperativeHandle(ref, () => ({
         async loadAppointments() {
             // Request my appointments from server
+            // TODO: query from real user id
             const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/6189ea797b52117c02879274`)
             const appointments = appointmentResult.data.appointments
             // Update state with new appointments
@@ -55,7 +56,7 @@ function MyAppointment(props, ref) {
     const emptyRequest = (
         <View style={styles.emptyRequestContainer}>
             <FontAwesome5 name="signature" size={48} color="#cccccc" />
-            <Text style={[styles.emptyRequestText, text.grey]}>No Appointment</Text>
+            <Text style={[styles.emptyRequestText, text.grey]}>Feel free to contact someone</Text>
         </View>
     )
 
