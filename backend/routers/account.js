@@ -12,10 +12,16 @@ router.get('/all', async(req, res) =>{
     const user = await accountModel.find({})
     res.json(user)
 })
-// Get user by user object id
-router.get('/:id', async(req, res) =>{
-    const { id } = req.params
-    const user = await accountModel.findById(id)
+router.get('/getTeacher', async(req,res) =>{
+    const user = await accountModel.find({ role: 'teacher'}).exec()
+    res.json(user)
+})
+router.get('/getOfficer', async(req,res) =>{
+    const user = await accountModel.find({ role: 'staff'}).exec()
+    res.json(user)
+})
+router.get('/getStudent', async(req,res) =>{
+    const user = await accountModel.find({ role: 'student'}).exec()
     res.json(user)
 })
 // Add New user in mongoDB
@@ -40,6 +46,12 @@ router.delete('/delUser/:id', async(req, res) => {
     res.json({message: "Delete user"})
 
     res.status(200).end()
+})
+// Get user by user object id
+router.get('/:id', async(req, res) =>{
+    const { id } = req.params
+    const user = await accountModel.findById(id)
+    res.json(user)
 })
 
 

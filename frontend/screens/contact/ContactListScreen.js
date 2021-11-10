@@ -76,22 +76,22 @@ export default function ContactListScreen() {
       };
       // All btn for query data
     const getQueryAllPeople = async () =>{
-        const all = await axios.get(`http://localhost:3000/user/all`)
+        const all = await axios.get(`http://localhost:3000/account/all`)
         updateParticipants(all.data)
       }
       // Professor btn for query data
       const getProfessor = async () =>{
-        const professor = await axios.get(`http://localhost:3000/user/all`)
+        const professor = await axios.get(`http://localhost:3000/account/getTeacher`)
         updateParticipants(professor.data)
       }
        // Officer btn for query data
        const getOffice = async () =>{
-        const officer = await axios.get(`http://localhost:3000/user/all`)
+        const officer = await axios.get(`http://localhost:3000/account/getOfficer`)
         updateParticipants(officer.data)
       }
       //student btn fro query data
       const getStudent = async () =>{
-        const student = await axios.get(`http://localhost:3000/user/all`)
+        const student = await axios.get(`http://localhost:3000/account/getStudent`)
         updateParticipants(student.data)
       }
     const historyQuery = () =>{

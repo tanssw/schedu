@@ -35,13 +35,13 @@ export default function QueryBar(props){
         props.all()
       }
     function professor() {
-        props.professor
+        props.professor()
     }
     function officer(){
-        props.officer
+        props.officer()
     }
     function student(){
-        props.student
+        props.student()
     }
 }
 const styles = StyleSheet.create({
