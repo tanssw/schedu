@@ -10,8 +10,23 @@ const router = express()
 // Get all appointments associate with userId
 router.get('/:userId', async(req, res) =>{
 
+    const userId = req.params.userId
+
     // Find all appointments that user associated to.
-    const appointments = await appointmentModel.find({})
+    const appointments = await appointmentModel.find({
+        $or: [
+            {
+                sender: userId
+            },
+            {
+                participants: {
+                    $elemMatch: {userId: userId}
+                }
+            }
+        ]
+    })
+
+    console.log(appointments)
 
     res.json({appointments: []})
 })
