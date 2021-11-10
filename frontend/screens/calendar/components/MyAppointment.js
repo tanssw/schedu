@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 
 import { colorCode, text } from '../../../styles'
+import axios from 'axios'
 
-export default function MyAppointment() {
+function MyAppointment(props, ref) {
 
     const [myAppointments, updateMyAppointments] = useState([
         {id: 1, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
@@ -13,6 +14,13 @@ export default function MyAppointment() {
         {id: 3, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
         {id: 4, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
     ])
+
+    useImperativeHandle(ref, () => ({
+        loadAppointments() {
+            // TODO: Request my appointments from server
+            console.log("Loading appointments ...")
+        }
+    }), [])
 
     const renderAppointment = (appointment) => {
         return (
@@ -51,6 +59,8 @@ export default function MyAppointment() {
         </View>
     )
 }
+
+export default forwardRef(MyAppointment)
 
 const styles = StyleSheet.create({
     container: {

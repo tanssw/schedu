@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import dayjs from 'dayjs'
 
@@ -8,9 +8,11 @@ import MyAppointment from './components/MyAppointment'
 
 export default function CalendarOverviewScreen({navigation}) {
 
+    const myAppointmentComponent = useRef()
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            console.log('Calendar Overview is loaded.')
+            myAppointmentComponent.current.loadAppointments()
         })
     })
 
@@ -25,7 +27,7 @@ export default function CalendarOverviewScreen({navigation}) {
         <ScrollView style={styles.container}>
             <CalendarOverview onDateSelect={viewMonthly} />
             <IncomingRequest />
-            <MyAppointment />
+            <MyAppointment ref={myAppointmentComponent} />
         </ScrollView>
     )
 }
