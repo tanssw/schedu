@@ -1,25 +1,19 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
+const conn = require('../config/connectionMongoDB/ScheduConnect')
 const appointmentSchema = require('../schema/appointmentSchema')
-var conn = require('../config/connectionMongoDB/ScheduConnect')
+const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
 
 const router = express()
 
-const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
+// Get all appointments associate with userId
+router.get('/:userId', async(req, res) =>{
 
-// Get all appointments
-// TODO: Get all that associate with request's user only
-router.get('/all', async(req, res) =>{
-    const appointment = await appointmentModel.find({})
-    res.json(appointment)
-})
+    // Find all appointments that user associated to.
+    const appointments = await appointmentModel.find({})
 
-// Get appointment by appointment object id
-router.get('/:id', async(req, res) =>{
-    const { id } = req.params
-    const appointment = await appointmentModel.findById(id)
-    res.json(appointment)
+    res.json({appointments: []})
 })
 
 // Create new Appointment
@@ -28,7 +22,7 @@ router.post('/', async(req, res) => {
 
     // Mapping business_id of participants to an Object with some logic keys
     let participants = payload.participants.map(participant => {
-        return {businessId: participant, main: false, confirmed: false}
+        return {userId: participant, main: false, confirmed: false}
     })
 
     // Structuring payload data before saving into the database
@@ -36,7 +30,7 @@ router.post('/', async(req, res) => {
         subject: payload.subject,
         sender: payload.sender,
         participants: [
-            {businessId: payload.receiver, main: true, confirmed: false},
+            {userId: payload.receiver, main: true, confirmed: false},
             ...participants
         ],
         startAt: payload.startAt,
@@ -60,6 +54,15 @@ router.post('/', async(req, res) => {
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
 
+})
+
+/* ------------------------ NOT IN USE ------------------------ */
+
+// Get appointment by appointment object id
+router.get('/:id', async(req, res) =>{
+    const { id } = req.params
+    const appointment = await appointmentModel.findById(id)
+    res.json(appointment)
 })
 
 // Update appointment in mongoDB

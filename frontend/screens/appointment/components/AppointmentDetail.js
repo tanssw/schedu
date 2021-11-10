@@ -14,7 +14,7 @@ function AppointmentDetail(props, ref) {
     const [note, setNote] = useState()
 
     const [participants, setParticipants] = useState([
-        {id: 1, business_id: '62070184', firstname: 'Loukhin', lastname: 'Dotcom'},
+        {_id: "617ad469233ec5b2b2570d52", business_id: '62070184', firstname: 'Loukhin', lastname: 'Dotcom'},
     ])
 
     useImperativeHandle(ref, () => ({
@@ -33,7 +33,7 @@ function AppointmentDetail(props, ref) {
     const createAppointment = () => {
         const data = {
             subject: subject,
-            participants: participants.map(participant => participant.business_id),
+            participants: participants.map(participant => participant._id),
             commMethod: commMethod ? commMethod.value : undefined,
             commUrl: commUrl,
             note: note
@@ -66,7 +66,7 @@ function AppointmentDetail(props, ref) {
                         <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity>
-                    <FlatList horizontal data={participants} renderItem={renderParticipant} keyExtractor={person => person.id} />
+                    <FlatList horizontal data={participants} renderItem={renderParticipant} keyExtractor={person => person._id} />
                 </View>
             </View>
             {/* Communication Method Dropdown & Input */}

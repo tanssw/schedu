@@ -5,7 +5,7 @@ const appointmentSchema = new Schema({
     subject: String,
     sender: String,
     participants: [{
-        businessId: String,
+        userId: String,
         main: Boolean,
         confirmed: Boolean
     }],
