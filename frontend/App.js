@@ -6,6 +6,12 @@ import * as SecureStore from 'expo-secure-store'
 import * as Google from 'expo-google-app-auth'
 import axios from 'axios'
 
+// Redux
+import { createStore, combineReducers } from 'redux'
+import { Provider } from 'react-redux'
+
+import userReducer from './store/reducers/userReducer'
+
 import Navigator from './navigators/MainNavigator'
 import SignInScreen from './screens/account/SignInScreen'
 
@@ -17,8 +23,13 @@ const AUTH_USER_ID = 'uid'
 LogBox.ignoreLogs(['AsyncStorage'])
 
 export default function App() {
-
     const [userData, setUserData] = useState(null)
+
+    const rootReducer = combineReducers({
+        user: userReducer
+    })
+
+    const store = createStore(rootReducer)
 
     useEffect(async () => {
         try {
@@ -54,13 +65,9 @@ export default function App() {
                 await SecureStore.setItemAsync(AUTH_USER_ID, user._id)
             }
         } catch (error) {
-            console.log("Authentication Error")
+            console.log('Authentication Error')
         }
     }
 
-    return (
-        <>
-            { userData ? <Navigator /> : <SignInScreen onSignIn={signInWithGoogleAsync} /> }
-        </>
-    )
+    return <>{userData ? <Navigator /> : <SignInScreen onSignIn={signInWithGoogleAsync} />}</>
 }
