@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
 import Constants from 'expo-constants'
+import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
 // Redux
@@ -10,16 +11,24 @@ import { useSelector } from 'react-redux'
 import { text, shadow, colorCode } from '../../styles'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
+const AUTH_TOKEN_KEY = 'authtoken'
 
 export default function AccountMenuScreen({ navigation }) {
 
     const userData = useSelector(state => state.user.userData)
 
-    const signOut = () => {
+    const signOut = async () => {
+        const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
         try {
-            const result = axios.delete(`${API_SERVER_DOMAIN}/auth`)
+            const payload = {
+                headers: {
+                    'Schedu-Token': token
+                }
+            }
+            const result = axios.delete(`${API_SERVER_DOMAIN}/auth`, payload)
         } catch (error) {
-
+            const status = error.response.status
+            if (status === 500) return
         }
     }
 
