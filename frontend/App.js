@@ -69,5 +69,9 @@ export default function App() {
         }
     }
 
-    return <>{userData ? <Navigator /> : <SignInScreen onSignIn={signInWithGoogleAsync} />}</>
+    return (
+        <>
+            {userData ? <Provider store={store}><Navigator /></Provider> : <SignInScreen onSignIn={signInWithGoogleAsync} />}
+        </>
+    )
 }
