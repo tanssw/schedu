@@ -33,7 +33,8 @@ export default function CalendarOverviewScreen({navigation}) {
         // Request my appointments from server
         const payload = {
             headers: {
-                'Schedu-Token': token
+                'Schedu-Token': token,
+                'Schedu-UID': userId
             }
         }
         const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
