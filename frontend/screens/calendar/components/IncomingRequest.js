@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 
 import { text, colorCode } from '../../../styles'
 
-export default function IncomingRequest() {
+export default function IncomingRequest(props) {
 
     const [requests, updateRequests] = useState([
         {id: 1, from: 'Tasanai Srisawat', date: '2021-10-08', start: '01:00 PM', end: '01:45 PM'},
@@ -16,16 +16,18 @@ export default function IncomingRequest() {
 
     const renderRequest = (request) => {
         return (
-            <TouchableOpacity key={request.id} style={styles.requestItem}>
+            <TouchableOpacity key={request._id} style={styles.requestItem}>
                 <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} />
                 <View style={styles.requestBody}>
                     <View style={styles.requestTitle}>
                         <Text>Appointment Request</Text>
-                        <Text style={text.bold}>{dayjs(request.date).format('DD MMM YYYY')}</Text>
+                        <Text style={text.bold}>{dayjs(request.startAt).format('DD MMM YYYY')}</Text>
                     </View>
                     <View style={styles.requestDesc}>
-                        <Text style={styles.smallDesc}>from {request.from}</Text>
-                        <Text style={styles.smallDesc}>{request.start} - {request.end}</Text>
+                        <Text style={styles.smallDesc}>from {request.sender.firstName} {request.sender.lastName[0]}.</Text>
+                        <Text style={styles.smallDesc}>
+                            {dayjs(request.startAt).format('HH:mm')} - {dayjs(request.endAt).format('HH:mm')}
+                        </Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -34,7 +36,7 @@ export default function IncomingRequest() {
 
     const requestList = (
         <View>
-            {requests.map(request => renderRequest(request))}
+            {props.appointments.map(request => renderRequest(request))}
         </View>
     )
 
@@ -48,7 +50,7 @@ export default function IncomingRequest() {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Incoming Requests</Text>
-            {true ? requestList : emptyRequest}
+            {props.appointments ? requestList : emptyRequest}
         </View>
     )
 }

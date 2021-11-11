@@ -12,8 +12,8 @@ const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function CalendarOverviewScreen({navigation}) {
 
+    const [requestAppointments, updateRequestAppointments] = useState([])
     const [myAppointments, updateMyAppointments] = useState([])
-    const [ongoingAppointments, updateOngoingAppointments] = useState([])
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -28,9 +28,26 @@ export default function CalendarOverviewScreen({navigation}) {
         const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/6189ea797b52117c02879274`)
         const appointments = appointmentResult.data.appointments
 
-        // Update state with new appointments
+        // Update my appointments
         const shownStatus = ['ongoing']
-        updateMyAppointments(appointments.filter(appointment => shownStatus.includes(appointment.status)))
+        updateMyAppointments(
+            appointments.filter(appointment => {
+                const canShow = shownStatus.includes(appointment.status)
+                const meAsSender = appointment.sender.userId === '6189ea797b52117c02879274' // TODO: Get the userid from signed-in user instead
+                return canShow || meAsSender
+            })
+        )
+
+        // Update incoming request appointments
+        updateRequestAppointments(
+            appointments.filter(appointment => {
+                const myself = appointment.participants.find(participant => participant.userId === '6189ea797b52117c02879274') // TODO: Get the userid from signed-in user instead
+                if (!myself) return false
+                const meNotConfirm = !myself.confirmed
+                const meAsSender = appointment.sender.userId === '6189ea797b52117c02879274' // TODO: Get the userid from signed-in user instead
+                return !meAsSender && meNotConfirm
+            })
+        )
     }
 
     const viewMonthly = (day) => {
@@ -43,7 +60,7 @@ export default function CalendarOverviewScreen({navigation}) {
     return (
         <ScrollView style={styles.container}>
             <CalendarOverview onDateSelect={viewMonthly} />
-            <IncomingRequest />
+            <IncomingRequest appointments={requestAppointments} />
             <MyAppointment appointments={myAppointments} />
         </ScrollView>
     )
