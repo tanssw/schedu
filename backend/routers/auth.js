@@ -30,6 +30,7 @@ router.post('/', async (req, res) => {
         res.json({user: user, token: authToken})
 
     } catch (error) {
+        console.log(error)
         res.status(403).send({error: 'Authentication Error'})
     }
 })
