@@ -32,6 +32,7 @@ export default function App() {
         } catch (error) {
             // Clear stored token in Secure Store
             await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY, {})
+            await SecureStore.deleteItemAsync(AUTH_USER_ID, user._id)
         }
     }, [])
 
@@ -48,6 +49,7 @@ export default function App() {
 
                 const token = authResult.data.token
                 await SecureStore.setItemAsync(AUTH_TOKEN_KEY, token)
+                await SecureStore.setItemAsync(AUTH_USER_ID, user._id)
             }
         } catch (error) {
             console.log("Authentication Error")
