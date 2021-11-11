@@ -11,6 +11,7 @@ import SignInScreen from './screens/account/SignInScreen'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 const AUTH_TOKEN_KEY = 'authtoken'
+const AUTH_USER_ID = 'uid'
 
 // Disable Yellow box warning
 LogBox.ignoreLogs(['AsyncStorage'])
@@ -20,19 +21,20 @@ export default function App() {
     const [userData, setUserData] = useState(null)
 
     useEffect(async () => {
-        // Get authentication token from Secure Store
-        const tokenResult = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
-        if (!tokenResult) return
-
-        const requestBody = {token: tokenResult}
         try {
+            // Get authentication token from Secure Store
+            const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
+            const userId = await SecureStore.getItemAsync(AUTH_USER_ID)
+            if (!token || !userId) throw "Incomplete stored keys"
+
+            const requestBody = {token: token}
             const authResult = await axios.post(`${API_SERVER_DOMAIN}/auth/token`, requestBody)
             const user = authResult.data.user
             setUserData(user)
         } catch (error) {
             // Clear stored token in Secure Store
             await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY, {})
-            await SecureStore.deleteItemAsync(AUTH_USER_ID, user._id)
+            await SecureStore.deleteItemAsync(AUTH_USER_ID, {})
         }
     }, [])
 

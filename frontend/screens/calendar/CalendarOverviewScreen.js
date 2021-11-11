@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import Constants from 'expo-constants'
+import * as SecureStore from 'expo-secure-store'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
@@ -9,6 +10,7 @@ import IncomingRequest from './components/IncomingRequest'
 import MyAppointment from './components/MyAppointment'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
+const AUTH_USER_ID = 'uid'
 
 export default function CalendarOverviewScreen({navigation}) {
 
@@ -23,9 +25,11 @@ export default function CalendarOverviewScreen({navigation}) {
     })
 
     const loadAppointments = async () => {
+
+        const userId = await SecureStore.getItemAsync(AUTH_USER_ID)
+
         // Request my appointments from server
-        // TODO: query from real user id
-        const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/6189ea797b52117c02879274`)
+        const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${userId}`)
         const appointments = appointmentResult.data.appointments
 
         // Update my appointments
@@ -33,7 +37,7 @@ export default function CalendarOverviewScreen({navigation}) {
         updateMyAppointments(
             appointments.filter(appointment => {
                 const canShow = shownStatus.includes(appointment.status)
-                const meAsSender = appointment.sender.userId === '6189ea797b52117c02879274' // TODO: Get the userid from signed-in user instead
+                const meAsSender = appointment.sender.userId === userId
                 return canShow || meAsSender
             })
         )
@@ -41,10 +45,10 @@ export default function CalendarOverviewScreen({navigation}) {
         // Update incoming request appointments
         updateRequestAppointments(
             appointments.filter(appointment => {
-                const myself = appointment.participants.find(participant => participant.userId === '6189ea797b52117c02879274') // TODO: Get the userid from signed-in user instead
+                const myself = appointment.participants.find(participant => participant.userId === userId)
                 if (!myself) return false
                 const meNotConfirm = !myself.confirmed
-                const meAsSender = appointment.sender.userId === '6189ea797b52117c02879274' // TODO: Get the userid from signed-in user instead
+                const meAsSender = appointment.sender.userId === userId
                 return !meAsSender && meNotConfirm
             })
         )
