@@ -21,8 +21,8 @@ export default function AppointmentEditorScreen() {
     const createAppointmentHandler = async (data) => {
         const payload = {
             subject: data.subject,
-            sender: "62070074",
-            receiver: "62070077",
+            sender: "6189ea797b52117c02879274",
+            receiver: "618b4cc8a996fac981059a69",
             participants: data.participants,
             startAt: formattedStart,
             endAt: formattedEnd,
