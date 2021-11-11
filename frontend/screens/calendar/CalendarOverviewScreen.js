@@ -11,6 +11,7 @@ import MyAppointment from './components/MyAppointment'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 const AUTH_USER_ID = 'uid'
+const AUTH_TOKEN_KEY = 'authtoken'
 
 export default function CalendarOverviewScreen({navigation}) {
 
@@ -26,10 +27,16 @@ export default function CalendarOverviewScreen({navigation}) {
 
     const loadAppointments = async () => {
 
+        const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
         const userId = await SecureStore.getItemAsync(AUTH_USER_ID)
 
         // Request my appointments from server
-        const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${userId}`)
+        const payload = {
+            headers: {
+                'Schedu-Token': token
+            }
+        }
+        const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
         const appointments = appointmentResult.data.appointments
 
         // Update my appointments

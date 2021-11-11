@@ -4,53 +4,67 @@ const mongoose = require('mongoose')
 const conn = require('../config/connectionMongoDB/ScheduConnect')
 const { getUserByObjectId } = require('../helpers/account')
 const { initAppointmentStatus } = require('../helpers/appointment')
+const { getUserIdFromToken } = require('../helpers/auth')
 const appointmentSchema = require('../schema/appointmentSchema')
 const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
 
 const router = express()
 
 // Get all appointments associate with userId
-router.get('/:userId', async (req, res) => {
+router.get('/', async (req, res) => {
 
-    const userId = req.params.userId
-
-    // Find all appointments that user associated to.
-    let appointments = await appointmentModel.find({
-        $or: [
-            {
-                sender: userId
-            },
-            {
-                participants: {
-                    $elemMatch: {userId: userId}
-                }
-            }
-        ]
-    })
-
-    // Get name of each user associate with an appointment
-    let formattedAppointments = []
-    for (let appointment of appointments) {
-        const sender = await getUserByObjectId(appointment.sender)
-        let formattedAppointment = Object.assign({}, appointment._doc)
-        formattedAppointment.sender = {
-            userId: sender._id,
-            firstName: sender.firstName,
-            lastName: sender.lastName
-        }
-        let formattedParticipants = []
-        for (let participant of formattedAppointment.participants) {
-            const participantUser = await getUserByObjectId(participant.userId)
-            let formattedParticipant = Object.assign({}, participant._doc)
-            formattedParticipant.firstName = participantUser.firstName
-            formattedParticipant.lastName = participantUser.lastName
-            formattedParticipants.push(formattedParticipant)
-        }
-        formattedAppointment.participants = formattedParticipants
-        formattedAppointments.push(formattedAppointment)
+    // Get User ID from Auth Token
+    let userId
+    try {
+        const token = req.headers['schedu-token']
+        userId = await getUserIdFromToken(token)
+    } catch (error) {
+        return res.status(403).send({message: 'Unauthorized Request'})
     }
 
-    res.json({appointments: formattedAppointments})
+    try {
+        // Find all appointments that user associated to.
+        let appointments = await appointmentModel.find({
+            $or: [
+                {
+                    sender: userId
+                },
+                {
+                    participants: {
+                        $elemMatch: {userId: userId}
+                    }
+                }
+            ]
+        })
+
+        // Get name of each user associate with an appointment
+        let formattedAppointments = []
+        for (let appointment of appointments) {
+            const sender = await getUserByObjectId(appointment.sender)
+            let formattedAppointment = Object.assign({}, appointment._doc)
+            formattedAppointment.sender = {
+                userId: sender._id,
+                firstName: sender.firstName,
+                lastName: sender.lastName
+            }
+            let formattedParticipants = []
+            for (let participant of formattedAppointment.participants) {
+                const participantUser = await getUserByObjectId(participant.userId)
+                let formattedParticipant = Object.assign({}, participant._doc)
+                formattedParticipant.firstName = participantUser.firstName
+                formattedParticipant.lastName = participantUser.lastName
+                formattedParticipants.push(formattedParticipant)
+            }
+            formattedAppointment.participants = formattedParticipants
+            formattedAppointments.push(formattedAppointment)
+        }
+
+        res.json({appointments: formattedAppointments})
+
+    } catch (error) {
+        res.send(500).send({message: 'Something went wrong. Please try again later.'})
+    }
+
 })
 
 // Create new Appointment

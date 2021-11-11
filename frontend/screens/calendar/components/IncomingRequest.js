@@ -50,7 +50,7 @@ export default function IncomingRequest(props) {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Incoming Requests</Text>
-            {props.appointments ? requestList : emptyRequest}
+            {props.appointments.length ? requestList : emptyRequest}
         </View>
     )
 }
