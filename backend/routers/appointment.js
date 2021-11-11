@@ -63,6 +63,7 @@ router.get('/', authMiddleware, async (req, res) => {
 })
 
 // Create new Appointment
+// TODO: Add auth middleware
 router.post('/', async(req, res) => {
     const payload = req.body
 
