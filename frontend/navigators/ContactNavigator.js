@@ -1,6 +1,7 @@
-import React from 'react'
+import React from "react"
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+
 
 import ContactListScreen from '../screens/contact/ContactListScreen'
 import ContactProfileScreen from '../screens/contact/ContactProfileScreen'
@@ -8,15 +9,18 @@ import ContactHistoryScreen from '../screens/contact/ContactHistoryScreen'
 import ContactFavorite from '../screens/contact/ContactFavorite'
 import AppointmentEditorScreen from '../screens/appointment/AppointmentEditorScreen'
 
+
 const ContactStack = createNativeStackNavigator()
 
 const options = {
     createAppointment: {
         headerTitle: "Appointment",
     },
+
     hideHeader:{
         headerShown: false
     }
+
 }
 export default function ContactNavigator() {
     return (
@@ -27,6 +31,7 @@ export default function ContactNavigator() {
             <ContactStack.Screen name="ContactFavorite" component={ContactFavorite} />
             <ContactStack.Screen name="ContactProfile" component={ContactProfileScreen} />
             <ContactStack.Screen options={options.hideHeader} name="CreateAppointment" component={AppointmentEditorScreen} options={options.createAppointment} />
+
         </ContactStack.Navigator>
     )
 }

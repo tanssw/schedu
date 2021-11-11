@@ -1,10 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
-
 import { background, text } from '../../styles'
-
-
 
 export default function SignInScreen(props) {
     return (
@@ -14,7 +11,9 @@ export default function SignInScreen(props) {
                 <Text style={styles.appTitle}>edu</Text>
             </View>
             <TouchableOpacity onPress={props.onSignIn} style={styles.buttonSignIn}>
-                <Text style={[styles.textSignIn ,text.lightBlue]}>Sign in with ITKMITL Account</Text>
+                <Text style={[styles.textSignIn, text.lightBlue]}>
+                    Sign in with ITKMITL Account
+                </Text>
             </TouchableOpacity>
         </View>
     )
@@ -23,13 +22,13 @@ export default function SignInScreen(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 32,
+        padding: 32
     },
     appTitleContainer: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     appTitle: {
         fontSize: 64,
@@ -41,7 +40,7 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 16,
         borderRadius: 16,
-        alignItems: 'center',
+        alignItems: 'center'
     },
     textSignIn: {
         fontSize: 16
