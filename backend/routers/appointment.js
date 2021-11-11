@@ -15,8 +15,7 @@ const router = express()
 router.get('/', authMiddleware, async (req, res) => {
     try {
         // Get User ID from Auth Token
-        const token = req.headers['schedu-token']
-        const userId = await getUserIdFromToken(token)
+        const userId = req.headers['schedu-uid']
 
         // Find all appointments that user associated to.
         let appointments = await appointmentModel.find({
