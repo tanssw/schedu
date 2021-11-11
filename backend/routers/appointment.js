@@ -5,24 +5,19 @@ const conn = require('../config/connectionMongoDB/ScheduConnect')
 const { getUserByObjectId } = require('../helpers/account')
 const { initAppointmentStatus } = require('../helpers/appointment')
 const { getUserIdFromToken } = require('../helpers/auth')
+const { authMiddleware } = require('../middlewares/auth')
 const appointmentSchema = require('../schema/appointmentSchema')
 const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
 
 const router = express()
 
 // Get all appointments associate with userId
-router.get('/', async (req, res) => {
-
-    // Get User ID from Auth Token
-    let userId
+router.get('/', authMiddleware, async (req, res) => {
     try {
+        // Get User ID from Auth Token
         const token = req.headers['schedu-token']
-        userId = await getUserIdFromToken(token)
-    } catch (error) {
-        return res.status(403).send({message: 'Unauthorized Request'})
-    }
+        const userId = await getUserIdFromToken(token)
 
-    try {
         // Find all appointments that user associated to.
         let appointments = await appointmentModel.find({
             $or: [
