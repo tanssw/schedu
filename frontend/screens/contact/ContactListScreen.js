@@ -20,8 +20,8 @@ export default function ContactListScreen() {
 
     const [toggleSuggest, updateToggleSuggest] = useState(0)
     const [toggleQuery, updateToggleQuery] = useState(0)
-    const getSearch = () => {
-        const user = await axios.get(`http://localhost:3000/account/${search}`)
+    const getSearch = async() => {
+        const user = await axios.get(`http://localhost:3000/account/search/${search}`)
         updateParticipants(user.data)
       };
       // All btn for query data
@@ -31,17 +31,17 @@ export default function ContactListScreen() {
       }
       // Professor btn for query data
       const getProfessor = async () =>{
-        const professor = await axios.get(`http://localhost:3000/account/getTeacher`)
+        const professor = await axios.get(`http://localhost:3000/account/role/teacher`)
         updateParticipants(professor.data)
       }
        // Officer btn for query data
        const getOffice = async () =>{
-        const officer = await axios.get(`http://localhost:3000/account/getOfficer`)
+        const officer = await axios.get(`http://localhost:3000/account/role/staff`)
         updateParticipants(officer.data)
       }
       //student btn fro query data
       const getStudent = async () =>{
-        const student = await axios.get(`http://localhost:3000/account/getStudent`)
+        const student = await axios.get(`http://localhost:3000/account/role/student`)
         updateParticipants(student.data)
       }
     const historyQuery = () =>{
@@ -60,6 +60,7 @@ export default function ContactListScreen() {
                 <SuggestBar/>
             )
         }
+        
     }
     const queryDisplay = () =>{
         if(toggleQuery == 0){
@@ -72,8 +73,12 @@ export default function ContactListScreen() {
         if(search == ''){
           updateToggleSuggest(0)
           updateToggleQuery(0)
+          //TODO when back contact home query all people
+          // getQueryAllPeople()
         }
         else{
+          //TODO when user typing can query realtime
+          // getSearch(search)
           updateToggleSuggest(1)
           updateToggleQuery(1)
         }

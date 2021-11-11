@@ -27,14 +27,7 @@ export default function SearchTab(props) {
           multiline={false}
           onSubmitEditing={props.find}
         />
-        {/* <TouchableOpacity onPress={props.alertWord}>
-        <FontAwesome 
-        style={styles.iconSearch}
-        name="search" 
-        size={24} 
-        color="white" />
-          </TouchableOpacity> */}
-        <TouchableOpacity onPress={() => {navigation.navigate("ContactHistory")}}>
+        <TouchableOpacity onPress={() => {navigation.navigate("ContactHistory" ,{ businessId: 62070101 })}}>
           <Fontisto
             style={styles.iconHistory}
             name="history"

@@ -12,16 +12,14 @@ router.get('/all', async(req, res) =>{
     const user = await accountModel.find({})
     res.json(user)
 })
-router.get('/getTeacher', async(req,res) =>{
-    const user = await accountModel.find({ role: 'teacher'}).exec()
+router.get('/role/:role', async(req,res) =>{
+    const { role } = req.params
+    const user = await accountModel.find({ role: role}).exec()
     res.json(user)
 })
-router.get('/getOfficer', async(req,res) =>{
-    const user = await accountModel.find({ role: 'staff'}).exec()
-    res.json(user)
-})
-router.get('/getStudent', async(req,res) =>{
-    const user = await accountModel.find({ role: 'student'}).exec()
+router.get('/search/:word', async(req, res) =>{
+    const {word} = req.params
+    const user = await accountModel.find({firstName: { $regex: '.*' + word + '.*' } }).limit(5)
     res.json(user)
 })
 // Add New user in mongoDB

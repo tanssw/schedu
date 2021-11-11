@@ -1,70 +1,32 @@
-import React, {useState} from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, {useState, useEffect} from 'react'
+import { StyleSheet, Text, View,TouchableOpacity } from 'react-native'
 import {
     FontAwesome,
   } from "@expo/vector-icons";
-  
+import axios from 'axios';
 
-export default function ContactHistoryScreen() {
 
-    const [participants, updateParticipants] = useState([
-        {
-          id: 1,
-          business_id: "62070101",
-          firstname: "Nopphadon",
-          lastname: "Phanwong",
-          role: "Student"
-        },
-        {
-          id: 2,
-          business_id: "62070074",
-          firstname: "Tasanai",
-          lastname: "Srisawat",
-          role: "Student"
-        },
-        {
-          id: 3,
-          business_id: "62070074",
-          firstname: "Tasanai",
-          lastname: "Srisawat",
-          role: "Student"
-        },
-        {
-          id: 4,
-          business_id: "62070074",
-          firstname: "Tasanai",
-          lastname: "Srisawat",
-          role: "Student"
-        },
-        {
-            id: 5,
-            business_id: "62070074",
-            firstname: "Tasanai",
-            lastname: "Srisawat",
-            role: "Student"
-          },
-          {
-            id: 6,
-            business_id: "62070074",
-            firstname: "Tasanai",
-            lastname: "Srisawat",
-            role: "Student"
-          },
-          {
-            id: 7,
-            business_id: "62070074",
-            firstname: "Tasanai",
-            lastname: "Srisawat",
-            role: "Student"
-          },
-      ]);
+export default function ContactHistoryScreen({route, navigation}) {
+
+    const [participants, updateParticipants] = useState([]);
+    const {businessId} = route.params;
+
+    const getQueryHistory = async () =>{
+        const all = await axios.get(`http://localhost:3000/account/${businessId}`)
+        updateParticipants(all.data)
+      }
+      useEffect(() => {
+        getQueryHistory()
+      }, []);
+
 
     return (
     <View style={styles.ContactTab}>
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>History</Text>
       <View style={styles.listContainer}>
-          {participants.map(({id, firstname, lastname, role}) => (
-              <View style={styles.listItem} key={id}>
+          {participants.map(({businessId, firstName, lastName, role}, index) => (
+             <TouchableOpacity onPress={() => {navigation.navigate("ContactProfile" ,{ businessId: businessId })}}>
+              <View style={styles.listItem} key={`${index}${businessId}`}>
               <FontAwesome 
                 name="user-circle-o"
                 size={44}
@@ -72,11 +34,13 @@ export default function ContactHistoryScreen() {
                 style={styles.personImage}
               />
               <View>
-              <Text style={[styles.personName, styles.flex = 1]}>{firstname}  {lastname}</Text>
+              <Text style={[styles.personName, styles.flex = 1]}>{firstName} {lastName}</Text>
               <Text style={[styles.personRole]}>{role}</Text>
               </View>
             </View>
+            </TouchableOpacity>
           ))}
+          
         </View>
         </View> 
 
