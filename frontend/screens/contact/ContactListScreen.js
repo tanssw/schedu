@@ -13,16 +13,21 @@ export default function ContactListScreen() {
     const [headerText, updateHeaderText] = useState("Contact")
     const [participants, updateParticipants] = useState([])
     const [search, updateSearch] = useState("")
+    const [toggleSuggest, updateToggleSuggest] = useState(0)
+    const [toggleQuery, updateToggleQuery] = useState(0)
+    const [toggle, updateToggle] = useState(true)
 
     useEffect(() => {
       getQueryAllPeople()
     }, []);
 
-    const [toggleSuggest, updateToggleSuggest] = useState(0)
-    const [toggleQuery, updateToggleQuery] = useState(0)
+
     const getSearch = async() => {
         const user = await axios.get(`http://localhost:3000/account/search/${search}`)
         updateParticipants(user.data)
+        if(search == ''){
+          getQueryAllPeople()
+        }
       };
       // All btn for query data
     const getQueryAllPeople = async () =>{
