@@ -1,15 +1,27 @@
 import React from 'react'
-
 import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
+import Constants from 'expo-constants'
+import axios from 'axios'
 
 // Redux
 import { useSelector } from 'react-redux'
 
 // style by tanssw.com
-import { text, shadow } from '../../styles'
+import { text, shadow, colorCode } from '../../styles'
+
+const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function AccountMenuScreen({ navigation }) {
+
     const userData = useSelector(state => state.user.userData)
+
+    const signOut = () => {
+        try {
+            const result = axios.delete(`${API_SERVER_DOMAIN}/auth`)
+        } catch (error) {
+
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -46,12 +58,7 @@ export default function AccountMenuScreen({ navigation }) {
                         <Text style={styles.menuText}>Settings</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                    style={[styles.signOutBtn]}
-                    onPress={() => {
-                        console.log('Sign out')
-                    }}
-                >
+                <TouchableOpacity style={[styles.signOutBtn]} onPress={signOut}>
                     <Text style={styles.signOutBtnText}>Sign Out</Text>
                 </TouchableOpacity>
             </View>
@@ -102,15 +109,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     signOutBtnText: {
-        fontWeight: 'bold',
-        color: 'red'
+        fontWeight: '300',
+        color: colorCode.red,
+        fontSize: 16
     },
     signOutBtn: {
         width: '100%',
         padding: 16,
         borderRadius: 16,
-        borderWidth: 1,
-        borderColor: 'red',
+        borderWidth: 0.75,
+        borderColor: colorCode.red,
         alignItems: 'center'
     }
 })
