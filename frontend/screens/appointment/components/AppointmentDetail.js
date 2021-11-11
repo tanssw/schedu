@@ -14,7 +14,7 @@ function AppointmentDetail(props, ref) {
     const [note, setNote] = useState()
 
     const [participants, setParticipants] = useState([
-        {_id: "617ad469233ec5b2b2570d52", business_id: '62070184', firstname: 'Loukhin', lastname: 'Dotcom'},
+        {_id: "618b4d47a996fac981059a6f", business_id: '62070184', firstname: 'Loukhin', lastname: 'Dotcom'},
     ])
 
     useImperativeHandle(ref, () => ({

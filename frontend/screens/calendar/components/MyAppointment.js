@@ -5,24 +5,17 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 
 import { colorCode, text } from '../../../styles'
-import axios from 'axios'
 
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
+export default function MyAppointment(props) {
 
-function MyAppointment(props, ref) {
+    const getParticipant = (participants) => {
+        const receiver = participants.filter(participant => participant.main === true)
+        const receiverText = receiver.map((participant, index) => `${participant.firstName} ${participant.lastName[0]}.`)
 
-    const [myAppointments, updateMyAppointments] = useState([])
-
-    useImperativeHandle(ref, () => ({
-        async loadAppointments() {
-            // Request my appointments from server
-            // TODO: query from real user id
-            const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/6189ea797b52117c02879274`)
-            const appointments = appointmentResult.data.appointments
-            // Update state with new appointments
-            updateMyAppointments(appointments)
-        }
-    }), [])
+        const other = participants.filter(participant =>  participant.main !== true)
+        const otherText = other.length ? `and ${other.length} more` : ''
+        return `${receiverText} ${otherText}`
+    }
 
     const renderAppointment = (appointment) => {
         return (
@@ -37,20 +30,20 @@ function MyAppointment(props, ref) {
                         </Text>
                     </View>
                     <Text style={styles.appointmentParticipant}>
-                        Participant: {appointment.participants.map((participant, index) => `${index ? ', ' : ''}${participant.firstName}`)}
+                        with {getParticipant(appointment.participants)}
                     </Text>
                 </View>
-                <TouchableOpacity style={styles.viewButton}>
-                    <Text style={styles.viewButtonText}>View</Text>
-                </TouchableOpacity>
+                <View style={styles.status}>
+                    <Text style={styles.statusText}>{appointment.status}</Text>
+                </View>
             </View>
         )
     }
 
     const appointmentList = (
-        <View>
-            {myAppointments.map(appointment => renderAppointment(appointment))}
-        </View>
+        <TouchableOpacity>
+            {props.appointments.map(appointment => renderAppointment(appointment))}
+        </TouchableOpacity>
     )
 
     const emptyRequest = (
@@ -63,12 +56,10 @@ function MyAppointment(props, ref) {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>My Appointments</Text>
-            {myAppointments.length ? appointmentList : emptyRequest}
+            {props.appointments.length ? appointmentList : emptyRequest}
         </View>
     )
 }
-
-export default forwardRef(MyAppointment)
 
 const styles = StyleSheet.create({
     container: {
@@ -114,14 +105,14 @@ const styles = StyleSheet.create({
         color: 'grey',
         marginTop: 4
     },
-    viewButton: {
+    status: {
         borderWidth: 1,
         borderColor: colorCode.blue,
         borderRadius: 8,
-        paddingVertical: 8,
-        paddingHorizontal: 16
+        paddingVertical: 6,
+        paddingHorizontal: 12
     },
-    viewButtonText: {
+    statusText: {
         fontSize: 12,
         color: colorCode.blue
     }

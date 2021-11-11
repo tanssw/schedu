@@ -22,7 +22,7 @@ export default function AppointmentEditorScreen() {
         const payload = {
             subject: data.subject,
             sender: "6189ea797b52117c02879274",
-            receiver: "618b3670ea4fd363e6214a52",
+            receiver: "618b4cc8a996fac981059a69",
             participants: data.participants,
             startAt: formattedStart,
             endAt: formattedEnd,

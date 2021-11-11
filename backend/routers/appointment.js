@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 
 const conn = require('../config/connectionMongoDB/ScheduConnect')
 const { getUserByObjectId } = require('../helpers/account')
+const { initAppointmentStatus } = require('../helpers/appointment')
 const appointmentSchema = require('../schema/appointmentSchema')
 const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
 
@@ -64,6 +65,7 @@ router.post('/', async(req, res) => {
     // Structuring payload data before saving into the database
     const data = {
         subject: payload.subject,
+        status: initAppointmentStatus(),
         sender: payload.sender,
         participants: [
             {userId: payload.receiver, main: true, confirmed: false},
@@ -75,8 +77,6 @@ router.post('/', async(req, res) => {
         commUrl: payload.commUrl,
         note: payload.note
     }
-
-    console.log(data)
 
     // TODO: Do the validation before saving into the database
 
