@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { LogBox, StyleSheet, Text, View } from 'react-native'
+import { createStore, combineReducers } from 'redux'
+import { Provider } from 'react-redux'
 import Constants from 'expo-constants'
 import * as SecureStore from 'expo-secure-store'
 
 import * as Google from 'expo-google-app-auth'
 import axios from 'axios'
 
-// Redux
-import { createStore, combineReducers } from 'redux'
-import { Provider } from 'react-redux'
-
 import userReducer from './store/reducers/userReducer'
+import { AUTH_TOKEN_KEY, AUTH_USER_ID, clearAuthAsset, getAuthAsset, setAuthAsset } from './modules/auth'
 
 import Navigator from './navigators/MainNavigator'
 import SignInScreen from './screens/account/SignInScreen'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
-const AUTH_TOKEN_KEY = 'authtoken'
-const AUTH_USER_ID = 'uid'
 
 // Disable Yellow box warning
 LogBox.ignoreLogs(['AsyncStorage'])
@@ -34,8 +31,7 @@ export default function App() {
     useEffect(async () => {
         try {
             // Get authentication token from Secure Store
-            const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
-            const userId = await SecureStore.getItemAsync(AUTH_USER_ID)
+            const { token, userId } = await getAuthAsset()
             if (!token || !userId) throw "Incomplete stored keys"
 
             const requestBody = {token: token}
@@ -44,8 +40,7 @@ export default function App() {
             setUserData(user)
         } catch (error) {
             // Clear stored token in Secure Store
-            await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY, {})
-            await SecureStore.deleteItemAsync(AUTH_USER_ID, {})
+            await clearAuthAsset()
         }
     }, [])
 
@@ -61,8 +56,7 @@ export default function App() {
                 setUserData(user)
 
                 const token = authResult.data.token
-                await SecureStore.setItemAsync(AUTH_TOKEN_KEY, token)
-                await SecureStore.setItemAsync(AUTH_USER_ID, user._id)
+                await setAuthAsset(token, user._id)
             }
         } catch (error) {
             console.log('Authentication Error')

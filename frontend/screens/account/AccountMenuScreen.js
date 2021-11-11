@@ -1,17 +1,14 @@
 import React from 'react'
 import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
+import { useSelector } from 'react-redux'
 import Constants from 'expo-constants'
 import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
-// Redux
-import { useSelector } from 'react-redux'
-
-// style by tanssw.com
 import { text, shadow, colorCode } from '../../styles'
+import { AUTH_TOKEN_KEY, clearAuthAsset } from '../../modules/auth'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
-const AUTH_TOKEN_KEY = 'authtoken'
 
 export default function AccountMenuScreen({ navigation }) {
 
@@ -26,6 +23,7 @@ export default function AccountMenuScreen({ navigation }) {
                 }
             }
             const result = axios.delete(`${API_SERVER_DOMAIN}/auth`, payload)
+            await clearAuthAsset()
         } catch (error) {
             const status = error.response.status
             if (status === 500) return
