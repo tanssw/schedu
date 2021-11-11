@@ -16,8 +16,6 @@ const options = {
 
     }
 }
-    
-
 export default function ContactNavigator() {
     return (
         // TODO: Change back initialRoute to ContactList
