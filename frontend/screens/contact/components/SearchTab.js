@@ -14,7 +14,7 @@ export default function SearchTab(props) {
                 <TextInput
                     style={styles.searchBar}
                     placeholder="Search"
-                    onChange={}
+                    // onChange={}
                     onChangeText={props.searchWord}
                     keyboardType={'default'}
                     multiline={false}

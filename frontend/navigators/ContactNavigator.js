@@ -13,18 +13,20 @@ const ContactStack = createNativeStackNavigator()
 const options = {
     createAppointment: {
         headerTitle: "Appointment",
-
+    },
+    hideHeader:{
+        headerShown: false
     }
 }
 export default function ContactNavigator() {
     return (
         // TODO: Change back initialRoute to ContactList
         <ContactStack.Navigator initialRouteName="ContactList">
-            <ContactStack.Screen options={{headerShown: false}} name="ContactList" component={ContactListScreen}/>
+            <ContactStack.Screen options={options.hideHeader} name="ContactList" component={ContactListScreen}/>
             <ContactStack.Screen name="ContactHistory" component={ContactHistoryScreen} />
             <ContactStack.Screen name="ContactFavorite" component={ContactFavorite} />
             <ContactStack.Screen name="ContactProfile" component={ContactProfileScreen} />
-            <ContactStack.Screen options={{headerShown: false}} name="CreateAppointment" component={AppointmentEditorScreen} options={options.createAppointment} />
+            <ContactStack.Screen options={options.hideHeader} name="CreateAppointment" component={AppointmentEditorScreen} options={options.createAppointment} />
         </ContactStack.Navigator>
     )
 }
