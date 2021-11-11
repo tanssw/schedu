@@ -59,7 +59,7 @@ export default function SuggestBar(){
 
       const renderParticipant = ({ item }) => {
         return (
-          <TouchableOpacity onPress={() => {navigation.navigate("ContactProfile")}}>
+          <TouchableOpacity onPress={() => {navigation.navigate("ContactProfile" ,{ businessId: 62070101 })}}>
           <View>
             <FontAwesome
               name="user-circle-o"

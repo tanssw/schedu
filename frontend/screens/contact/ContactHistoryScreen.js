@@ -25,8 +25,8 @@ export default function ContactHistoryScreen({route, navigation}) {
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>History</Text>
       <View style={styles.listContainer}>
           {participants.map(({businessId, firstName, lastName, role}, index) => (
-             <TouchableOpacity onPress={() => {navigation.navigate("ContactProfile" ,{ businessId: businessId })}}>
-              <View style={styles.listItem} key={`${index}${businessId}`}>
+             <TouchableOpacity onPress={() => {navigation.navigate("ContactProfile" ,{ businessId: businessId })}} key={businessId}>
+              <View style={styles.listItem}>
               <FontAwesome 
                 name="user-circle-o"
                 size={44}
