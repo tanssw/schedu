@@ -24,6 +24,7 @@ export default function AccountMenuScreen({ navigation }) {
             }
             const result = axios.delete(`${API_SERVER_DOMAIN}/auth`, payload)
             await clearAuthAsset()
+            navigation.navigate('SignIn')
         } catch (error) {
             const status = error.response.status
             if (status === 500) return

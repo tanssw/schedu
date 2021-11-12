@@ -6,7 +6,8 @@ const AUTH_USER_ID = 'uid'
 const getAuthAsset = async () => {
     const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
     const userId = await SecureStore.getItemAsync(AUTH_USER_ID)
-    return { token, userId }
+    if (token && userId) return { token, userId }
+    throw "No Authentication found"
 }
 
 const setAuthAsset = async (token, uid) => {
