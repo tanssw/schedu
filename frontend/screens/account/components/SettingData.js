@@ -1,14 +1,8 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, Switch, TextInput } from 'react-native'
 
-// Redux
-import { useDispatch } from 'react-redux'
-import { toggleSetting } from '../../../store/actions/userAction'
-
 export default function SettingData(props) {
     const [isEnabled, setIsEnabled] = useState(props.data)
-
-    const dispatch = useDispatch()
 
     const toggleSwitch = () => {
         setIsEnabled(previousState => !previousState)
@@ -16,12 +10,7 @@ export default function SettingData(props) {
         if (props.topicData === 'Receive weekend appointment') settingTopic = 'weekend'
         else if (props.topicData === 'Display phone number') settingTopic = 'phone'
 
-        dispatch(
-            toggleSetting({
-                topic: settingTopic,
-                data: !isEnabled
-            })
-        )
+        
     }
 
     if (props.type === 'time') {

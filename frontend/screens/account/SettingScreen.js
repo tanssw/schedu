@@ -1,14 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
-
-// Redux
-import { useSelector } from 'react-redux'
+import { useFocusEffect } from '@react-navigation/native';
 
 // import components
 import SettingData from './components/SettingData'
 
-export default function SettingScreen() {
-    const settings = useSelector(state => state.user.userData.setting)
+export default function SettingScreen({ route }) {
+
+
+    const [settings, setSettings] = useState(route.params)
+
+
+    
+    useFocusEffect(() => {
+        return () => {
+            
+            console.log(settings)
+        }
+    })
 
     return (
         <View style={styles.container}>

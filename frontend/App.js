@@ -8,7 +8,6 @@ import axios from 'axios'
 
 // Redux
 import { createStore, combineReducers } from 'redux'
-import { Provider } from 'react-redux'
 
 import userReducer from './store/reducers/userReducer'
 

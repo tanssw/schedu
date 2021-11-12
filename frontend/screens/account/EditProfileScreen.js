@@ -1,10 +1,6 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native'
 
-// Redux
-import { useSelector, useDispatch } from 'react-redux'
-import { updateData } from './../../store/actions/userAction'
-
 // style by tanssw.com
 import { text, shadow } from '../../styles'
 
@@ -12,7 +8,20 @@ import { text, shadow } from '../../styles'
 import UserData from './components/UserData'
 
 export default function ProfileScreen({ navigation }) {
-    const userData = useSelector(state => state.user.userData)
+    const [userData, setUserData] = useState({
+        _id: { $oid: '617be0c164389e9709ea96b0' },
+        businessId: '62070077',
+        firstName: 'thanakan',
+        lastName: 'boonma',
+        role: 'student',
+        contact: { email: '62070077@it.kmitl.ac.th', tel: '0808080808' },
+        image: 'https://lh3.googleusercontent.com/a/AATXAJwtwryT19EjwXDGUmiB_Y8C34GOlwfRu8S1dplb=s96-c',
+        setting: {
+            displayTel: true,
+            weekendReceive: true,
+            activeTime: { startAt: '8:30AM', endAt: '16:30AM' }
+        }
+    })
 
     const [newFirstName, setNewFirstName] = useState(userData.firstName)
     const [newLastName, setNewLastName] = useState(userData.lastName)
@@ -32,20 +41,20 @@ export default function ProfileScreen({ navigation }) {
         }
     }
 
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
-    const update = () => {
-        dispatch(
-            updateData({
-                firstName: newFirstName,
-                lastName: newLastName,
-                tel: newPhoneNumber
-            })
-        )
+    // const update = () => {
+    //     dispatch(
+    //         updateData({
+    //             firstName: newFirstName,
+    //             lastName: newLastName,
+    //             tel: newPhoneNumber
+    //         })
+    //     )
 
-        alert('Profile Updated')
-        navigation.navigate('Profile', {})
-    }
+    //     alert('Profile Updated')
+    //     navigation.navigate('Profile', {})
+    // }
 
     return (
         <ScrollView nestedScrollEnabled>

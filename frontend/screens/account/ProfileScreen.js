@@ -1,8 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Text, View, StyleSheet, Image } from 'react-native'
-
-// Redux
-import { useSelector } from 'react-redux'
 
 // style by tanssw.com
 import { shadow } from '../../styles'
@@ -10,8 +7,8 @@ import { shadow } from '../../styles'
 // import components
 import UserData from './components/UserData'
 
-export default function ProfileScreen() {
-    const userData = useSelector(state => state.user.userData)
+export default function ProfileScreen({ route }) {
+    const [userData, setUserData] = useState(route.params)
 
     return (
         <View style={styles.container}>
