@@ -44,10 +44,10 @@ router.delete('/delUser/:id', async (req, res) => {
 
     res.status(200).end()
 })
-// Get user by user object id
-router.get('/:id', async (req, res) => {
-    const { id } = req.params
-    const user = await accountModel.find({ businessId: id }).exec()
+// Get user by user object id   
+router.get('/user/:objectId', async (req, res) => {
+    const { objectId } = req.params
+    const user = await accountModel.find({ _id: objectId }).exec()
     res.json(user)
 })
 

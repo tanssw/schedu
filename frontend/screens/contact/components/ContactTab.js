@@ -11,12 +11,12 @@ export default function ContactTab(props) {
         <View style={styles.ContactTab}>
             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{props.headerText}</Text>
             <View style={styles.listContainer}>
-                {props.participants.map(({ businessId, firstName, lastName, role }, index) => (
+                {props.participants.map(({ _id, firstName, lastName, role }, index) => (
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('ContactProfile', { businessId: businessId })
+                            navigation.navigate('ContactProfile', { objectId: _id })
                         }}
-                        key={businessId}
+                        key={`${_id + index}`}
                     >
                         <View style={styles.listItem}>
                             <FontAwesome

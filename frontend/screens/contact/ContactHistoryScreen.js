@@ -19,12 +19,12 @@ export default function ContactHistoryScreen({ route, navigation }) {
         <View style={styles.ContactTab}>
             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>History</Text>
             <View style={styles.listContainer}>
-                {participants.map(({ businessId, firstName, lastName, role }, index) => (
+                {participants.map(({ _id, firstName, lastName, role }, index) => (
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('ContactProfile', { businessId: businessId })
+                            navigation.navigate('ContactProfile', { objectId: _id})
                         }}
-                        key={businessId}
+                        key={_id}
                     >
                         <View style={styles.listItem}>
                             <FontAwesome

@@ -3,11 +3,11 @@ import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
 import axios from 'axios'
 
 export default function ContactProfileScreen({ route, navigation }) {
-    const { businessId } = route.params
+    const { objectId } = route.params
 
     const [profile, updateProfile] = useState([])
     const getQueryPeople = async () => {
-        const all = await axios.get(`http://localhost:3000/account/${businessId}`)
+        const all = await axios.get(`http://localhost:3000/account/user/${objectId}`)
         updateProfile(all.data)
     }
 
