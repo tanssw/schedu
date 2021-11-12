@@ -5,13 +5,13 @@ import * as SecureStore from 'expo-secure-store'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
+import { getAuthAsset } from '../../modules/auth'
+
 import CalendarOverview from './components/CalendarOverview'
 import IncomingRequest from './components/IncomingRequest'
 import MyAppointment from './components/MyAppointment'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
-const AUTH_USER_ID = 'uid'
-const AUTH_TOKEN_KEY = 'authtoken'
 
 export default function CalendarOverviewScreen({navigation}) {
 
@@ -27,8 +27,7 @@ export default function CalendarOverviewScreen({navigation}) {
 
     const loadAppointments = async () => {
 
-        const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
-        const userId = await SecureStore.getItemAsync(AUTH_USER_ID)
+        const { token, userId } = await getAuthAsset()
 
         // Request my appointments from server
         const payload = {
