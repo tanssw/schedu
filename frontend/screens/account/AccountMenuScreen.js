@@ -1,15 +1,34 @@
 import React from 'react'
-
 import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
-
-// Redux
 import { useSelector } from 'react-redux'
+import Constants from 'expo-constants'
+import * as SecureStore from 'expo-secure-store'
+import axios from 'axios'
 
-// style by tanssw.com
-import { text, shadow } from '../../styles'
+import { text, shadow, colorCode } from '../../styles'
+import { AUTH_TOKEN_KEY, clearAuthAsset } from '../../modules/auth'
+
+const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function AccountMenuScreen({ navigation }) {
+
     const userData = useSelector(state => state.user.userData)
+
+    const signOut = async () => {
+        const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
+        try {
+            const payload = {
+                headers: {
+                    'Schedu-Token': token
+                }
+            }
+            const result = axios.delete(`${API_SERVER_DOMAIN}/auth`, payload)
+            await clearAuthAsset()
+        } catch (error) {
+            const status = error.response.status
+            if (status === 500) return
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -46,12 +65,7 @@ export default function AccountMenuScreen({ navigation }) {
                         <Text style={styles.menuText}>Settings</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                    style={[styles.signOutBtn]}
-                    onPress={() => {
-                        console.log('Sign out')
-                    }}
-                >
+                <TouchableOpacity style={[styles.signOutBtn]} onPress={signOut}>
                     <Text style={styles.signOutBtnText}>Sign Out</Text>
                 </TouchableOpacity>
             </View>
@@ -102,15 +116,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     signOutBtnText: {
-        fontWeight: 'bold',
-        color: 'red'
+        fontWeight: '300',
+        color: colorCode.red,
+        fontSize: 16
     },
     signOutBtn: {
         width: '100%',
         padding: 16,
         borderRadius: 16,
-        borderWidth: 1,
-        borderColor: 'red',
+        borderWidth: 0.75,
+        borderColor: colorCode.red,
         alignItems: 'center'
     }
 })
