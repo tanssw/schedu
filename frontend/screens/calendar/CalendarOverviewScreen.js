@@ -66,6 +66,7 @@ export default function CalendarOverviewScreen({navigation}) {
         )
     }
 
+    // To build the object of MarkedDate to show in Calendar
     const buildDateMarks = (appointments) => {
         let object = {}
         appointments.forEach(appointment => {
@@ -73,7 +74,6 @@ export default function CalendarOverviewScreen({navigation}) {
             let included = Object.keys(object).includes(date)
             if (!included) object[date] = {marked: true}
         })
-        console.log(object)
         return object
     }
 
@@ -86,7 +86,7 @@ export default function CalendarOverviewScreen({navigation}) {
 
     return (
         <ScrollView style={styles.container}>
-            <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDates} appointments={allAppointments} />
+            <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDates} />
             <IncomingRequest appointments={requestAppointments} />
             <MyAppointment appointments={myAppointments} />
         </ScrollView>
