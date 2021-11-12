@@ -1,42 +1,83 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
+const conn = require('../config/connectionMongoDB/ScheduConnect')
+const { getUserByObjectId } = require('../helpers/account')
+const { initAppointmentStatus } = require('../helpers/appointment')
+const { getUserIdFromToken } = require('../helpers/auth')
+const { authMiddleware } = require('../middlewares/auth')
 const appointmentSchema = require('../schema/appointmentSchema')
-var conn = require('../config/connectionMongoDB/ScheduConnect')
+const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
 
 const router = express()
 
-const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
+// Get all appointments associate with userId
+router.get('/', authMiddleware, async (req, res) => {
+    try {
+        // Get User ID from Auth Token
+        const userId = req.headers['schedu-uid']
 
-// Get all appointments
-// TODO: Get all that associate with request's user only
-router.get('/all', async(req, res) =>{
-    const appointment = await appointmentModel.find({})
-    res.json(appointment)
-})
+        // Find all appointments that user associated to.
+        let appointments = await appointmentModel.find({
+            $or: [
+                {
+                    sender: userId
+                },
+                {
+                    participants: {
+                        $elemMatch: {userId: userId}
+                    }
+                }
+            ]
+        })
 
-// Get appointment by appointment object id
-router.get('/:id', async(req, res) =>{
-    const { id } = req.params
-    const appointment = await appointmentModel.findById(id)
-    res.json(appointment)
+        // Get name of each user associate with an appointment
+        let formattedAppointments = []
+        for (let appointment of appointments) {
+            const sender = await getUserByObjectId(appointment.sender)
+            let formattedAppointment = Object.assign({}, appointment._doc)
+            formattedAppointment.sender = {
+                userId: sender._id,
+                firstName: sender.firstName,
+                lastName: sender.lastName
+            }
+            let formattedParticipants = []
+            for (let participant of formattedAppointment.participants) {
+                const participantUser = await getUserByObjectId(participant.userId)
+                let formattedParticipant = Object.assign({}, participant._doc)
+                formattedParticipant.firstName = participantUser.firstName
+                formattedParticipant.lastName = participantUser.lastName
+                formattedParticipants.push(formattedParticipant)
+            }
+            formattedAppointment.participants = formattedParticipants
+            formattedAppointments.push(formattedAppointment)
+        }
+
+        res.json({appointments: formattedAppointments})
+
+    } catch (error) {
+        res.send(500).send({message: 'Something went wrong. Please try again later.'})
+    }
+
 })
 
 // Create new Appointment
+// TODO: Add auth middleware
 router.post('/', async(req, res) => {
     const payload = req.body
 
     // Mapping business_id of participants to an Object with some logic keys
     let participants = payload.participants.map(participant => {
-        return {businessId: participant, main: false, confirmed: false}
+        return {userId: participant, main: false, confirmed: false}
     })
 
     // Structuring payload data before saving into the database
     const data = {
         subject: payload.subject,
+        status: initAppointmentStatus(),
         sender: payload.sender,
         participants: [
-            {businessId: payload.receiver, main: true, confirmed: false},
+            {userId: payload.receiver, main: true, confirmed: false},
             ...participants
         ],
         startAt: payload.startAt,
@@ -45,8 +86,6 @@ router.post('/', async(req, res) => {
         commUrl: payload.commUrl,
         note: payload.note
     }
-
-    console.log(data)
 
     // TODO: Do the validation before saving into the database
 
@@ -60,6 +99,15 @@ router.post('/', async(req, res) => {
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
 
+})
+
+/* ------------------------ NOT IN USE ------------------------ */
+
+// Get appointment by appointment object id
+router.get('/:id', async(req, res) =>{
+    const { id } = req.params
+    const appointment = await appointmentModel.findById(id)
+    res.json(appointment)
 })
 
 // Update appointment in mongoDB

@@ -1,53 +1,62 @@
-import React, { useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import Constants from 'expo-constants'
 import { FontAwesome5 } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 
 import { colorCode, text } from '../../../styles'
 
-export default function MyAppointment() {
+export default function MyAppointment(props) {
 
-    const [myAppointments, updateMyAppointments] = useState([
-        {id: 1, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
-        {id: 2, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
-        {id: 3, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
-        {id: 4, date: '2021-11-07', start: '01:00 PM', end: '01:45 PM', participant: ['Tasanai S', 'Suphakit K']},
-    ])
+    const getParticipant = (participants) => {
+        const receiver = participants.filter(participant => participant.main === true)
+        const receiverText = receiver.map((participant, index) => `${participant.firstName} ${participant.lastName[0]}.`)
+
+        const other = participants.filter(participant =>  participant.main !== true)
+        const otherText = other.length ? `and ${other.length} more` : ''
+        return `${receiverText} ${otherText}`
+    }
 
     const renderAppointment = (appointment) => {
         return (
-            <View key={appointment.id} style={styles.appointmentItem}>
+            <View key={appointment._id} style={styles.appointmentItem}>
                 <View>
                     <View style={styles.appointmentDesc}>
-                        <Text style={styles.appointmentDate}>{dayjs(appointment.date).format('DD MMM YYYY')}</Text>
-                        <Text style={styles.appointmentTime}>{appointment.start} - {appointment.end}</Text>
+                        <Text style={styles.appointmentDate}>
+                            {dayjs(appointment.date).format('DD MMM YYYY')}
+                        </Text>
+                        <Text style={styles.appointmentTime}>
+                            {dayjs(appointment.startAt).format('HH:mm')} - {dayjs(appointment.endAt).format('HH:mm')}
+                        </Text>
                     </View>
-                    <Text style={styles.appointmentParticipant}>Participant: {appointment.participant.join(', ')}</Text>
+                    <Text style={styles.appointmentParticipant}>
+                        with {getParticipant(appointment.participants)}
+                    </Text>
                 </View>
-                <TouchableOpacity style={styles.viewButton}>
-                    <Text style={styles.viewButtonText}>View</Text>
-                </TouchableOpacity>
+                <View style={styles.status}>
+                    <Text style={styles.statusText}>{appointment.status}</Text>
+                </View>
             </View>
         )
     }
 
     const appointmentList = (
-        <View>
-            {myAppointments.map(appointment => renderAppointment(appointment))}
-        </View>
+        <TouchableOpacity>
+            {props.appointments.map(appointment => renderAppointment(appointment))}
+        </TouchableOpacity>
     )
 
     const emptyRequest = (
         <View style={styles.emptyRequestContainer}>
             <FontAwesome5 name="signature" size={48} color="#cccccc" />
-            <Text style={[styles.emptyRequestText, text.grey]}>No Appointment</Text>
+            <Text style={[styles.emptyRequestText, text.grey]}>Feel free to contact someone</Text>
         </View>
     )
 
     return (
         <View style={styles.container}>
             <Text style={styles.header}>My Appointments</Text>
-            {true ? appointmentList : emptyRequest}
+            {props.appointments.length ? appointmentList : emptyRequest}
         </View>
     )
 }
@@ -56,7 +65,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         padding: 16,
-        marginTop: 8
+        marginTop: 8,
     },
     header: {
         fontWeight: 'bold',
@@ -96,14 +105,14 @@ const styles = StyleSheet.create({
         color: 'grey',
         marginTop: 4
     },
-    viewButton: {
+    status: {
         borderWidth: 1,
         borderColor: colorCode.blue,
         borderRadius: 8,
-        paddingVertical: 8,
-        paddingHorizontal: 16
+        paddingVertical: 6,
+        paddingHorizontal: 12
     },
-    viewButtonText: {
+    statusText: {
         fontSize: 12,
         color: colorCode.blue
     }

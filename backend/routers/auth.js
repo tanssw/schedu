@@ -3,7 +3,8 @@ const express = require('express')
 const { isAllowEmailDomain } = require('../validators/authValidator')
 const { getTokenData } = require('../helpers/googleApis')
 const { createNewUser, getUserByGoogleId, getUserByObjectId } = require('../helpers/account')
-const { generateAuthToken, getUserIdFromToken } = require('../helpers/auth')
+const { generateAuthToken, getUserIdFromToken, deleteAuthToken } = require('../helpers/auth')
+const { authMiddleware } = require('../middlewares/auth')
 
 const router = express()
 
@@ -30,6 +31,7 @@ router.post('/', async (req, res) => {
         res.json({user: user, token: authToken})
 
     } catch (error) {
+        console.log(error)
         res.status(403).send({error: 'Authentication Error'})
     }
 })
@@ -37,7 +39,6 @@ router.post('/', async (req, res) => {
 // Account Authentication with Token
 router.post('/token', async (req, res) => {
     const token = req.body.token
-
     try {
         const userObjectId = await getUserIdFromToken(token)
         const user = await getUserByObjectId(userObjectId)
@@ -46,6 +47,17 @@ router.post('/token', async (req, res) => {
         res.status(403).send({error: 'Authentication Error'})
     }
 
+})
+
+// Delete Account Token
+router.delete('/', authMiddleware, async (req, res) => {
+    try {
+        const token = req.headers['schedu-token']
+        await deleteAuthToken(token)
+        res.json({message: 'Account has been successfully signed-out'})
+    } catch (error) {
+        res.status(500).send({message: 'Error occured while signing out from the system'})
+    }
 })
 
 module.exports = router
