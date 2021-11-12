@@ -15,6 +15,8 @@ const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function CalendarOverviewScreen({navigation}) {
 
+    const [allAppointments, updateAllAppointments] = useState([])
+    const [markedDates, updateMarkedDates] = useState({})
     const [requestAppointments, updateRequestAppointments] = useState([])
     const [myAppointments, updateMyAppointments] = useState([])
 
@@ -39,6 +41,9 @@ export default function CalendarOverviewScreen({navigation}) {
         const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
         const appointments = appointmentResult.data.appointments
 
+        // Update all appointments for calendar
+        updateMarkedDates(buildDateMarks(appointments))
+
         // Update my appointments
         const shownStatus = ['ongoing']
         updateMyAppointments(
@@ -61,6 +66,17 @@ export default function CalendarOverviewScreen({navigation}) {
         )
     }
 
+    const buildDateMarks = (appointments) => {
+        let object = {}
+        appointments.forEach(appointment => {
+            let date = dayjs(appointment.startAt).format('YYYY-MM-DD')
+            let included = Object.keys(object).includes(date)
+            if (!included) object[date] = {marked: true}
+        })
+        console.log(object)
+        return object
+    }
+
     const viewMonthly = (day) => {
         let formattedDay = dayjs(`${day.year}-${day.month}-${day.day}`).format('MMMM YYYY')
         navigation.navigate('CalendarDetail', {
@@ -70,7 +86,7 @@ export default function CalendarOverviewScreen({navigation}) {
 
     return (
         <ScrollView style={styles.container}>
-            <CalendarOverview onDateSelect={viewMonthly} />
+            <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDates} appointments={allAppointments} />
             <IncomingRequest appointments={requestAppointments} />
             <MyAppointment appointments={myAppointments} />
         </ScrollView>
