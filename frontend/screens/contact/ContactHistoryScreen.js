@@ -3,12 +3,22 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import axios from 'axios'
 
+import {
+    AUTH_TOKEN_KEY,
+    AUTH_USER_ID,
+    clearAuthAsset,
+    getAuthAsset,
+    setAuthAsset
+} from '../../modules/auth'
+
+
 export default function ContactHistoryScreen({ route, navigation }) {
     const [participants, updateParticipants] = useState([])
-    const { businessId } = route.params
+    const { id } = route.params
 
     const getQueryHistory = async () => {
-        const all = await axios.get(`http://localhost:3000/account/${businessId}`)
+        const {token, userId} = await getAuthAsset()
+        const all = await axios.get(`http://localhost:3000/account/user/${userId}`)
         updateParticipants(all.data)
     }
     useEffect(() => {

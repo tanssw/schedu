@@ -4,6 +4,8 @@ const accountSchema = require('../schema/accountSchema')
 const conn = require('../config/connectionMongoDB/ScheduConnect')
 
 const accountModel = conn.model('accounts', accountSchema, process.env.ACCOUNTS_COLLECTION)
+const {authMiddleware}= require('../middlewares/auth')
+
 
 const router = express()
 
@@ -48,6 +50,13 @@ router.delete('/delUser/:id', async (req, res) => {
 router.get('/user/:objectId', async (req, res) => {
     const { objectId } = req.params
     const user = await accountModel.find({ _id: objectId }).exec()
+    res.json(user)
+})
+// Get user by user object id add authMiddleware
+router.get('/:id', authMiddleware, async (req, res) => {
+    // const userId = req.headers['schedu-uid']
+    const userId = req.params.id
+    const user = await accountModel.findOne({ _id: userId })
     res.json(user)
 })
 

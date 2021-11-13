@@ -21,7 +21,7 @@ export default function SearchTab(props) {
                 />
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate('ContactHistory', { businessId: 62070101 })
+                        navigation.navigate('ContactHistory', { id: '617fb3f0396613a9e99b86a8' })
                     }}
                 >
                     <Fontisto style={styles.iconHistory} name="history" size={22} color="white" />
