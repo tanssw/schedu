@@ -78,9 +78,12 @@ export default function CalendarOverviewScreen({navigation}) {
     }
 
     const viewMonthly = (day) => {
-        let formattedDay = dayjs(`${day.year}-${day.month}-${day.day}`).format('MMMM YYYY')
+        let date = dayjs(`${day.year}-${day.month}-${day.day}`)
+        let formattedDay = date.format('MMMM YYYY')
+        let selectedDay = date.format('YYYY-MM-DD')
         navigation.navigate('CalendarDetail', {
-            title: `${formattedDay}`
+            title: `${formattedDay}`,
+            selectedDay: selectedDay
         })
     }
 
