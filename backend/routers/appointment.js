@@ -1,13 +1,18 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
+const dayjs = require('dayjs')
+const utc = require('dayjs/plugin/utc')
+dayjs.apply(utc)
+
 const conn = require('../config/connectionMongoDB/ScheduConnect')
-const { getUserByObjectId } = require('../helpers/account')
-const { initAppointmentStatus } = require('../helpers/appointment')
-const { getUserIdFromToken } = require('../helpers/auth')
-const { authMiddleware } = require('../middlewares/auth')
 const appointmentSchema = require('../schema/appointmentSchema')
 const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
+
+const { getUserByObjectId } = require('../helpers/account')
+const { initAppointmentStatus, formatAppointmentsBasic } = require('../helpers/appointment')
+const { getUserIdFromToken } = require('../helpers/auth')
+const { authMiddleware } = require('../middlewares/auth')
 
 const router = express()
 
@@ -32,33 +37,56 @@ router.get('/', authMiddleware, async (req, res) => {
         })
 
         // Get name of each user associate with an appointment
-        let formattedAppointments = []
-        for (let appointment of appointments) {
-            const sender = await getUserByObjectId(appointment.sender)
-            let formattedAppointment = Object.assign({}, appointment._doc)
-            formattedAppointment.sender = {
-                userId: sender._id,
-                firstName: sender.firstName,
-                lastName: sender.lastName
-            }
-            let formattedParticipants = []
-            for (let participant of formattedAppointment.participants) {
-                const participantUser = await getUserByObjectId(participant.userId)
-                let formattedParticipant = Object.assign({}, participant._doc)
-                formattedParticipant.firstName = participantUser.firstName
-                formattedParticipant.lastName = participantUser.lastName
-                formattedParticipants.push(formattedParticipant)
-            }
-            formattedAppointment.participants = formattedParticipants
-            formattedAppointments.push(formattedAppointment)
-        }
-
+        const formattedAppointments = await formatAppointmentsBasic(appointments)
         res.json({appointments: formattedAppointments})
 
     } catch (error) {
         res.send(500).send({message: 'Something went wrong. Please try again later.'})
     }
 
+})
+
+// Gett appointments by month and year
+router.get('/:year/:month', authMiddleware, async(req, res) => {
+    try {
+        // Get User ID from Auth Token
+        const userId = req.headers['schedu-uid']
+
+        const year = req.params.year
+        const month = req.params.month
+        const minDate = dayjs(`${year}-${month}-01`, 'YYYY-MM-DD')
+        const lastDate = minDate.daysInMonth()
+        const maxDate = dayjs(`${year}-${month}-${lastDate}`, 'YYYY-MM-DD').add(1, 'days')
+
+        // Find all appointments that user associated to.
+        let appointments = await appointmentModel.find({
+            $and: [
+                {
+                    startAt: {'$gte': minDate, '$lt': maxDate}
+                },
+                {
+                    $or: [
+                        {
+                            sender: userId
+                        },
+                        {
+                            participants: {
+                                $elemMatch: {userId: userId}
+                            }
+                        }
+                    ]
+                }
+            ]
+        })
+
+        // Get name of each user associate with an appointment
+        const formattedAppointment = await formatAppointmentsBasic(appointments)
+        res.json({appointments: appointments})
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({message: 'error'})
+    }
 })
 
 // Create new Appointment
@@ -99,33 +127,6 @@ router.post('/', async(req, res) => {
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
 
-})
-
-/* ------------------------ NOT IN USE ------------------------ */
-
-// Get appointment by appointment object id
-router.get('/:id', async(req, res) =>{
-    const { id } = req.params
-    const appointment = await appointmentModel.findById(id)
-    res.json(appointment)
-})
-
-// Update appointment in mongoDB
-router.put('/updateAppointment/:id', async(req, res) =>{
-    const payload = req.body
-    const { id } = req.params
-    const appointment = await appointmentModel.findByIdAndUpdate(id, {$set: payload})
-    res.json(appointment)
-
-})
-
-// Delete appointment in mongoDB
-router.delete('/delAppointment/:id', async(req, res) => {
-    const { id } = req.params
-    await appointmentModel.findByIdAndDelete(id)
-    res.json({message: "Delete appointment"})
-
-    res.status(200).end()
 })
 
 module.exports = router

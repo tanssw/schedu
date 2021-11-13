@@ -25,14 +25,15 @@ export default function CalendarDetailScreen({route, navigation}) {
         const { token, userId } = await getAuthAsset()
 
         // Request my appointments from server
-        const { selectedMonth } = dayjs(selectedDay).get('month') + 1
+        const year = dayjs(selectedDay).get('year')
+        const month = dayjs(selectedDay).get('month') + 1
         const payload = {
             headers: {
                 'Schedu-Token': token,
                 'Schedu-UID': userId
             }
         }
-        const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${selectedMonth}`, payload)
+        const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${year}/${month}`, payload)
         const appointments = appointmentResult.data.appointments
 
     }
