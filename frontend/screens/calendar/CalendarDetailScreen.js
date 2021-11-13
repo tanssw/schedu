@@ -36,12 +36,40 @@ export default function CalendarDetailScreen({route, navigation}) {
         const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${year}/${month}`, payload)
         const appointments = appointmentResult.data.appointments
 
+        createAgendaTemplate(year, month)
+        console.log(myAgenda)
+    }
+
+    // Create empty date arrays for agenda
+    const createAgendaTemplate = (year, month) => {
+        const minDate = dayjs(`${year}-${month}-01`)
+        const lastDate = minDate.daysInMonth()
+
+        for (let day=1; day<=lastDate; day++) {
+            let date = dayjs(`${year}-${month}-${day}`).format('YYYY-MM-DD')
+            myAgenda[date] = []
+        }
+
+        updateMyAgenda(myAgenda)
+
+    }
+
+    const getFirstDate = () => {
+        let date = dayjs(selectedDay)
+        return `${date.get('year')}-${date.get('month')}-01`
+    }
+
+    const getLastDate = () => {
+        let date = dayjs(selectedDay)
+        return `${date.get('year')}-${date.daysInMonth()}`
     }
 
     return (
         <Agenda
             items={myAgenda}
             selected={selectedDay}
+            minDate={getFirstDate()}
+            maxDate={getLastDate()}
             hideKnob={true}
         />
     )

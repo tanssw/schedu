@@ -54,9 +54,9 @@ router.get('/:year/:month', authMiddleware, async(req, res) => {
 
         const year = req.params.year
         const month = req.params.month
-        const minDate = dayjs(`${year}-${month}-01`, 'YYYY-MM-DD')
+        const minDate = dayjs(`${year}-${month}-01`)
         const lastDate = minDate.daysInMonth()
-        const maxDate = dayjs(`${year}-${month}-${lastDate}`, 'YYYY-MM-DD').add(1, 'days')
+        const maxDate = dayjs(`${year}-${month}-${lastDate}`).add(1, 'days')
 
         // Find all appointments that user associated to.
         let appointments = await appointmentModel.find({
