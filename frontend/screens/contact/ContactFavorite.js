@@ -36,9 +36,9 @@ export default function ContactHistoryScreen() {
 
     return (
         <View style={styles.ContactTab}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>History</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Favorite</Text>
             <View style={styles.listContainer}>
-                {participants.map(({ _id, firstName, lastName, role }, index) => (
+                {/* {participants.map(({ _id, firstName, lastName, role }, index) => (
                     <TouchableOpacity
                         onPress={() => {
                             navigation.navigate('ContactProfile', { objectId: _id })
@@ -60,7 +60,7 @@ export default function ContactHistoryScreen() {
                             </View>
                         </View>
                     </TouchableOpacity>
-                ))}
+                ))} */}
             </View>
         </View>
  
