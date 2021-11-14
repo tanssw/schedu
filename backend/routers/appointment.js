@@ -117,9 +117,6 @@ router.get('/count', authMiddleware, async (req, res) => {
             return true
         })
 
-        console.log(requestAppointments.length)
-        console.log(requestAppointments)
-
         // Filter appointment that already end
         let endedAppointments = appointments.filter(appointment => ['abandoned', 'done'].includes(appointment.status))
 

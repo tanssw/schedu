@@ -98,7 +98,13 @@ export default function CalendarDetailScreen({route, navigation}) {
             minDate={getFirstDate()}
             maxDate={getLastDate()}
             hideKnob={true}
-            pastScrollRange={50}
+            theme={{
+                selectedDayBackgroundColor: colorCode.lightBlue,
+                selectedDayTextColor: 'white',
+                dotColor: colorCode.lighterBlue,
+                todayTextColor: colorCode.lightBlue,
+                agendaTodayColor: colorCode.blue
+            }}
         />
     )
 }
