@@ -14,16 +14,19 @@ router.get('/all', async (req, res) => {
     const user = await accountModel.find({})
     res.json(user)
 })
+
 router.get('/role/:role', async (req, res) => {
     const { role } = req.params
     const user = await accountModel.find({ role: role }).exec()
     res.json(user)
 })
+
 router.get('/search/:word', async (req, res) => {
     const { word } = req.params
     const user = await accountModel.find({ firstName: { $regex: '.*' + word + '.*' } }).limit(5)
     res.json(user)
 })
+
 // Add New user in mongoDB
 router.post('/addUser', async (req, res) => {
     const payload = req.body
@@ -31,6 +34,7 @@ router.post('/addUser', async (req, res) => {
     await user.save()
     res.json({ Message: 'Success' })
 })
+
 // Update user in mongoDB
 router.put('/updateUser/:id', async (req, res) => {
     const payload = req.body
@@ -38,6 +42,7 @@ router.put('/updateUser/:id', async (req, res) => {
     const user = await accountModel.findByIdAndUpdate(id, { $set: payload })
     res.json(user)
 })
+
 // Delete user in mongoDB
 router.delete('/delUser/:id', async (req, res) => {
     const { id } = req.params
@@ -46,25 +51,31 @@ router.delete('/delUser/:id', async (req, res) => {
 
     res.status(200).end()
 })
-// Get user by user object id   
+
+// Get user by user object id
 router.get('/user/:objectId', async (req, res) => {
     const { objectId } = req.params
     const user = await accountModel.find({ _id: objectId }).exec()
     res.json(user)
 })
-//Get all favorite users for they userId 
+
+//Get all favorite users for they userId
 router.get('/favorite/:id', authMiddleware, async (req, res) =>{
     const id = req.params.id
     const favoriteList = await accountModel.findOne({_id : id}).select({favorite: {$elemMatch: {_id: id}}})
     res.json(favoriteList)
-    
+
 })
-// Get user by user object id add authMiddleware
-router.get('/:id', authMiddleware, async (req, res) => {
-    // const userId = req.headers['schedu-uid']
-    const userId = req.params.id
-    const user = await accountModel.findOne({ _id: userId }).exec()
-    res.json(user)
+
+// Get user information from User ID
+router.get('/:userId', authMiddleware, async (req, res) => {
+    const userId = req.params.userId
+    try {
+        const user = await accountModel.findOne({ _id: userId })
+        res.json({user: user})
+    } catch (error) {
+        res.send(500).send({message: 'Something went wrong. Pleases try again.'})
+    }
 })
 
 
