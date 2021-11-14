@@ -14,12 +14,18 @@ import {
 
 export default function ContactHistoryScreen({ route, navigation }) {
     const [participants, updateParticipants] = useState([])
-    const { id } = route.params
 
     const getQueryHistory = async () => {
         const {token, userId} = await getAuthAsset()
-        const all = await axios.get(`http://localhost:3000/account/user/${userId}`)
-        updateParticipants(all.data)
+        const test = "617ace4e233ec5b2b2570d4f"
+        const payload = {
+            headers:{
+                "schedu-token": token,
+                "schedu-uid" : userId
+            },
+        }
+        const historyLog = await axios.get(`http://localhost:3000/appointment/`, {params: {id : userId }},payload)
+        updateParticipants(historyLog.data)
     }
     useEffect(() => {
         getQueryHistory()
@@ -32,9 +38,9 @@ export default function ContactHistoryScreen({ route, navigation }) {
                 {participants.map(({ _id, firstName, lastName, role }, index) => (
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('ContactProfile', { objectId: _id})
+                            navigation.navigate('ContactProfile', { objectId: _id })
                         }}
-                        key={_id}
+                        key={`${_id + index}`}
                     >
                         <View style={styles.listItem}>
                             <FontAwesome

@@ -52,12 +52,20 @@ router.get('/user/:objectId', async (req, res) => {
     const user = await accountModel.find({ _id: objectId }).exec()
     res.json(user)
 })
+//Get all favorite users for they userId 
+router.get('/favorite/:id', authMiddleware, async (req, res) =>{
+    const id = req.params.id
+    const favoriteList = await accountModel.findOne({_id : id}).select({favorite: {$elemMatch: {_id: id}}})
+    res.json(favoriteList)
+    
+})
 // Get user by user object id add authMiddleware
 router.get('/:id', authMiddleware, async (req, res) => {
     // const userId = req.headers['schedu-uid']
     const userId = req.params.id
-    const user = await accountModel.findOne({ _id: userId })
+    const user = await accountModel.findOne({ _id: userId }).exec()
     res.json(user)
 })
+
 
 module.exports = router

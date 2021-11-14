@@ -18,12 +18,8 @@ export default function ContactProfileScreen({ route, navigation }) {
         const {token} = await getAuthAsset()
         const payload = { 
             headers:{
-                // "schedu-uid": objectId,
                 "schedu-token": token
             },
-            // params:{
-            //     id: objectId
-            // }
         }
         const all = await axios.get(`http://localhost:3000/account/${objectId}`, payload)
         updateProfile(all.data)

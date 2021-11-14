@@ -1,80 +1,69 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 
+import axios from 'axios'
+
+import {
+    AUTH_TOKEN_KEY,
+    AUTH_USER_ID,
+    clearAuthAsset,
+    getAuthAsset,
+    setAuthAsset
+} from '../../modules/auth'
+
 export default function ContactHistoryScreen() {
-    const [participants, updateParticipants] = useState([
-        {
-            id: 1,
-            business_id: '62070101',
-            firstname: 'Nopphadon',
-            lastname: 'Phanwong',
-            role: 'Student'
-        },
-        {
-            id: 2,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 3,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 4,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 5,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 6,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 7,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
+    const [participants, updateParticipants] = useState([])
+
+    const getQueryFavorite = async () => {
+        const { token, userId } = await getAuthAsset()
+        const test = '617ace4e233ec5b2b2570d4f'
+        const payload = {
+            headers: {
+                'schedu-token': token,
+                'schedu-uid': userId
+            }
         }
-    ])
+
+        const list = await axios.get(`http://localhost:3000/account/${test}`, payload)
+        console.log(list.data)
+        updateParticipants(list.data)
+        console.log(participants.data)
+    }
+    useEffect(() => {
+        getQueryFavorite()
+    }, [])
 
     return (
         <View style={styles.ContactTab}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Favorite</Text>
-            {/* <View style={styles.listContainer}>
-          {participants.map(({id, firstname, lastname, role}) => (
-              <View style={styles.listItem} key={id}>
-              <FontAwesome 
-                name="user-circle-o"
-                size={44}
-                color="grey"
-                style={styles.personImage}
-              />
-              <View>
-              <Text style={[styles.personName, styles.flex = 1]}>{firstname}  {lastname}</Text>
-              <Text style={[styles.personRole]}>{role}</Text>
-              </View>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>History</Text>
+            <View style={styles.listContainer}>
+                {participants.map(({ _id, firstName, lastName, role }, index) => (
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate('ContactProfile', { objectId: _id })
+                        }}
+                        key={`${_id + index}`}
+                    >
+                        <View style={styles.listItem}>
+                            <FontAwesome
+                                name="user-circle-o"
+                                size={44}
+                                color="grey"
+                                style={styles.personImage}
+                            />
+                            <View>
+                                <Text style={[styles.personName, (styles.flex = 1)]}>
+                                    {firstName} {lastName}
+                                </Text>
+                                <Text style={[styles.personRole]}>{role}</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                ))}
             </View>
-          ))}
-        </View> */}
         </View>
+ 
     )
 }
 const styles = StyleSheet.create({
