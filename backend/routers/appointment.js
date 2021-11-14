@@ -80,8 +80,8 @@ router.get('/:year/:month', authMiddleware, async(req, res) => {
         })
 
         // Get name of each user associate with an appointment
-        const formattedAppointment = await formatAppointmentsBasic(appointments)
-        res.json({appointments: appointments})
+        const formattedAppointments = await formatAppointmentsBasic(appointments)
+        res.json({appointments: formattedAppointments})
 
     } catch (error) {
         console.log(error)
