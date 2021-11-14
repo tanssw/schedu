@@ -61,7 +61,7 @@ export default function SuggestBar() {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    navigation.navigate('ContactProfile', { businessId: 62070101 })
+                    navigation.navigate('ContactProfile', { objectId: '617fb3f0396613a9e99b86a8' })
                 }}
             >
                 <View>

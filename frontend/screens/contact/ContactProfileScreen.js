@@ -2,12 +2,26 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
 import axios from 'axios'
 
+import {
+    AUTH_TOKEN_KEY,
+    AUTH_USER_ID,
+    clearAuthAsset,
+    getAuthAsset,
+    setAuthAsset
+} from '../../modules/auth'
+
 export default function ContactProfileScreen({ route, navigation }) {
-    const { businessId } = route.params
+    const { objectId } = route.params
 
     const [profile, updateProfile] = useState([])
     const getQueryPeople = async () => {
-        const all = await axios.get(`http://localhost:3000/account/${businessId}`)
+        const {token} = await getAuthAsset()
+        const payload = { 
+            headers:{
+                "schedu-token": token
+            },
+        }
+        const all = await axios.get(`http://localhost:3000/account/${objectId}`, payload)
         updateProfile(all.data)
     }
 
