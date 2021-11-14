@@ -74,7 +74,7 @@ router.get('/:userId', authMiddleware, async (req, res) => {
         const user = await accountModel.findOne({ _id: userId })
         res.json({user: user})
     } catch (error) {
-        res.send(500).send({message: 'Something went wrong. Pleases try again.'})
+        res.status(500).send({message: 'Something went wrong. Pleases try again.'})
     }
 })
 
