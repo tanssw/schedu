@@ -9,10 +9,13 @@ import { shadow } from '../../styles'
 
 import ProfileHeader from './components/ProfileHeader'
 import ProfileCalendar from './components/ProfileCalendar'
+import ProfileInformation from './components/ProfileInformation'
 
 export default function ContactProfileScreen({ route, navigation }) {
 
     const [profileState, updateProfileState] = useState({})
+    const [emailState, updateEmailState] = useState()
+    const [phoneState, updatePhoneState] = useState()
 
     const { objectId } = route.params
 
@@ -30,13 +33,18 @@ export default function ContactProfileScreen({ route, navigation }) {
         const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/${objectId}`, payload)
         const user = userResult.data.user
         updateProfileState(user)
+        updateEmailState(user.contact.email)
+        updatePhoneState(user.contact.tel)
     }
 
     return (
         <SafeAreaView style={styles.container}>
             <ProfileHeader profile={profileState} />
             <View style={[styles.mainContainer, shadow.boxTopMedium]}>
-                <ProfileCalendar />
+                <View style={styles.calendarContainer}>
+                    <ProfileCalendar />
+                </View>
+                <ProfileInformation email={emailState} phone={phoneState} />
             </View>
         </SafeAreaView>
     )
@@ -50,8 +58,11 @@ const styles = StyleSheet.create({
         flex: 1,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
-        padding: 32,
         zIndex: 2,
         backgroundColor: 'white'
+    },
+    calendarContainer: {
+        padding: 16,
+        marginBottom: 24
     }
 })
