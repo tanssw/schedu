@@ -9,7 +9,6 @@ import ContactHistoryScreen from '../screens/contact/ContactHistoryScreen'
 import ContactFavorite from '../screens/contact/ContactFavorite'
 import AppointmentEditorScreen from '../screens/appointment/AppointmentEditorScreen'
 
-
 const ContactStack = createNativeStackNavigator()
 
 const options = {
@@ -31,7 +30,6 @@ export default function ContactNavigator() {
             <ContactStack.Screen name="ContactFavorite" component={ContactFavorite} />
             <ContactStack.Screen name="ContactProfile" component={ContactProfileScreen} />
             <ContactStack.Screen options={options.hideHeader} name="CreateAppointment" component={AppointmentEditorScreen} options={options.createAppointment} />
-
         </ContactStack.Navigator>
     )
 }

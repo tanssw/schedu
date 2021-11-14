@@ -1,10 +1,11 @@
-import React from "react"
+import React from 'react'
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
-import CalendarOverviewScreen from "../screens/calendar/CalendarOverviewScreen"
-import CalendarDetailScreen from "../screens/calendar/CalendarDetailScreen"
-import AppointmentScreen from "../screens/appointment/AppointmentScreen"
+import CalendarOverviewScreen from '../screens/calendar/CalendarOverviewScreen'
+import CalendarDetailScreen from '../screens/calendar/CalendarDetailScreen'
+import AppointmentScreen from '../screens/appointment/AppointmentScreen'
+import AppointmentApprovalScreen from '../screens/appointment/AppointmentApprovalScreen'
 
 const CalendarStack = createNativeStackNavigator()
 
@@ -15,19 +16,20 @@ export default function CalendarNavigator() {
                 name="CalendarOverview"
                 component={CalendarOverviewScreen}
                 options={{
-                    headerTitle: "Calendar",
+                    headerTitle: 'Calendar'
                 }}
             />
             <CalendarStack.Screen
                 name="CalendarDetail"
                 component={CalendarDetailScreen}
                 options={({ route }) => ({
-                    headerTitle: route.params.title,
+                    headerTitle: route.params.title
                 })}
             />
+            <CalendarStack.Screen name="Appointment" component={AppointmentScreen} />
             <CalendarStack.Screen
-                name="Appointment"
-                component={AppointmentScreen}
+                name={'AppointmentApproval'}
+                component={AppointmentApprovalScreen}
             />
         </CalendarStack.Navigator>
     )
