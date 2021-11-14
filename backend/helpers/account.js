@@ -32,7 +32,7 @@ const createNewUser = async (data) => {
                 startAt : DEFAULT_START_AT,
                 endAt: DEFAULT_END_AT
             }
-        }
+        },
     }
 
     const user = new accountModel(document)

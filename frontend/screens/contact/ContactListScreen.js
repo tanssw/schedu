@@ -14,11 +14,22 @@ export default function ContactListScreen() {
     const [search, updateSearch] = useState('')
     const [toggleSuggest, updateToggleSuggest] = useState(0)
     const [toggleQuery, updateToggleQuery] = useState(0)
-    const [toggle, updateToggle] = useState(true)
 
     useEffect(() => {
         getQueryAllPeople()
     }, [])
+    useEffect(() =>{
+        if(search == ''){
+            getQueryAllPeople()
+            updateToggleSuggest(0)
+            updateToggleQuery(0)
+        }
+        else{
+            getSearch(search)
+            updateToggleSuggest(1)
+            updateToggleQuery(1)
+        }
+    }, [search])
 
     const getSearch = async () => {
         const user = await axios.get(`http://localhost:3000/account/search/${search}`)
@@ -57,6 +68,7 @@ export default function ContactListScreen() {
             return <SuggestBar />
         }
     }
+    // toggle display query and query bar
     const queryDisplay = () => {
         if (toggleQuery == 0) {
             return (
@@ -69,27 +81,12 @@ export default function ContactListScreen() {
             )
         }
     }
-    const closeUpper = () => {
-        if (search == '') {
-            updateToggleSuggest(0)
-            updateToggleQuery(0)
-            //TODO when back contact home query all people
-            // getQueryAllPeople()
-        } else {
-            //TODO when user typing can query realtime
-            // getSearch(search)
-            updateToggleSuggest(1)
-            updateToggleQuery(1)
-        }
-    }
-
     return (
         <SafeAreaView>
             <ScrollView nestedScrollEnabled>
                 {/* SearchBar tab*/}
                 <SearchBar
                     searchWord={updateSearch}
-                    closeUpper={closeUpper}
                     historyQuery={historyQuery}
                     StarQuery={StarQuery}
                     find={getSearch}
