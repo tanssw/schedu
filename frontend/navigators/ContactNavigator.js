@@ -25,7 +25,7 @@ const options = {
 export default function ContactNavigator() {
     return (
         // TODO: Change back initialRoute to ContactList
-        <ContactStack.Navigator initialRouteName="ContactList">
+        <ContactStack.Navigator initialRouteName="CreateAppointment">
             <ContactStack.Screen options={options.hideHeader} name="ContactList" component={ContactListScreen}/>
             <ContactStack.Screen name="ContactHistory" component={ContactHistoryScreen} />
             <ContactStack.Screen name="ContactFavorite" component={ContactFavorite} />

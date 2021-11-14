@@ -54,7 +54,10 @@ export default function ProfileScreen({ route, navigation }) {
             console.log(error)
         }
         alert('Profile Updated')
-        navigation.navigate('AccountMenuScreen')
+        navigation.jumpTo('Account')
+        // route.params.screenNavigator.goBack()
+
+        // navigation.navigate('AccountMenuScreen')
     }
 
     const [userData, setUserData] = useState(route.params)
@@ -63,6 +66,7 @@ export default function ProfileScreen({ route, navigation }) {
     const [newPhoneNumber, setNewPhoneNumber] = useState(
         userData.contact.tel === null ? '' : userData.contact.tel
     )
+
     return (
         <View style={styles.container}>
             <Image

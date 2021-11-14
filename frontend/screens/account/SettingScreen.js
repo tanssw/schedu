@@ -55,6 +55,10 @@ export default function SettingScreen({ route }) {
         }
     }
 
+    const changeActiveTimeHandler = () => {
+        
+    }
+
     const changeSettingHandler = data => {
         switch (data.topic) {
             case 'weekend':
@@ -72,7 +76,8 @@ export default function SettingScreen({ route }) {
                 <Text style={styles.settingMenu}>Calendar</Text>
                 <SettingData
                     topic={'Active time'}
-                    data={settings.activeTime.startAt + ' - ' + settings.activeTime.endAt}
+                    // data={settings.activeTime.startAt + ' - ' + settings.activeTime.endAt}
+                    data={{ start: settings.activeTime.startAt, end: settings.activeTime.endAt }}
                     type={'time'}
                 />
                 <SettingData

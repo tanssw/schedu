@@ -7,8 +7,6 @@ const { authMiddleware } = require('../middlewares/auth')
 const { isValidObjectId } = require('mongoose')
 
 const accountModel = conn.model('accounts', accountSchema, process.env.ACCOUNTS_COLLECTION)
-const {authMiddleware}= require('../middlewares/auth')
-
 
 const router = express()
 
@@ -52,12 +50,7 @@ router.delete('/delUser/:id', async (req, res) => {
 
     res.status(200).end()
 })
-<<<<<<< HEAD
-// Get user by user object id
-router.get('/:id', authMiddleware, async (req, res) => {
-    const userId = req.params.id
-    const user = await accountModel.findOne({ _id: userId })
-=======
+
 // Get user by user object id   
 router.get('/user/:objectId', async (req, res) => {
     const { objectId } = req.params
@@ -73,10 +66,8 @@ router.get('/favorite/:id', authMiddleware, async (req, res) =>{
 })
 // Get user by user object id add authMiddleware
 router.get('/:id', authMiddleware, async (req, res) => {
-    // const userId = req.headers['schedu-uid']
     const userId = req.params.id
-    const user = await accountModel.findOne({ _id: userId }).exec()
->>>>>>> dev
+    const user = await accountModel.findOne({ _id: userId })
     res.json(user)
 })
 

@@ -13,11 +13,12 @@ import { getAuthAsset } from '../modules/auth'
 
 import Constants from 'expo-constants'
 import axios from 'axios'
+import { TabRouter } from '@react-navigation/routers'
 
 const AccountStack = createNativeStackNavigator()
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
-export default function AccountNavigator({ navigation }) {
+export default function AccountNavigator({ route, navigation }) {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getUser()
@@ -40,6 +41,7 @@ export default function AccountNavigator({ navigation }) {
     }
 
     const [userData, setUserData] = useState({})
+
     return (
         <AccountStack.Navigator initialRouteName="AccountMenuScreen">
             <AccountStack.Screen

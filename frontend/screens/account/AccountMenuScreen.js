@@ -16,14 +16,14 @@ export default function AccountMenuScreen({ navigation }) {
         })
         return unsubscribe
     })
-
+    
     const getUser = async () => {
         const { token, userId } = await getAuthAsset()
-
+        
         const payload = {
             headers: { 'Schedu-Token': token }
         }
-
+        
         try {
             const user = await axios.get(`${API_SERVER_DOMAIN}/account/${userId}`, payload)
             setUserData(user.data)

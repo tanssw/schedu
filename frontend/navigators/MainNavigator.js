@@ -1,6 +1,5 @@
 import React, { useEffect } from "react"
 
-import { NavigationContainer } from "@react-navigation/native"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { AntDesign, Ionicons, Feather } from "@expo/vector-icons"
 
@@ -59,17 +58,6 @@ const options = {
 }
 
 export default function MainNavigator(props) {
-    // const signInHandler = () => {
-    //     dispatch(signIn(props.userData));
-    // };
-
-    /*
-     *  ใช้ตอน Sign In
-     */
-    // const dispatch = useDispatch();
-    // useEffect(() => {
-    //     dispatch(signIn(props.userData));
-    // });
 
     return (
         <Tab.Navigator screenOptions={({ route }) => options.navigator}>
