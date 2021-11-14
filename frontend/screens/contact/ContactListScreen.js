@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { View, ScrollView, SafeAreaView } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import axios from 'axios'
 
 import SuggestBar from './components/SuggestBar'
 import SearchBar from './components/SearchTab'
 import QueryBar from './components/QueryBar'
 import ContactTab from './components/ContactTab'
-import { NavigationContainer } from '@react-navigation/native'
-import axios from 'axios'
+import { getAuthAsset } from '../../modules/auth'
 
 export default function ContactListScreen() {
     const [headerText, updateHeaderText] = useState('Contact')
@@ -37,8 +38,15 @@ export default function ContactListScreen() {
     }
     // All btn for query data
     const getQueryAllPeople = async () => {
-        const all = await axios.get(`http://localhost:3000/account/all`)
-        updateParticipants(all.data)
+        const { token, userId } = await getAuthAsset()
+        const payload = {
+            headers: {
+                'Schedu-Token': token,
+                'Schedu-UID': userId
+            }
+        }
+        const allUsers = await axios.get(`http://localhost:3000/account/all`, payload)
+        updateParticipants(allUsers.data.users)
     }
     // Professor btn for query data
     const getProfessor = async () => {
