@@ -7,6 +7,7 @@ import axios from 'axios'
 
 import TimeSelector from './components/TimeSelector'
 import AppointmentDetail from './components/AppointmentDetail'
+import { checkExpiredToken } from '../../modules/auth'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
@@ -36,7 +37,7 @@ export default function AppointmentEditorScreen() {
             timeSelectorComponent.current.resetChildState()
             detailComponent.current.resetChildState()
         } catch (error) {
-
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
     }
 

@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
 import { text, shadow, colorCode } from '../../styles'
-import { AUTH_TOKEN_KEY, clearAuthAsset } from '../../modules/auth'
+import { AUTH_TOKEN_KEY, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
@@ -26,8 +26,7 @@ export default function AccountMenuScreen({ navigation }) {
             await clearAuthAsset()
             navigation.navigate('SignIn')
         } catch (error) {
-            const status = error.response.status
-            if (status === 500) return
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
     }
 

@@ -2,13 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
 import axios from 'axios'
 
-import {
-    AUTH_TOKEN_KEY,
-    AUTH_USER_ID,
-    clearAuthAsset,
-    getAuthAsset,
-    setAuthAsset
-} from '../../modules/auth'
+import { getAuthAsset, checkExpiredToken } from '../../modules/auth'
 
 export default function ContactProfileScreen({ route, navigation }) {
     const { objectId } = route.params
@@ -16,13 +10,17 @@ export default function ContactProfileScreen({ route, navigation }) {
     const [profile, updateProfile] = useState([])
     const getQueryPeople = async () => {
         const {token} = await getAuthAsset()
-        const payload = { 
+        const payload = {
             headers:{
                 "schedu-token": token
             },
         }
-        const all = await axios.get(`http://localhost:3000/account/${objectId}`, payload)
-        updateProfile(all.data)
+        try {
+            const all = await axios.get(`http://localhost:3000/account/${objectId}`, payload)
+            updateProfile(all.data)
+        } catch (error) {
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+        }
     }
 
     useEffect(() => {

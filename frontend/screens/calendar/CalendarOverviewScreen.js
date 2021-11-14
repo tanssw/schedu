@@ -4,7 +4,7 @@ import Constants from 'expo-constants'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
-import { getAuthAsset } from '../../modules/auth'
+import { getAuthAsset, checkExpiredToken } from '../../modules/auth'
 
 import CalendarOverview from './components/CalendarOverview'
 import IncomingRequest from './components/IncomingRequest'
@@ -36,31 +36,36 @@ export default function CalendarOverviewScreen({navigation}) {
                 'Schedu-UID': userId
             }
         }
-        const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
-        const appointments = appointmentResult.data.appointments
+        try {
+            const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
+            const appointments = appointmentResult.data.appointments
 
-        // Update my appointments
-        const shownStatus = ['ongoing']
-        let myAppointments = appointments.filter(appointment => {
-            const canShow = shownStatus.includes(appointment.status)
-            const meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
-            const meAsSender = appointment.sender.userId === userId
-            return canShow || meAsSender || meConfirmed.length
-        })
-        updateMyAppointmentsState(myAppointments)
+            // Update my appointments
+            const shownStatus = ['ongoing']
+            let myAppointments = appointments.filter(appointment => {
+                const canShow = shownStatus.includes(appointment.status)
+                const meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
+                const meAsSender = appointment.sender.userId === userId
+                return canShow || meAsSender || meConfirmed.length
+            })
+            updateMyAppointmentsState(myAppointments)
 
-        // Update incoming request appointments
-        let requestAppointments = appointments.filter(appointment => {
-            const myself = appointment.participants.find(participant => participant.userId === userId)
-            if (!myself) return false
-            const meNotConfirm = !myself.confirmed
-            const meAsSender = appointment.sender.userId === userId
-            return !meAsSender && meNotConfirm
-        })
-        updateRequestAppointmentsState(requestAppointments)
+            // Update incoming request appointments
+            let requestAppointments = appointments.filter(appointment => {
+                const myself = appointment.participants.find(participant => participant.userId === userId)
+                if (!myself) return false
+                const meNotConfirm = !myself.confirmed
+                const meAsSender = appointment.sender.userId === userId
+                return !meAsSender && meNotConfirm
+            })
+            updateRequestAppointmentsState(requestAppointments)
 
-        // Update all appointments for calendar
-        updateMarkedDatesState(buildDateMarks(myAppointments))
+            // Update all appointments for calendar
+            updateMarkedDatesState(buildDateMarks(myAppointments))
+
+        } catch (error) {
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+        }
     }
 
     // To build the object of MarkedDate to show in Calendar

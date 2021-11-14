@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import Constants from 'expo-constants'
 import { Agenda } from 'react-native-calendars'
-import { getAuthAsset } from '../../modules/auth'
+import { checkExpiredToken, getAuthAsset } from '../../modules/auth'
 import dayjs from 'dayjs'
 import { colorCode, shadow } from '../../styles'
 
@@ -34,16 +34,20 @@ export default function CalendarDetailScreen({route, navigation}) {
                 'Schedu-UID': userId
             }
         }
-        const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${year}/${month}`, payload)
-        const appointments = appointmentResult.data.appointments
+        try {
+            const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${year}/${month}`, payload)
+            const appointments = appointmentResult.data.appointments
 
-        createAgendaTemplate(year, month)
+            createAgendaTemplate(year, month)
 
-        appointments.forEach(appointment => {
-            let date = dayjs(appointment.startAt).format('YYYY-MM-DD')
-            myAgenda[date].push(appointment)
-        })
-        updateMyAgenda(myAgenda)
+            appointments.forEach(appointment => {
+                let date = dayjs(appointment.startAt).format('YYYY-MM-DD')
+                myAgenda[date].push(appointment)
+            })
+            updateMyAgenda(myAgenda)
+        } catch (error) {
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+        }
     }
 
     // Create empty date arrays for agenda
