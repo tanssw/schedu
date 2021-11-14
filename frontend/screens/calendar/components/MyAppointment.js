@@ -23,7 +23,7 @@ export default function MyAppointment(props) {
                 <View>
                     <View style={styles.appointmentDesc}>
                         <Text style={styles.appointmentDate}>
-                            {dayjs(appointment.date).format('DD MMM YYYY')}
+                            {dayjs(appointment.startAt).format('DD MMM YYYY')}
                         </Text>
                         <Text style={styles.appointmentTime}>
                             {dayjs(appointment.startAt).format('HH:mm')} - {dayjs(appointment.endAt).format('HH:mm')}

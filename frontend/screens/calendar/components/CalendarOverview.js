@@ -19,6 +19,7 @@ export default function CalendarOverview(props) {
                 onDayPress={(day) => {
                     props.onDateSelect(day)
                 }}
+                markedDates={props.markedDates}
             />
         </View>
     )
