@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { View, ScrollView, SafeAreaView } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
 import axios from 'axios'
 
 import SuggestBar from './components/SuggestBar'
@@ -10,6 +9,7 @@ import ContactTab from './components/ContactTab'
 import { getAuthAsset } from '../../modules/auth'
 
 export default function ContactListScreen() {
+
     const [headerText, updateHeaderText] = useState('Contact')
     const [participants, updateParticipants] = useState([])
     const [search, updateSearch] = useState('')
@@ -19,7 +19,8 @@ export default function ContactListScreen() {
     useEffect(() => {
         getContactUsers()
     }, [])
-    useEffect(() =>{
+
+    useEffect(() => {
         if(search == ''){
             getContactUsers()
             updateToggleSuggest(0)
