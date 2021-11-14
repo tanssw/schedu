@@ -43,7 +43,6 @@ const getUserIdFromToken = async (token) => {
     }
 }
 
-
 module.exports = {
     generateAuthToken,
     deleteAuthToken,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 import { shadow } from '../../styles'
@@ -10,6 +10,15 @@ import SuggestedList from './components/SuggestedList'
 
 export default function HomeScreen({navigation}) {
 
+    const overviewRef = useRef()
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            overviewRef.current.loadOverview()
+        })
+        return unsubscribe
+    })
+
     const gotoMyCalendar = () => {
         navigation.navigate('Calendar')
     }
@@ -18,7 +27,7 @@ export default function HomeScreen({navigation}) {
         <View style={styles.container}>
             <NotificationCard onAppointmentPress={gotoMyCalendar} />
             <View style={[styles.mainContainer, shadow.boxTopMedium]}>
-                <Overview />
+                <Overview ref={overviewRef} />
                 <SuggestedList />
                 <RecentlyList />
             </View>
