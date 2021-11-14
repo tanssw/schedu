@@ -41,7 +41,7 @@ router.get('/', authMiddleware, async (req, res) => {
         res.json({appointments: formattedAppointments})
 
     } catch (error) {
-        res.send(500).send({message: 'Something went wrong. Please try again later.'})
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 
 })
@@ -135,7 +135,7 @@ router.get('/count', authMiddleware, async (req, res) => {
         })
 
     } catch (error) {
-        res.send(500).send({message: 'Something went wrong. Please try again later.'})
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 })
 
