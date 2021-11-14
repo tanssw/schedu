@@ -64,9 +64,21 @@ const shadow = StyleSheet.create({
     }
 })
 
+const headerDefaultOptions = {
+    headerStyle: {
+        backgroundColor: colorCode.blue
+    },
+    headerTitleStyle: {
+        fontWeight: '300',
+        fontSize: 20
+    },
+    headerTintColor: 'white'
+}
+
 export {
     colorCode,
     background,
     text,
-    shadow
+    shadow,
+    headerDefaultOptions
 }

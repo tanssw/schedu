@@ -1,7 +1,8 @@
-import React from "react"
+import React from 'react'
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
+import { headerDefaultOptions } from '../styles'
 
 import ContactListScreen from '../screens/contact/ContactListScreen'
 import ContactProfileScreen from '../screens/contact/ContactProfileScreen'
@@ -9,29 +10,35 @@ import ContactHistoryScreen from '../screens/contact/ContactHistoryScreen'
 import ContactFavorite from '../screens/contact/ContactFavorite'
 import AppointmentEditorScreen from '../screens/appointment/AppointmentEditorScreen'
 
-
 const ContactStack = createNativeStackNavigator()
 
 const options = {
     createAppointment: {
-        headerTitle: "Appointment",
+        headerTitle: 'Appointment'
     },
 
-    hideHeader:{
+    hideHeader: {
         headerShown: false
     }
-
 }
 export default function ContactNavigator() {
     return (
         // TODO: Change back initialRoute to ContactList
-        <ContactStack.Navigator initialRouteName="ContactList">
-            <ContactStack.Screen options={options.hideHeader} name="ContactList" component={ContactListScreen}/>
+        <ContactStack.Navigator initialRouteName="ContactList" screenOptions={headerDefaultOptions}>
+            <ContactStack.Screen
+                options={options.hideHeader}
+                name="ContactList"
+                component={ContactListScreen}
+            />
             <ContactStack.Screen name="ContactHistory" component={ContactHistoryScreen} />
             <ContactStack.Screen name="ContactFavorite" component={ContactFavorite} />
             <ContactStack.Screen name="ContactProfile" component={ContactProfileScreen} />
-            <ContactStack.Screen options={options.hideHeader} name="CreateAppointment" component={AppointmentEditorScreen} options={options.createAppointment} />
-
+            <ContactStack.Screen
+                options={options.hideHeader}
+                name="CreateAppointment"
+                component={AppointmentEditorScreen}
+                options={options.createAppointment}
+            />
         </ContactStack.Navigator>
     )
 }
