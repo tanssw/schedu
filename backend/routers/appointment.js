@@ -111,11 +111,14 @@ router.get('/count', authMiddleware, async (req, res) => {
 
         // Filter appointment that this account is not a sender and not confirmed
         let requestAppointments = appointments.filter(appointment => {
-            if (appointment.sender !== userId) return false
-            let meConfirmed = appointment.participants.find(participant => participant.userId == userId && participant.confirmed)
-            if (meConfirmed) return false
+            if (appointment.sender === userId) return false
+            let meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
+            if (meConfirmed.length) return false
             return true
         })
+
+        console.log(requestAppointments.length)
+        console.log(requestAppointments)
 
         // Filter appointment that already end
         let endedAppointments = appointments.filter(appointment => ['abandoned', 'done'].includes(appointment.status))
@@ -123,13 +126,13 @@ router.get('/count', authMiddleware, async (req, res) => {
         let overallCount = appointments.length
         let requestCount = requestAppointments.length
         let endedCount = endedAppointments.length
-        let approveCount = appointments.length - requestCount
-        let activeCount = approveCount - endedCount
+        let ongoingCount = appointments.length - requestCount
+        let activeCount = ongoingCount - endedCount
 
         res.json({
             overall: overallCount,
             request: requestCount,
-            approve: approveCount,
+            ongoing: ongoingCount,
             end: endedCount,
             active: activeCount
         })

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import Constants from 'expo-constants'
-import * as SecureStore from 'expo-secure-store'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
@@ -15,10 +14,9 @@ const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function CalendarOverviewScreen({navigation}) {
 
-    const [allAppointments, updateAllAppointments] = useState([])
-    const [markedDates, updateMarkedDates] = useState({})
-    const [requestAppointments, updateRequestAppointments] = useState([])
-    const [myAppointments, updateMyAppointments] = useState([])
+    const [markedDatesState, updateMarkedDatesState] = useState({})
+    const [requestAppointmentsState, updateRequestAppointmentsState] = useState([])
+    const [myAppointmentsState, updateMyAppointmentsState] = useState([])
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -41,29 +39,28 @@ export default function CalendarOverviewScreen({navigation}) {
         const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
         const appointments = appointmentResult.data.appointments
 
-        // Update all appointments for calendar
-        updateMarkedDates(buildDateMarks(appointments))
-
         // Update my appointments
         const shownStatus = ['ongoing']
-        updateMyAppointments(
-            appointments.filter(appointment => {
-                const canShow = shownStatus.includes(appointment.status)
-                const meAsSender = appointment.sender.userId === userId
-                return canShow || meAsSender
-            })
-        )
+        let myAppointments = appointments.filter(appointment => {
+            const canShow = shownStatus.includes(appointment.status)
+            const meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
+            const meAsSender = appointment.sender.userId === userId
+            return canShow || meAsSender || meConfirmed.length
+        })
+        updateMyAppointmentsState(myAppointments)
 
         // Update incoming request appointments
-        updateRequestAppointments(
-            appointments.filter(appointment => {
-                const myself = appointment.participants.find(participant => participant.userId === userId)
-                if (!myself) return false
-                const meNotConfirm = !myself.confirmed
-                const meAsSender = appointment.sender.userId === userId
-                return !meAsSender && meNotConfirm
-            })
-        )
+        let requestAppointments = appointments.filter(appointment => {
+            const myself = appointment.participants.find(participant => participant.userId === userId)
+            if (!myself) return false
+            const meNotConfirm = !myself.confirmed
+            const meAsSender = appointment.sender.userId === userId
+            return !meAsSender && meNotConfirm
+        })
+        updateRequestAppointmentsState(requestAppointments)
+
+        // Update all appointments for calendar
+        updateMarkedDatesState(buildDateMarks(myAppointments))
     }
 
     // To build the object of MarkedDate to show in Calendar
@@ -77,6 +74,7 @@ export default function CalendarOverviewScreen({navigation}) {
         return object
     }
 
+    // On day clicked, will show monthly agenda
     const viewMonthly = (day) => {
         let date = dayjs(`${day.year}-${day.month}-${day.day}`)
         let formattedDay = date.format('MMMM YYYY')
@@ -89,9 +87,9 @@ export default function CalendarOverviewScreen({navigation}) {
 
     return (
         <ScrollView style={styles.container}>
-            <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDates} />
-            <IncomingRequest appointments={requestAppointments} />
-            <MyAppointment appointments={myAppointments} />
+            <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDatesState} />
+            <IncomingRequest appointments={requestAppointmentsState} />
+            <MyAppointment appointments={myAppointmentsState} />
         </ScrollView>
     )
 }
