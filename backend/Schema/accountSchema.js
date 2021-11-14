@@ -19,7 +19,8 @@ const accountSchema = new Schema({
             startAt : String,
             endAt: String
         }
-    }
+    },
+    favorite: []
 })
 
 module.exports = accountSchema

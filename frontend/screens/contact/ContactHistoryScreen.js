@@ -3,13 +3,29 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import axios from 'axios'
 
+import {
+    AUTH_TOKEN_KEY,
+    AUTH_USER_ID,
+    clearAuthAsset,
+    getAuthAsset,
+    setAuthAsset
+} from '../../modules/auth'
+
+
 export default function ContactHistoryScreen({ route, navigation }) {
     const [participants, updateParticipants] = useState([])
-    const { businessId } = route.params
 
     const getQueryHistory = async () => {
-        const all = await axios.get(`http://localhost:3000/account/${businessId}`)
-        updateParticipants(all.data)
+        const {token, userId} = await getAuthAsset()
+        const test = "617ace4e233ec5b2b2570d4f"
+        const payload = {
+            headers:{
+                "schedu-token": token,
+                "schedu-uid" : userId
+            },
+        }
+        const historyLog = await axios.get(`http://localhost:3000/appointment/`, {params: {id : userId }},payload)
+        updateParticipants(historyLog.data)
     }
     useEffect(() => {
         getQueryHistory()
@@ -19,12 +35,12 @@ export default function ContactHistoryScreen({ route, navigation }) {
         <View style={styles.ContactTab}>
             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>History</Text>
             <View style={styles.listContainer}>
-                {participants.map(({ businessId, firstName, lastName, role }, index) => (
+                {participants.map(({ _id, firstName, lastName, role }, index) => (
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('ContactProfile', { businessId: businessId })
+                            navigation.navigate('ContactProfile', { objectId: _id })
                         }}
-                        key={businessId}
+                        key={`${_id + index}`}
                     >
                         <View style={styles.listItem}>
                             <FontAwesome
