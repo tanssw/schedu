@@ -120,12 +120,14 @@ router.get('/count', authMiddleware, async (req, res) => {
         // Filter appointment that already end
         let endedAppointments = appointments.filter(appointment => ['abandoned', 'done'].includes(appointment.status))
 
+        let overallCount = appointments.length
         let requestCount = requestAppointments.length
         let endedCount = endedAppointments.length
         let approveCount = appointments.length - requestCount
         let activeCount = approveCount - endedCount
 
         res.json({
+            overall: overallCount,
             request: requestCount,
             approve: approveCount,
             end: endedCount,
