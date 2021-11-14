@@ -13,8 +13,7 @@ import MyAppointment from './components/MyAppointment'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
-export default function CalendarOverviewScreen({navigation}) {
-
+export default function CalendarOverviewScreen({ navigation }) {
     const [requestAppointments, updateRequestAppointments] = useState([])
     const [myAppointments, updateMyAppointments] = useState([])
 
@@ -26,7 +25,6 @@ export default function CalendarOverviewScreen({navigation}) {
     })
 
     const loadAppointments = async () => {
-
         const { token, userId } = await getAuthAsset()
 
         // Request my appointments from server
@@ -52,7 +50,9 @@ export default function CalendarOverviewScreen({navigation}) {
         // Update incoming request appointments
         updateRequestAppointments(
             appointments.filter(appointment => {
-                const myself = appointment.participants.find(participant => participant.userId === userId)
+                const myself = appointment.participants.find(
+                    participant => participant.userId === userId
+                )
                 if (!myself) return false
                 const meNotConfirm = !myself.confirmed
                 const meAsSender = appointment.sender.userId === userId
@@ -61,7 +61,7 @@ export default function CalendarOverviewScreen({navigation}) {
         )
     }
 
-    const viewMonthly = (day) => {
+    const viewMonthly = day => {
         let formattedDay = dayjs(`${day.year}-${day.month}-${day.day}`).format('MMMM YYYY')
         navigation.navigate('CalendarDetail', {
             title: `${formattedDay}`
@@ -78,7 +78,5 @@ export default function CalendarOverviewScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-
-    }
+    container: {}
 })

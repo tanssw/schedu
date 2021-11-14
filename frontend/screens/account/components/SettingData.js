@@ -6,24 +6,24 @@ export default function SettingData(props) {
 
     const toggleSwitch = () => {
         setIsEnabled(previousState => !previousState)
-        var settingTopic = props.topicData
-        if (props.topicData === 'Receive weekend appointment') settingTopic = 'weekend'
-        else if (props.topicData === 'Display phone number') settingTopic = 'phone'
+        var settingTopic = props.topic
+        if (props.topic === 'Receive weekend appointment') settingTopic = 'weekend'
+        else if (props.topic === 'Display phone number') settingTopic = 'phone'
 
-        
+        props.update({ topic: settingTopic, data: !isEnabled })
     }
 
     if (props.type === 'time') {
         return (
             <View style={[styles.bottomLine, styles.userData]}>
-                <Text style={[styles.textComponentStyle]}>{props.topicData}</Text>
+                <Text style={[styles.textComponentStyle]}>{props.topic}</Text>
                 <TextInput>{props.data}</TextInput>
             </View>
         )
     } else {
         return (
             <View style={[styles.bottomLine, styles.userData]}>
-                <Text style={[styles.textComponentStyle]}>{props.topicData}</Text>
+                <Text style={[styles.textComponentStyle]}>{props.topic}</Text>
                 <Switch onValueChange={toggleSwitch} value={isEnabled} />
             </View>
         )

@@ -1,57 +1,39 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react'
-
-import axios from 'axios'
-import * as SecureStore from 'expo-secure-store'
-
-=======
-import React from 'react'
->>>>>>> dev
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
-import { useSelector } from 'react-redux'
 import Constants from 'expo-constants'
 import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
 import { text, shadow, colorCode } from '../../styles'
-import { AUTH_TOKEN_KEY, clearAuthAsset } from '../../modules/auth'
+import { AUTH_TOKEN_KEY, clearAuthAsset, getAuthAsset } from '../../modules/auth'
 
 const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
-const AUTH_TOKEN_KEY = 'authtoken'
-
 export default function AccountMenuScreen({ navigation }) {
-<<<<<<< HEAD
-    const [userData, setUserData] = useState({
-        _id: { $oid: '617be0c164389e9709ea96b0' },
-        businessId: '62070077',
-        firstName: 'thanakan',
-        lastName: 'boonma',
-        role: 'student',
-        contact: { email: '62070077@it.kmitl.ac.th', tel: '0808080808' },
-        image: 'https://lh3.googleusercontent.com/a/AATXAJwtwryT19EjwXDGUmiB_Y8C34GOlwfRu8S1dplb=s96-c',
-        setting: {
-            displayTel: true,
-            weekendReceive: true,
-            activeTime: { startAt: '8:30AM', endAt: '16:30AM' }
-        }
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getUser()
+        })
+        return unsubscribe
     })
 
-    // useEffect(async () => {
-    //     const tokenResult = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
-    //     if (!tokenResult.token) return
+    const getUser = async () => {
+        const { token, userId } = await getAuthAsset()
 
-    //     try {
-    //         // const getUserData = await axios.post()
-    //     } catch (error) {
-    //         // Clear stored token in Secure Store
-    //         await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY, {})
-    //     }
-    // })
-=======
+        const payload = {
+            headers: { 'Schedu-Token': token }
+        }
 
-    const userData = useSelector(state => state.user.userData)
->>>>>>> dev
+        try {
+            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${userId}`, payload)
+            setUserData(user.data)
+        } catch (error) {
+            // Clear stored token in Secure Store
+            await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY, {})
+        }
+    }
+
+    const [userData, setUserData] = useState({})
 
     const signOut = async () => {
         const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)

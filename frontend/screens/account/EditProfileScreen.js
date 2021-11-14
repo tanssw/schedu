@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import Constants from 'expo-constants'
+import axios from 'axios'
 
 // style by tanssw.com
 import { text, shadow } from '../../styles'
@@ -7,26 +9,11 @@ import { text, shadow } from '../../styles'
 // import components
 import UserData from './components/UserData'
 
-export default function ProfileScreen({ navigation }) {
-    const [userData, setUserData] = useState({
-        _id: { $oid: '617be0c164389e9709ea96b0' },
-        businessId: '62070077',
-        firstName: 'thanakan',
-        lastName: 'boonma',
-        role: 'student',
-        contact: { email: '62070077@it.kmitl.ac.th', tel: '0808080808' },
-        image: 'https://lh3.googleusercontent.com/a/AATXAJwtwryT19EjwXDGUmiB_Y8C34GOlwfRu8S1dplb=s96-c',
-        setting: {
-            displayTel: true,
-            weekendReceive: true,
-            activeTime: { startAt: '8:30AM', endAt: '16:30AM' }
-        }
-    })
+import { getAuthAsset } from '../../modules/auth'
 
-    const [newFirstName, setNewFirstName] = useState(userData.firstName)
-    const [newLastName, setNewLastName] = useState(userData.lastName)
-    const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel)
+const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
+export default function ProfileScreen({ route, navigation }) {
     const updateDataHandler = data => {
         switch (data.topic) {
             case 'First name':
@@ -41,51 +28,71 @@ export default function ProfileScreen({ navigation }) {
         }
     }
 
-    // const dispatch = useDispatch()
+    const update = async () => {
+        const { token, userId } = await getAuthAsset()
 
-    // const update = () => {
-    //     dispatch(
-    //         updateData({
-    //             firstName: newFirstName,
-    //             lastName: newLastName,
-    //             tel: newPhoneNumber
-    //         })
-    //     )
+        const body = {
+            id: userId,
+            newData: {
+                firstName: newFirstName,
+                lastName: newLastName,
+                contact: {
+                    email: userData.contact.email,
+                    tel: newPhoneNumber
+                }
+            }
+        }
 
-    //     alert('Profile Updated')
-    //     navigation.navigate('Profile', {})
-    // }
+        const headers = {
+            headers: { 'Schedu-Token': token }
+        }
 
+        try {
+            const user = await axios.put(`${API_SERVER_DOMAIN}/account/updateUser`, body, headers)
+            setUserData(user.data)
+        } catch (error) {
+            console.log(error)
+        }
+        alert('Profile Updated')
+        navigation.navigate('AccountMenuScreen')
+    }
+
+    const [userData, setUserData] = useState(route.params)
+    const [newFirstName, setNewFirstName] = useState(userData.firstName)
+    const [newLastName, setNewLastName] = useState(userData.lastName)
+    const [newPhoneNumber, setNewPhoneNumber] = useState(
+        userData.contact.tel === null ? '' : userData.contact.tel
+    )
     return (
-        <ScrollView nestedScrollEnabled>
-            <View style={styles.container}>
-                <Image
-                    style={styles.profileImage}
-                    source={{
-                        url: userData.image
-                    }}
-                />
-                <View style={[styles.userProfileContainer, shadow.boxTopMedium]}>
+        <View style={styles.container}>
+            <Image
+                style={styles.profileImage}
+                source={{
+                    url: userData.image
+                }}
+            />
+            <View style={[styles.editProfileContainer, shadow.boxTopMedium]}>
+                <View>
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>General</Text>
                         <UserData
                             topicData={'First name'}
-                            data={userData.firstName}
+                            data={newFirstName}
                             edit={true}
                             update={updateDataHandler}
                         />
                         <UserData
                             topicData={'Last name'}
-                            data={userData.lastName}
+                            data={newLastName}
                             edit={true}
                             update={updateDataHandler}
                         />
 
-                        <UserData topicData={'Role'} data={userData.role} edit={false} />
+                        {/* <UserData topicData={'Role'} data={userData.role} edit={false} /> */}
                     </View>
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>Contact</Text>
-                        <UserData topicData={'Email'} data={userData.contact.email} edit={false} />
+                        {/* <UserData topicData={'Email'} data={userData.contact.email} edit={false} /> */}
                         <UserData
                             topicData={'Phone number'}
                             data={newPhoneNumber}
@@ -93,12 +100,12 @@ export default function ProfileScreen({ navigation }) {
                             update={updateDataHandler}
                         />
                     </View>
-                    <TouchableOpacity style={[styles.updateBtn]} onPress={update}>
-                        <Text style={(text.blue, styles.updateBtnText)}>Update Profile</Text>
-                    </TouchableOpacity>
                 </View>
+                <TouchableOpacity style={[styles.updateBtn]} onPress={update}>
+                    <Text style={(text.blue, styles.updateBtnText)}>Update Profile</Text>
+                </TouchableOpacity>
             </View>
-        </ScrollView>
+        </View>
     )
 }
 
@@ -109,13 +116,14 @@ const styles = StyleSheet.create({
         paddingTop: 32,
         alignItems: 'center'
     },
-    userProfileContainer: {
+    editProfileContainer: {
         flex: 1,
         width: '100%',
         padding: 32,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        justifyContent: 'space-between'
     },
     dataBlock: {
         marginBottom: 32
