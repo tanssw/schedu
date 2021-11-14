@@ -46,7 +46,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
 })
 
-// Gett appointments by month and year
+// Get confirmed appointments by month and year
 router.get('/:year/:month', authMiddleware, async(req, res) => {
     try {
         // Get User ID from Auth Token
@@ -71,7 +71,7 @@ router.get('/:year/:month', authMiddleware, async(req, res) => {
                         },
                         {
                             participants: {
-                                $elemMatch: {userId: userId}
+                                $elemMatch: {userId: userId, confirmed: true}
                             }
                         }
                     ]
@@ -89,9 +89,57 @@ router.get('/:year/:month', authMiddleware, async(req, res) => {
     }
 })
 
+// Get appointment counter
+router.get('/count', authMiddleware, async (req, res) => {
+    try {
+        // Get User ID from Auth Token
+        const userId = req.headers['schedu-uid']
+
+        // Find all appointments that user associated to.
+        let appointments = await appointmentModel.find({
+            $or: [
+                {
+                    sender: userId
+                },
+                {
+                    participants: {
+                        $elemMatch: {userId: userId}
+                    }
+                }
+            ]
+        })
+
+        // Filter appointment that this account is not a sender and not confirmed
+        let requestAppointments = appointments.filter(appointment => {
+            if (appointment.sender !== userId) return false
+            let meConfirmed = appointment.participants.find(participant => participant.userId == userId && participant.confirmed)
+            if (meConfirmed) return false
+            return true
+        })
+
+        // Filter appointment that already end
+        let endedAppointments = appointments.filter(appointment => ['abandoned', 'done'].includes(appointment.status))
+
+        let requestCount = requestAppointments.length
+        let endedCount = endedAppointments.length
+        let approveCount = appointments.length - requestCount
+        let activeCount = approveCount - endedCount
+
+        res.json({
+            request: requestCount,
+            approve: approveCount,
+            end: endedCount,
+            active: activeCount
+        })
+
+    } catch (error) {
+        res.send(500).send({message: 'Something went wrong. Please try again later.'})
+    }
+})
+
 // Create new Appointment
 // TODO: Add auth middleware
-router.post('/', async(req, res) => {
+router.post('/', async (req, res) => {
     const payload = req.body
 
     // Mapping business_id of participants to an Object with some logic keys
