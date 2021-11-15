@@ -1,7 +1,7 @@
-import dayjs from 'dayjs'
 import React from 'react'
 import {} from 'react-native'
 import { Calendar } from 'react-native-calendars'
+import dayjs from 'dayjs'
 
 import { colorCode } from '../../../styles'
 
@@ -12,7 +12,7 @@ const calendarTheme = {
     textDisabledColor: '#aaaaaa'
 }
 
-export default function ProfileCalendar() {
+export default function ProfileCalendar(props) {
 
     const getMinDate = () => {
         return dayjs().format('YYYY-MM-DD')
@@ -27,6 +27,7 @@ export default function ProfileCalendar() {
             theme={calendarTheme}
             minDate={getMinDate()}
             maxDate={getMaxDate()}
+            onDayPress={props.onDayPress}
         />
     )
 }

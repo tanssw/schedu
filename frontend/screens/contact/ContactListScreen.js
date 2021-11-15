@@ -10,7 +10,7 @@ import ContactTab from './components/ContactTab'
 
 import { checkExpiredToken, getAuthAsset } from '../../modules/auth'
 
-export default function ContactListScreen() {
+export default function ContactListScreen({ navigation }) {
 
     const [contacts, updateContacts] = useState([])
 
@@ -57,7 +57,7 @@ export default function ContactListScreen() {
             const contactUsers = userResult.data.users
             updateContacts(contactUsers)
         } catch (error) {
-            checkExpiredToken(error)
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
     }
 

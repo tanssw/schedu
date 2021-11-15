@@ -37,12 +37,16 @@ export default function ContactProfileScreen({ route, navigation }) {
         updatePhoneState(user.contact.tel)
     }
 
+    const navigateToAppointmentCreator = () => {
+        navigation.navigate('CreateAppointment', { contactId: contactId })
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <ProfileHeader profile={profileState} />
             <View style={[styles.mainContainer, shadow.boxTopMedium]}>
                 <View style={styles.calendarContainer}>
-                    <ProfileCalendar />
+                    <ProfileCalendar onDayPress={navigateToAppointmentCreator} />
                 </View>
                 <ProfileInformation email={emailState} phone={phoneState} />
             </View>
