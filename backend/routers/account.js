@@ -6,13 +6,18 @@ const conn = require('../config/connectionMongoDB/ScheduConnect')
 const accountModel = conn.model('accounts', accountSchema, process.env.ACCOUNTS_COLLECTION)
 const {authMiddleware}= require('../middlewares/auth')
 
-
 const router = express()
 
-// Get all users in mongoDB
-router.get('/all', async (req, res) => {
-    const user = await accountModel.find({})
-    res.json(user)
+// Get all users except myself from database
+router.get('/all', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.headers['schedu-uid']
+        // Find all user except the one that user id equal to userId
+        const users = await accountModel.find({_id: {$ne: userId}})
+        res.json({users: users})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again.'})
+    }
 })
 
 router.get('/role/:role', async (req, res) => {
