@@ -28,8 +28,8 @@ function TimeSelector(props, ref) {
 
     // FUNCTION: to format the time into JS time string
     const formatTime = (time) => {
-        const current = dayjs().format('YYYY-MM-DD')
-        const formatted = dayjs(`${current} ${time}`, 'YYYY-MM-DD HH:mm').utcOffset(7).format()
+        const date = dayjs(props.date).format('YYYY-MM-DD')
+        const formatted = dayjs(`${date} ${time}`, 'YYYY-MM-DD HH:mm').utcOffset(7).format()
         return formatted
     }
 

@@ -17,7 +17,7 @@ export default function AppointmentEditorScreen({ route, navigation }) {
     const [formattedStart, setFormattedStart] = useState()
     const [formattedEnd, setFormattedEnd] = useState()
 
-    const { contactId } = route.params
+    const { contactId, date } = route.params
 
     const createAppointmentHandler = async (data) => {
         const { token, userId } = await getAuthAsset()
@@ -51,7 +51,7 @@ export default function AppointmentEditorScreen({ route, navigation }) {
     return (
         <ScrollView nestedScrollEnabled>
             <View style={styles.container}>
-                <TimeSelector ref={timeSelectorComponent} onStartChange={setFormattedStart} onEndChange={setFormattedEnd} />
+                <TimeSelector ref={timeSelectorComponent} date={date} onStartChange={setFormattedStart} onEndChange={setFormattedEnd} />
                 <AppointmentDetail ref={detailComponent} onCreateAppointment={createAppointmentHandler} />
             </View>
         </ScrollView>
