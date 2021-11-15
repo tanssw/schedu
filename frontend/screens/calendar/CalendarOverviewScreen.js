@@ -98,7 +98,5 @@ export default function CalendarOverviewScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-
-    }
+    container: {}
 })
