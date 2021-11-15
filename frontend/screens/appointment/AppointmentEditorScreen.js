@@ -49,8 +49,8 @@ export default function AppointmentEditorScreen({ route, navigation }) {
     }
 
     return (
-        <ScrollView nestedScrollEnabled>
-            <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.innerContainer}>
                 <TimeSelector ref={timeSelectorComponent} date={date} onStartChange={setFormattedStart} onEndChange={setFormattedEnd} />
                 <AppointmentDetail ref={detailComponent} onCreateAppointment={createAppointmentHandler} />
             </View>
@@ -60,7 +60,9 @@ export default function AppointmentEditorScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: 'white'
+        flexGrow: 1,
+    },
+    innerContainer: {
+        flex: 1
     }
 })
