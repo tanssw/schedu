@@ -6,11 +6,15 @@ export default function ProfileInformation(props) {
 
     return (
         <View>
-            <View style={styles.contactContainer}>
+            <View style={styles.infoContainer}>
+                <Text style={styles.label}>Active Time</Text>
+                <Text style={styles.value}>{props.activeTime.startAt} - {props.activeTime.endAt}</Text>
+            </View>
+            <View style={styles.infoContainer}>
                 <Text style={styles.label}>Email</Text>
                 <Text style={styles.value}>{props.email}</Text>
             </View>
-            <View style={[styles.contactContainer, {borderBottomWidth: 1}]}>
+            <View style={[styles.infoContainer, {borderBottomWidth: 1}]}>
                 <Text style={styles.label}>Phone Number</Text>
                 <Text style={styles.value}>{props.phone ? props.phone : '—'}</Text>
             </View>
@@ -19,7 +23,7 @@ export default function ProfileInformation(props) {
 }
 
 const styles = StyleSheet.create({
-    contactContainer: {
+    infoContainer: {
         paddingVertical: 16,
         paddingHorizontal: 32,
         flexDirection: 'row',

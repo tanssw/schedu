@@ -16,6 +16,7 @@ export default function ContactProfileScreen({ route, navigation }) {
     const [profileState, updateProfileState] = useState({})
     const [emailState, updateEmailState] = useState()
     const [phoneState, updatePhoneState] = useState()
+    const [activeTimeState, updateActiveTimeState] = useState({startAt: null, endAt: null})
 
     const { contactId } = route.params
 
@@ -35,6 +36,7 @@ export default function ContactProfileScreen({ route, navigation }) {
         updateProfileState(user)
         updateEmailState(user.contact.email)
         updatePhoneState(user.contact.tel)
+        updateActiveTimeState(user.setting.activeTime)
     }
 
     const navigateToAppointmentCreator = (selectedDate) => {
@@ -48,7 +50,7 @@ export default function ContactProfileScreen({ route, navigation }) {
                 <View style={styles.calendarContainer}>
                     <ProfileCalendar onDayPress={navigateToAppointmentCreator} />
                 </View>
-                <ProfileInformation email={emailState} phone={phoneState} />
+                <ProfileInformation email={emailState} phone={phoneState} activeTime={activeTimeState} />
             </View>
         </SafeAreaView>
     )
