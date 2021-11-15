@@ -89,7 +89,8 @@ export default function SuggestBar() {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
-        padding: 16
+        padding: 16,
+        marginBottom: 8
     },
     header: {
         fontSize: 18,

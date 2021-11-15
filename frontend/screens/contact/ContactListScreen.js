@@ -108,7 +108,7 @@ export default function ContactListScreen() {
                 find={getSearch}
             />
             {suggestDisplay()}
-            {toggleQuery ? '' : <QueryBar all={getContactUsers} professor={getProfessor} officer={getOffice} student={getStudent} />}
+            {toggleQuery ? null : <QueryBar all={getContactUsers} professor={getProfessor} officer={getOffice} student={getStudent} />}
             <ContactTab contacts={contacts} headerText={headerText} />
         </ScrollView>
     )

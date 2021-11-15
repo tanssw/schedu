@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     contactContainer: {
         flex: 1,
         padding: 16,
-        marginTop: 8,
         backgroundColor: 'white'
     },
     listContainer: {
