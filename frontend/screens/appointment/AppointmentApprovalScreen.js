@@ -1,13 +1,27 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from "react-native"
+import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react'
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    ScrollView,
+    StyleSheet,
+    FlatList
+} from 'react-native'
 import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
-
+import {
+    AUTH_TOKEN_KEY,
+    AUTH_USER_ID,
+    clearAuthAsset,
+    getAuthAsset,
+    setAuthAsset
+} from '../../modules/auth'
+import Time from '../appointment/components/TimeSelector'
 
 import { background, text, shadow, colorCode } from '../../styles'
 
-function AppointmentDetail({props,ref,route}) {
-
+function AppointmentDetail({ props, ref, route }) {
     const { data } = route.params
 
     // Component's States
@@ -17,13 +31,64 @@ function AppointmentDetail({props,ref,route}) {
     const [note, setNote] = useState()
 
     const [participants, setParticipants] = useState([
-        {_id: "618b4d47a996fac981059a6f", business_id: '62070184', firstname: 'Loukhin', lastname: 'Dotcom'},
+        {
+            _id: '618b4d47a996fac981059a6f',
+            business_id: '62070184',
+            firstname: 'Loukhin',
+            lastname: 'Dotcom'
+        }
     ])
 
-    useImperativeHandle(ref, () => ({
-        resetChildState() { resetState() }
-    }), [])
+    //Get details user for display they name
+    const getDetailsParticipants = async uid => {
+        const { token } = await getAuthAsset()
+        const payload = {
+            headers: {
+                'schedu-token': token
+            }
+        }
+        const peoples = await axios.get(
+            `http://localhost:3000/account/`,
+            { params: { id: uid } },
+            payload
+        )
+        setParticipants(peoples)
+    }
 
+    const getCommMethod = () => {
+        const commMethod = data.commMethod
+        if (commMethod == 'face') {
+            setCommMethod('Face to Face')
+        } else if (commMethod == 'msteam') {
+            setCommMethod('Microsoft Teams')
+        } else if (commMethod == 'meet') {
+            setCommMethod('Google meet')
+        } else if (commMethod == 'zoom') {
+            setCommMethod('Zoom Application')
+        }
+    }
+
+    useImperativeHandle(
+        ref,
+        () => ({
+            resetChildState() {
+                resetState()
+            }
+        }),
+        []
+    )
+
+    useEffect(() => {
+        try {
+            for (let index = 0; index < data.participants.length; index++) {
+                const uid = data.participants[index]
+                getDetailsParticipants(uid)
+            }
+            getCommMethod()
+        } catch (error) {
+            console.log(error)
+        }
+    }, [])
     // FUNCTION: to reset all form state
     const resetState = () => {
         setSubject()
@@ -45,38 +110,57 @@ function AppointmentDetail({props,ref,route}) {
     }
 
     // FUNCTION: to render the participant into a Flatlist
-    const renderParticipant = ({item}) => {
+    const renderParticipant = ({ item }) => {
         return (
-            <View>
-                <FontAwesome name="user-circle-o" size={44} color="grey" style={styles.personImage} />
-                <Text style={styles.personName}>{item.firstname}</Text>
-            </View>
+            <TouchableOpacity
+                onPress={() => {
+                    alert('Go Profiles')
+                }}
+            >
+                <View style={styles.profile}>
+                    <FontAwesome
+                        name="user-circle-o"
+                        size={44}
+                        color="grey"
+                        style={styles.personImage}
+                    />
+                    <Text style={styles.personName}>{item.firstName}</Text>
+                </View>
+            </TouchableOpacity>
         )
     }
 
     return (
-        <View style={[styles.detailContainer, shadow.boxTopMedium]}>
-            {/* Subject Input */}
-            <View style={styles.spaceBetweenInput}>
-                <Text style={styles.header}>Subject</Text>
-                {/* <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/> */}
-                <Text style={styles.header}>{data.subject}</Text>
-            </View>
-            {/* Participant Input */}
-            <View style={styles.spaceBetweenInput}>
-                <Text style={styles.header}>Participant</Text>
-                <View style={styles.participantContainer}>
-                    {/* <TouchableOpacity style={styles.participantAdder}>
+        <ScrollView>
+        <View style={styles.container}>
+            <Time start={data.startAt} end={data.endAt}/>
+            <View style={[styles.detailContainer, shadow.boxTopMedium]}>
+                {/* Subject Input */}
+                <View style={styles.spaceBetweenInput}>
+                    <Text style={styles.header}>Subject</Text>
+                    {/* <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/> */}
+                    <Text style={styles.topic}>{data.subject}</Text>
+                </View>
+                {/* Participant Input */}
+                <View style={styles.spaceBetweenInput}>
+                    <Text style={styles.header}>Participant</Text>
+                    <View style={styles.participantContainer}>
+                        {/* <TouchableOpacity style={styles.participantAdder}>
                         <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity> */}
-                    <FlatList horizontal data={participants} renderItem={renderParticipant} keyExtractor={person => person._id} />
+                        <FlatList
+                            horizontal
+                            data={data.participants}
+                            renderItem={renderParticipant}
+                            keyExtractor={person => person._id}
+                        />
+                    </View>
                 </View>
-            </View>
-            {/* Communication Method Dropdown & Input */}
-            <View style={styles.spaceBetweenInput}>
-                <Text style={styles.header}>Communication Method</Text>
-                {/* <Picker
+                {/* Communication Method Dropdown & Input */}
+                <View style={styles.spaceBetweenInput}>
+                    <Text style={styles.header}>Communication Method</Text>
+                    {/* <Picker
                     onItemChange={setCommMethod}
                     item={commMethod}
                     items={[
@@ -90,31 +174,40 @@ function AppointmentDetail({props,ref,route}) {
                     isNullable={true}
                     style={styles.picker}
                 /> */}
-                {/* <TextInput onChangeText={text => setCommUrl(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/> */}
-                <Text>{data.commMethod}</Text>
-            </View>
-            {/* Note to participant Textbox */}
-            <View style={styles.spaceBetweenInput}>
-                <Text style={styles.header}>Note to participant</Text>
-                {/* <ScrollView contentContainerStyle={styles.inputBoxBorder}>
-                    <Text>It's a note from pluto</Text>
+                    {/* <TextInput onChangeText={text => setCommUrl(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/> */}
+                    <Text>{commMethod}</Text>
+                </View>
+                {/* Note to participant Textbox */}
+                <View style={styles.spaceBetweenInput}>
+                    <Text style={styles.header}>Note to participant</Text>
+                    {/* <ScrollView contentContainerStyle={styles.inputBoxBorder}>
+                
                 </ScrollView> */}
-                <Text>It's a note from pluto</Text>
+                    <Text>{data.note}</Text>
+                </View>
+                {/* Button */}
+                <View style={styles.acceptationTab}>
+                    <TouchableOpacity style={[styles.mainButton,styles.decline]}>
+                        <Text style={text.black}>Decline</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.mainButton, background.blue]}>
+                        <Text style={text.white}>Approval</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            {/* Button */}
-            <TouchableOpacity  style={[styles.mainButton, background.blue]}>
-                <Text style={text.white}>Approval</Text>
-            </TouchableOpacity>
-            <TouchableOpacity  style={[styles.mainButton, background.blue]}>
-                <Text style={text.white}>Reject</Text>
-            </TouchableOpacity>
         </View>
+        </ScrollView>
     )
 }
 
 export default forwardRef(AppointmentDetail)
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+        paddingBottom: 5
+    },
     detailContainer: {
         flex: 1,
         borderTopLeftRadius: 32,
@@ -125,16 +218,20 @@ const styles = StyleSheet.create({
     },
     header: {
         fontWeight: 'bold',
-        marginBottom: 12
+        marginBottom: 12,
+        fontSize: 18
+    },
+    topic:{
+        fontSize: 16
     },
     inputUnderline: {
         borderBottomWidth: 1,
         borderBottomColor: '#cccccc',
-        paddingBottom: 8,
+        paddingBottom: 8
     },
     participantContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-between'
     },
     personName: {
         textAlign: 'center',
@@ -161,12 +258,30 @@ const styles = StyleSheet.create({
         padding: 16
     },
     spaceBetweenInput: {
-        marginBottom: 32
+        marginTop: 10,
+        marginBottom: 10
     },
     mainButton: {
-        width: '100%',
+        width: '50%',
+        height: 50,
         padding: 16,
         borderRadius: 16,
-        alignItems: 'center'
+        alignItems: 'center',
+        marginRight: 10
+    },
+    decline: {
+        backgroundColor : "white",
+        borderWidth: 2,
+        borderColor: "red",
+        color: 'black'
+    },
+    acceptationTab: {
+        padding: 20,
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    profile: {
+        padding: 7
     }
 })
