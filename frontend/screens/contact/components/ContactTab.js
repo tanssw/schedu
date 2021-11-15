@@ -2,72 +2,92 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-import { FontAwesome } from '@expo/vector-icons'
+import { FontAwesome, Feather } from '@expo/vector-icons'
+import { colorCode, text } from '../../../styles'
 
 export default function ContactTab(props) {
+
     const [headerText, updateHeaderText] = useState('Contact')
+
     const navigation = useNavigation()
+
+    // Navigate to contact profile screen of selected contact.
+    const navigateToProfile = (userId) => {
+        navigation.navigate('ContactProfile', { contactId: userId })
+    }
+
+    const renderContact = (contact) => {
+        return (
+            <TouchableOpacity onPress={() => {navigateToProfile(contact._id)}} key={contact._id} style={styles.listItem}>
+                <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} style={styles.personImage} />
+                <View style={styles.personDetail}>
+                    <Text style={styles.personName}>
+                        {contact.firstName} {contact.lastName}
+                    </Text>
+                    <Text style={[styles.personRole]}>{contact.role}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    const renderEmptyContact = (
+        <View style={styles.emptyContainer}>
+            <Feather name="user-x" size={64} color={colorCode.grey} />
+            <Text style={styles.emptyText}>Can't find what you're looking for ...</Text>
+        </View>
+    )
+
     return (
-        <View style={styles.ContactTab}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{props.headerText}</Text>
+        <View style={styles.contactContainer}>
+            <Text style={styles.header}>{props.headerText}</Text>
             <View style={styles.listContainer}>
-                {props.participants.map(({ _id, firstName, lastName, role }, index) => (
-                    <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate('ContactProfile', { objectId: _id })
-                        }}
-                        key={`${_id + index}`}
-                    >
-                        <View style={styles.listItem}>
-                            <FontAwesome
-                                name="user-circle-o"
-                                size={44}
-                                color="grey"
-                                style={styles.personImage}
-                            />
-                            <View>
-                                <Text style={[styles.personName, (styles.flex = 1)]}>
-                                    {firstName} {lastName}
-                                </Text>
-                                <Text style={[styles.personRole]}>{role}</Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                ))}
+                {props.contacts.length ? props.contacts.map(contact => renderContact(contact)) : renderEmptyContact}
             </View>
         </View>
     )
 }
 const styles = StyleSheet.create({
-    participantContainer: {
-        flexDirection: 'row',
-        marginTop: 15,
-        marginBottom: 20
+    contactContainer: {
+        flex: 1,
+        padding: 16,
+        backgroundColor: 'white'
     },
-    personName: {
-        textAlign: 'center',
-        marginTop: 4
+    emptyContainer: {
+        minHeight: 144,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
-    personRole: {
-        textAlign: 'left'
-    },
-    personImage: {
-        textAlign: 'center',
-        marginVertical: 3,
-        marginHorizontal: 20
-    },
-    ContactTab: {
-        // margin: 15,
-        padding: 16
+    emptyText: {
+        color: colorCode.grey,
+        marginTop: 8
     },
     listContainer: {
-        marginTop: 15,
-        marginBottom: 20
+
     },
     listItem: {
         flexDirection: 'row',
-        margin: 5,
-        marginBottom: 15,
-        alignSelf: 'flex-start'
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginVertical: 8
+    },
+    header: {
+        fontWeight: 'bold',
+        fontSize: 18,
+        marginBottom: 8
+    },
+    personImage: {
+
+    },
+    personDetail: {
+        flex: 1,
+        marginLeft: 16
+    },
+    personName: {
+        color: colorCode.dark
+    },
+    personRole: {
+        fontSize: 14,
+        fontWeight: '300',
+        color: colorCode.grey
     }
 })

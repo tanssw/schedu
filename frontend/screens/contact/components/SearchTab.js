@@ -1,78 +1,61 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView } from 'react-native'
-import { background } from '../../../styles'
+import { background, colorCode } from '../../../styles'
 import { useNavigation } from '@react-navigation/native'
 
-import { AntDesign, Fontisto, FontAwesome } from '@expo/vector-icons'
+import { AntDesign, MaterialIcons } from '@expo/vector-icons'
 
 export default function SearchTab(props) {
+
     const navigation = useNavigation()
 
-    return (
-        <SafeAreaView>
-            <View style={[styles.searchTab, (styles.backgroundColor = background.blue)]}>
-                <TextInput
-                    style={styles.searchBar}
-                    placeholder="Search"
-                    onChangeText={props.searchWord}
-                    keyboardType={'default'}
-                    multiline={false}
-                    onSubmitEditing={props.find}
-                />
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate('ContactHistory', { id: '617fb3f0396613a9e99b86a8' })
-                    }}
-                >
-                    <Fontisto style={styles.iconHistory} name="history" size={22} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('ContactFavorite')}>
-                    <FontAwesome style={styles.iconStart} name="star" size={24} color="orange" />
-                </TouchableOpacity>
-            </View>
-        </SafeAreaView>
-    )
-    function test() {
-        // props.alertWord
-        alert('test')
+    const navigateToHistory = () => {
+        navigation.navigate('ContactHistory')
     }
+
+    const navigateToFavorite = () => {
+        navigation.navigate('ContactFavorite')
+    }
+
+    return (
+        <View style={styles.container}>
+            <TextInput
+                style={styles.searchField}
+                placeholder="Looking for someone ?"
+                onChangeText={props.searchWord}
+                keyboardType={'default'}
+                multiline={false}
+                onSubmitEditing={props.find}
+            />
+            <TouchableOpacity onPress={() => {navigateToHistory()}}>
+                <MaterialIcons name="history" size={28} color="white" style={styles.history} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {navigateToFavorite()}}>
+                <AntDesign name="staro" size={24} color="white" style={styles.favorite} />
+            </TouchableOpacity>
+        </View>
+    )
 }
+
 const styles = StyleSheet.create({
-    searchTab: {
+    container: {
         flex: 1,
         flexDirection: 'row',
-        padding: 10,
-        justifyContent: 'flex-start'
+        alignItems: 'center',
+        backgroundColor: colorCode.blue,
+        padding: 16
     },
-    searchBar: {
+    searchField: {
         flex: 1,
         height: 35,
         backgroundColor: 'white',
-        borderRadius: 10,
-        margin: 13
+        paddingHorizontal: 8,
+        borderRadius: 4,
+        marginRight: 24
     },
-    iconHistory: {
-        width: 30,
-        margin: 10,
-        // marginTop: 17,
-        // marginLeft: 14,
-        padding: 5,
-        paddingTop: 10
+    history: {
+        marginRight: 24
     },
-    iconStart: {
-        width: 30,
-        margin: 10,
-        // marginLeft: 5,
-        // marginTop: 16,
-        padding: 5,
-        paddingTop: 9
-    },
-    iconSearch: {
-        width: 30,
-        margin: 10,
-        // marginLeft: 5,
-        // marginTop: 16,
-        padding: 5,
-        paddingTop: 8
+    favorite: {
     }
 })

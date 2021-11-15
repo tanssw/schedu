@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react'
-import { View, ScrollView, SafeAreaView } from 'react-native'
+import { View, ScrollView, StyleSheet } from 'react-native'
 import axios from 'axios'
 
 import SuggestBar from './components/SuggestBar'
 import SearchBar from './components/SearchTab'
+
 import QueryBar from './components/QueryBar'
 import ContactTab from './components/ContactTab'
 
-import { getAuthAsset } from '../../modules/auth'
+import { checkExpiredToken, getAuthAsset } from '../../modules/auth'
 
 export default function ContactListScreen() {
 
+    const [contacts, updateContacts] = useState([])
+
     const [headerText, updateHeaderText] = useState('Contact')
-    const [participants, updateParticipants] = useState([])
     const [search, updateSearch] = useState('')
     const [toggleSuggest, updateToggleSuggest] = useState(0)
     const [toggleQuery, updateToggleQuery] = useState(0)
@@ -35,39 +37,28 @@ export default function ContactListScreen() {
 
     const getSearch = async () => {
         const user = await axios.get(`http://localhost:3000/account/search/${search}`)
-        updateParticipants(user.data)
+        updateContacts(user.data)
     }
 
     // Query all users in the system
-    const getContactUsers = async () => {
+    const getContactUsers = async (role=null) => {
         const { token, userId } = await getAuthAsset()
         const payload = {
             headers: {
                 'Schedu-Token': token,
                 'Schedu-UID': userId
+            },
+            params: {
+                role: role
             }
         }
-        const userResult = await axios.get(`http://localhost:3000/account/all`, payload)
-        const contactUsers = userResult.data.users
-        updateParticipants(contactUsers)
-    }
-
-    // Professor btn for query data
-    const getProfessor = async () => {
-        const professor = await axios.get(`http://localhost:3000/account/role/teacher`)
-        updateParticipants(professor.data)
-    }
-
-    // Officer btn for query data
-    const getOffice = async () => {
-        const officer = await axios.get(`http://localhost:3000/account/role/staff`)
-        updateParticipants(officer.data)
-    }
-
-    //student btn fro query data
-    const getStudent = async () => {
-        const student = await axios.get(`http://localhost:3000/account/role/student`)
-        updateParticipants(student.data)
+        try {
+            const userResult = await axios.get(`http://localhost:3000/account/all`, payload)
+            const contactUsers = userResult.data.users
+            updateContacts(contactUsers)
+        } catch (error) {
+            checkExpiredToken(error)
+        }
     }
 
     const historyQuery = () => {
@@ -86,39 +77,21 @@ export default function ContactListScreen() {
         }
     }
 
-    // toggle display query and query bar
-    const queryDisplay = () => {
-        if (toggleQuery == 0) {
-            return (
-                <QueryBar
-                    all={getContactUsers}
-                    professor={getProfessor}
-                    officer={getOffice}
-                    student={getStudent}
-                />
-            )
-        }
-    }
-
     return (
-        <SafeAreaView>
-            <ScrollView nestedScrollEnabled>
-                {/* SearchBar tab*/}
-                <SearchBar
-                    searchWord={updateSearch}
-                    historyQuery={historyQuery}
-                    StarQuery={StarQuery}
-                    find={getSearch}
-                />
-                {/* Suggested Bar */}
-                {/* <SuggestBar/> */}
-                {suggestDisplay()}
-                {/* queryTab */}
-                {/* <QueryBar query={getContactUsers}/> */}
-                {queryDisplay()}
-                {/* contact tab */}
-                <ContactTab participants={participants} headerText={headerText} />
-            </ScrollView>
-        </SafeAreaView>
+        <ScrollView style={styles.container}>
+            <SearchBar
+                searchWord={updateSearch}
+                historyQuery={historyQuery}
+                StarQuery={StarQuery}
+                find={getSearch}
+            />
+            {suggestDisplay()}
+            {toggleQuery ? null : <QueryBar onSelect={getContactUsers} />}
+            <ContactTab contacts={contacts} headerText={headerText} />
+        </ScrollView>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {}
+})
