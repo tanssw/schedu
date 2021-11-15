@@ -1,6 +1,8 @@
-import React from "react"
+import React from 'react'
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+
+import { headerDefaultOptions } from '../styles'
 
 import ContactListScreen from '../screens/contact/ContactListScreen'
 import ContactHistoryScreen from '../screens/contact/ContactHistoryScreen'
@@ -25,7 +27,7 @@ const options = {
 }
 export default function ContactNavigator() {
     return (
-        <ContactStack.Navigator initialRouteName="ContactList">
+        <ContactStack.Navigator initialRouteName="ContactList" screenOptions={headerDefaultOptions}>
             <ContactStack.Screen name="ContactList" component={ContactListScreen} options={options.contactList}/>
             <ContactStack.Screen name="ContactHistory" component={ContactHistoryScreen} />
             <ContactStack.Screen name="ContactFavorite" component={ContactFavorite} />
