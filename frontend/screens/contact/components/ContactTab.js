@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'r
 import { useNavigation } from '@react-navigation/native'
 
 import { FontAwesome } from '@expo/vector-icons'
+import { colorCode } from '../../../styles'
 
 export default function ContactTab(props) {
 
@@ -10,61 +11,68 @@ export default function ContactTab(props) {
 
     const navigation = useNavigation()
 
+    // Navigate to contact profile screen of selected contact.
     const navigateToProfile = (userId) => {
-        navigation.navigate('ContactProfile', { objectId: userId })
+        navigation.navigate('ContactProfile', { contactId: userId })
+    }
+
+    const renderContact = (contact) => {
+        return (
+            <TouchableOpacity onPress={() => {navigateToProfile(contact._id)}} key={contact._id} style={styles.listItem}>
+                <FontAwesome name="user-circle-o" size={42} color={colorCode.dark} style={styles.personImage} />
+                <View style={styles.personDetail}>
+                    <Text style={styles.personName}>
+                        {contact.firstName} {contact.lastName}
+                    </Text>
+                    <Text style={[styles.personRole]}>{contact.role}</Text>
+                </View>
+            </TouchableOpacity>
+        )
     }
 
     return (
-        <View style={styles.ContactTab}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{props.headerText}</Text>
+        <View style={styles.contactContainer}>
+            <Text style={styles.header}>{props.headerText}</Text>
             <View style={styles.listContainer}>
-                {props.participants.map(contact => (
-                    <TouchableOpacity onPress={navigateToProfile(contact._id)} key={contact._id}>
-                        <View style={styles.listItem}>
-                            <FontAwesome
-                                name="user-circle-o"
-                                size={44}
-                                color="grey"
-                                style={styles.personImage}
-                            />
-                            <View>
-                                <Text style={styles.personName}>
-                                    {firstName} {lastName}
-                                </Text>
-                                <Text style={[styles.personRole]}>{role}</Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                ))}
+                {props.contacts.map(contact => renderContact(contact))}
             </View>
         </View>
     )
 }
 const styles = StyleSheet.create({
-    personName: {
-        textAlign: 'center',
-        marginTop: 4
-    },
-    personRole: {
-        textAlign: 'left'
-    },
-    personImage: {
-        textAlign: 'center',
-        marginVertical: 3,
-        marginHorizontal: 20
-    },
-    ContactTab: {
-        // margin: 15,
-        padding: 16
+    contactContainer: {
+        flex: 1,
+        padding: 16,
+        marginTop: 8,
+        backgroundColor: 'white'
     },
     listContainer: {
-        marginTop: 15,
-        marginBottom: 20
+
     },
     listItem: {
         flexDirection: 'row',
-        margin: 5,
-        marginBottom: 15,
-        alignSelf: 'flex-start'
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginVertical: 8
+    },
+    header: {
+        fontWeight: 'bold',
+        fontSize: 18,
+        marginBottom: 8
+    },
+    personImage: {
+
+    },
+    personDetail: {
+        flex: 1,
+        marginLeft: 16
+    },
+    personName: {
+        color: colorCode.lightBlue
+    },
+    personRole: {
+        fontSize: 14,
+        fontWeight: '300',
+        color: colorCode.grey
     }
 })

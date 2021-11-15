@@ -7,7 +7,8 @@ const colorCode = {
     grey: 'grey',
     yellow: '#ffaa54',
     green: '#23644e',
-    red: 'crimson'
+    red: 'crimson',
+    dark: '#444'
 }
 
 const background = StyleSheet.create({

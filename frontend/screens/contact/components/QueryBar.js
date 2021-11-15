@@ -1,29 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native'
+import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons'
 
-import { AntDesign, Fontisto, FontAwesome, Ionicons } from '@expo/vector-icons'
+import { colorCode } from '../../../styles'
+const iconColor = colorCode.lightBlue
 
 export default function QueryBar(props) {
-    return (
-        <View style={styles.queryTab}>
-            <TouchableOpacity onPress={all}>
-                <Ionicons name="ios-people-sharp" size={50} color="black" />
-                <Text style={styles.TextIcon}>All</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={professor}>
-                <Ionicons name="md-people-circle" size={50} color="black" />
-                <Text style={[styles.TextIcon]}>Professor</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={officer}>
-                <Ionicons name="people-outline" size={50} color="black" />
-                <Text style={styles.TextIcon}>Officer</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={student}>
-                <Ionicons name="ios-people-circle-outline" size={50} color="black" />
-                <Text style={styles.TextIcon}>Student</Text>
-            </TouchableOpacity>
-        </View>
-    )
+
     function all() {
         props.all()
     }
@@ -36,14 +19,48 @@ export default function QueryBar(props) {
     function student() {
         props.student()
     }
+
+    return (
+        <View style={styles.container}>
+            <TouchableOpacity style={styles.option} onPress={all}>
+                <Ionicons name="ios-people-sharp" size={32} color={iconColor} />
+                <Text style={[styles.optionText, styles.marginTopSmall]}>All</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.option} onPress={professor}>
+                <FontAwesome5 name="chalkboard-teacher" size={26} color={iconColor} />
+                <Text style={[styles.optionText, styles.marginTopDefault]}>Professor</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.option} onPress={officer}>
+                <FontAwesome5 name="id-card-alt" size={26} color={iconColor} />
+                <Text style={[styles.optionText, styles.marginTopDefault]}>Officer</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.option} onPress={student}>
+                <Ionicons name="school" size={32} color={iconColor} />
+                <Text style={[styles.optionText, styles.marginTopSmall]}>Student</Text>
+            </TouchableOpacity>
+        </View>
+    )
 }
 const styles = StyleSheet.create({
-    queryTab: {
-        padding: 10,
+    container: {
+        backgroundColor: 'white',
+        padding: 16,
+        marginTop: 8,
         flexDirection: 'row',
         justifyContent: 'space-evenly'
     },
-    TextIcon: {
-        textAlign: 'center'
+    option: {
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    optionText: {
+        textAlign: 'center',
+        fontWeight: '300'
+    },
+    marginTopDefault: {
+        marginTop: 8
+    },
+    marginTopSmall: {
+        marginTop: 4
     }
 })
