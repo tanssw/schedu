@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { View, ScrollView, SafeAreaView } from 'react-native'
+import axios from 'axios'
 
 import SuggestBar from './components/SuggestBar'
 import SearchBar from './components/SearchTab'
 import QueryBar from './components/QueryBar'
 import ContactTab from './components/ContactTab'
-import { NavigationContainer } from '@react-navigation/native'
-import axios from 'axios'
+import { getAuthAsset } from '../../modules/auth'
 
 export default function ContactListScreen() {
+
     const [headerText, updateHeaderText] = useState('Contact')
     const [participants, updateParticipants] = useState([])
     const [search, updateSearch] = useState('')
@@ -16,11 +17,12 @@ export default function ContactListScreen() {
     const [toggleQuery, updateToggleQuery] = useState(0)
 
     useEffect(() => {
-        getQueryAllPeople()
+        getContactUsers()
     }, [])
-    useEffect(() =>{
+
+    useEffect(() => {
         if(search == ''){
-            getQueryAllPeople()
+            getContactUsers()
             updateToggleSuggest(0)
             updateToggleQuery(0)
         }
@@ -35,11 +37,21 @@ export default function ContactListScreen() {
         const user = await axios.get(`http://localhost:3000/account/search/${search}`)
         updateParticipants(user.data)
     }
-    // All btn for query data
-    const getQueryAllPeople = async () => {
-        const all = await axios.get(`http://localhost:3000/account/all`)
-        updateParticipants(all.data)
+
+    // Query all users in the system
+    const getContactUsers = async () => {
+        const { token, userId } = await getAuthAsset()
+        const payload = {
+            headers: {
+                'Schedu-Token': token,
+                'Schedu-UID': userId
+            }
+        }
+        const userResult = await axios.get(`http://localhost:3000/account/all`, payload)
+        const contactUsers = userResult.data.users
+        updateParticipants(contactUsers)
     }
+
     // Professor btn for query data
     const getProfessor = async () => {
         const professor = await axios.get(`http://localhost:3000/account/role/teacher`)
@@ -73,7 +85,7 @@ export default function ContactListScreen() {
         if (toggleQuery == 0) {
             return (
                 <QueryBar
-                    all={getQueryAllPeople}
+                    all={getContactUsers}
                     professor={getProfessor}
                     officer={getOffice}
                     student={getStudent}
@@ -95,7 +107,7 @@ export default function ContactListScreen() {
                 {/* <SuggestBar/> */}
                 {suggestDisplay()}
                 {/* queryTab */}
-                {/* <QueryBar query={getQueryAllPeople}/> */}
+                {/* <QueryBar query={getContactUsers}/> */}
                 {queryDisplay()}
                 {/* contact tab */}
                 <ContactTab participants={participants} headerText={headerText} />
