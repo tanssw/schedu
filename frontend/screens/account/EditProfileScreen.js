@@ -10,11 +10,6 @@ import { text, shadow } from '../../styles'
 
 // import components
 import UserData from './components/UserData'
-
-import { getAuthAsset } from '../../modules/auth'
-
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
-
 export default function ProfileScreen({ route, navigation }) {
     const updateDataHandler = data => {
         switch (data.topic) {
@@ -86,12 +81,9 @@ export default function ProfileScreen({ route, navigation }) {
                             edit={true}
                             update={updateDataHandler}
                         />
-
-                        {/* <UserData topicData={'Role'} data={userData.role} edit={false} /> */}
                     </View>
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>Contact</Text>
-                        {/* <UserData topicData={'Email'} data={userData.contact.email} edit={false} /> */}
                         <UserData
                             topicData={'Phone number'}
                             data={newPhoneNumber}
