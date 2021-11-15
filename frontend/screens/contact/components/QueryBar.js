@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons'
 
 import { colorCode } from '../../../styles'
-const iconColor = colorCode.lightBlue
+const iconColor = colorCode.lightGrey
 
 export default function QueryBar(props) {
 
@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
     },
     optionText: {
         textAlign: 'center',
-        fontWeight: '300'
+        fontWeight: '300',
+        color: colorCode.lightGrey
     },
     marginTopDefault: {
         marginTop: 8

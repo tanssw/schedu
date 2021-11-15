@@ -19,7 +19,7 @@ export default function ContactTab(props) {
     const renderContact = (contact) => {
         return (
             <TouchableOpacity onPress={() => {navigateToProfile(contact._id)}} key={contact._id} style={styles.listItem}>
-                <FontAwesome name="user-circle-o" size={42} color={colorCode.dark} style={styles.personImage} />
+                <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} style={styles.personImage} />
                 <View style={styles.personDetail}>
                     <Text style={styles.personName}>
                         {contact.firstName} {contact.lastName}
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
         marginLeft: 16
     },
     personName: {
-        color: colorCode.lightBlue
+        color: colorCode.dark
     },
     personRole: {
         fontSize: 14,

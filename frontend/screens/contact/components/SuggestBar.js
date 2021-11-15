@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 
+import { colorCode } from '../../../styles'
+
 export default function SuggestBar() {
     const navigation = useNavigation()
     const [participants, updateParticipants] = useState([
@@ -64,7 +66,7 @@ export default function SuggestBar() {
     const renderParticipant = ({ item, index }) => {
         return (
             <TouchableOpacity onPress={() => {navigateContactProfile()}} style={index ? styles.marginLeftDefault : ''}>
-                <FontAwesome name="user-circle-o" size={42} color="grey" style={styles.personImage} />
+                <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} style={styles.personImage} />
                 <Text style={styles.personName}>{item.firstname} {item.lastname[0]}.</Text>
             </TouchableOpacity>
         )
