@@ -17,7 +17,7 @@ import {
     getAuthAsset,
     setAuthAsset
 } from '../../modules/auth'
-import Time from '../appointment/components/TimeSelector'
+import Time from '../appointment/components/TimeDisplay'
 
 import { background, text, shadow, colorCode } from '../../styles'
 
@@ -39,7 +39,7 @@ function AppointmentDetail({ props, ref, route }) {
         }
     ])
 
-    //Get details user for display they name
+    //FUNCTION: Get details user for display they name
     const getDetailsParticipants = async uid => {
         const { token } = await getAuthAsset()
         const payload = {
@@ -54,7 +54,7 @@ function AppointmentDetail({ props, ref, route }) {
         )
         setParticipants(peoples)
     }
-
+    //FUNCTION: return commMethods for details
     const getCommMethod = () => {
         const commMethod = data.commMethod
         if (commMethod == 'face') {
@@ -66,6 +66,14 @@ function AppointmentDetail({ props, ref, route }) {
         } else if (commMethod == 'zoom') {
             setCommMethod('Zoom Application')
         }
+    }
+    // FUNCTION : user decline this appointment
+    const decline = () =>{
+        alert("decline")
+    }
+    //FUNCTION : user approval this appointment
+    const approval = () =>{
+        alert("Approval")
     }
 
     useImperativeHandle(
@@ -129,11 +137,11 @@ function AppointmentDetail({ props, ref, route }) {
             </TouchableOpacity>
         )
     }
-
+    //TODO: time display startAt and endAt from appointment
     return (
         <ScrollView>
         <View style={styles.container}>
-            <Time start={data.startAt} end={data.endAt}/>
+            <Time startAt={data.startAt} endAt={data.endAt}/>
             <View style={[styles.detailContainer, shadow.boxTopMedium]}>
                 {/* Subject Input */}
                 <View style={styles.spaceBetweenInput}>
@@ -187,10 +195,10 @@ function AppointmentDetail({ props, ref, route }) {
                 </View>
                 {/* Button */}
                 <View style={styles.acceptationTab}>
-                    <TouchableOpacity style={[styles.mainButton,styles.decline]}>
-                        <Text style={text.black}>Decline</Text>
+                    <TouchableOpacity style={[styles.mainButton,styles.decline]} onPress={() => {decline()}}>
+                        <Text style={text.red}>Decline</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.mainButton, background.blue]}>
+                    <TouchableOpacity style={[styles.mainButton, background.blue]} onPress={() => {approval()}}>
                         <Text style={text.white}>Approval</Text>
                     </TouchableOpacity>
                 </View>

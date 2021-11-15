@@ -176,7 +176,5 @@ router.post('/', async (req, res) => {
         console.log(error)
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
-
 })
-
 module.exports = router
