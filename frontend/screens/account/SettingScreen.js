@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
-import Constants from 'expo-constants'
 import axios from 'axios'
+
+import { AUTH_TOKEN_KEY, AUTH_USER_ID } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 // import components
 import SettingData from './components/SettingData'
@@ -9,8 +11,6 @@ import TimePicker from './components/TimePicker'
 
 import { getAuthAsset } from '../../modules/auth'
 import { hourItems, minuteItems } from './data/timeItems'
-
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function SettingScreen({ route, navigation }) {
     const [settings, setSettings] = useState(route.params)
@@ -33,10 +33,8 @@ export default function SettingScreen({ route, navigation }) {
     })
 
     const updateSetting = async () => {
-        const { token, userId } = await getAuthAsset()
-
         const body = {
-            id: userId,
+            id: AUTH_USER_ID,
             newData: {
                 setting: {
                     displayTel: displayTel,
@@ -50,7 +48,7 @@ export default function SettingScreen({ route, navigation }) {
         }
 
         const headers = {
-            headers: { 'Schedu-Token': token }
+            headers: { 'Schedu-Token': AUTH_TOKEN_KEY }
         }
 
         try {

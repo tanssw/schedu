@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
-import { useSelector } from 'react-redux'
 import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
-import { AUTH_TOKEN_KEY, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
+import { AUTH_TOKEN_KEY, AUTH_USER_ID } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import { text, shadow, colorCode } from '../../styles'
@@ -18,15 +17,13 @@ export default function AccountMenuScreen({ navigation }) {
     })
 
     const getUser = async () => {
-        const { token, userId } = await getAuthAsset()
-
         const payload = {
-            headers: { 'Schedu-Token': token }
+            headers: { 'Schedu-Token': AUTH_TOKEN_KEY }
         }
 
         try {
-            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${userId}`, payload)
-            setUserData(user.data.data)
+            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${AUTH_USER_ID}`, payload)
+            setUserData(user.data.user)
         } catch (error) {
             // Clear stored token in Secure Store
             await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY, {})
