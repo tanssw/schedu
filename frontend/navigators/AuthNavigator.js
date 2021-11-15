@@ -13,11 +13,15 @@ export default function AuthNavigator() {
         <NavigationContainer>
             <AuthStack.Navigator
                 screenOptions={{
-                    headerShown: false,
+                    headerShown: false
                 }}
-                screenListeners={({navigation}) => ({
-                    state: (event) => {
-                        getAuthAsset().then(() => {}).catch(() => {navigation.navigate('SignIn')})
+                screenListeners={({ navigation }) => ({
+                    state: event => {
+                        getAuthAsset()
+                            .then(() => {})
+                            .catch(() => {
+                                navigation.navigate('SignIn')
+                            })
                     }
                 })}
             >

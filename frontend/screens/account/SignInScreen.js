@@ -6,10 +6,9 @@ import * as Google from 'expo-google-app-auth'
 import axios from 'axios'
 
 import { clearAuthAsset, getAuthAsset, setAuthAsset } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import { background, text } from '../../styles'
-
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function SignInScreen({ navigation }) {
 
@@ -44,6 +43,7 @@ export default function SignInScreen({ navigation }) {
                 redirectToMainScreen()
             }
         } catch (error) {
+            // TODO: Better handle auth error
             console.log('Authentication Error')
         }
     }

@@ -3,29 +3,26 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import axios from 'axios'
 
-import {
-    AUTH_TOKEN_KEY,
-    AUTH_USER_ID,
-    clearAuthAsset,
-    getAuthAsset,
-    setAuthAsset
-} from '../../modules/auth'
-
+import { getAuthAsset, checkExpiredToken } from '../../modules/auth'
 
 export default function ContactHistoryScreen({ route, navigation }) {
     const [participants, updateParticipants] = useState([])
 
     const getQueryHistory = async () => {
-        const {token, userId} = await getAuthAsset()
-        const test = "617ace4e233ec5b2b2570d4f"
+        const { token, userId } = await getAuthAsset()
+        const test = '617ace4e233ec5b2b2570d4f'
         const payload = {
-            headers:{
-                "schedu-token": token,
-                "schedu-uid" : userId
-            },
+            headers: {
+                'schedu-token': token,
+                'schedu-uid': userId
+            }
         }
-        const historyLog = await axios.get(`http://localhost:3000/appointment/`, {params: {id : userId }},payload)
-        updateParticipants(historyLog.data)
+        try {
+            const historyLog = await axios.get(`http://localhost:3000/appointment/`, { params: { id: userId } }, payload)
+            updateParticipants(historyLog.data)
+        } catch (error) {
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+        }
     }
     useEffect(() => {
         getQueryHistory()
