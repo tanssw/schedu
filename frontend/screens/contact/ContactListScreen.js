@@ -41,35 +41,20 @@ export default function ContactListScreen() {
     }
 
     // Query all users in the system
-    const getContactUsers = async () => {
+    const getContactUsers = async (role=null) => {
         const { token, userId } = await getAuthAsset()
         const payload = {
             headers: {
                 'Schedu-Token': token,
                 'Schedu-UID': userId
+            },
+            params: {
+                role: role
             }
         }
         const userResult = await axios.get(`http://localhost:3000/account/all`, payload)
         const contactUsers = userResult.data.users
         updateContacts(contactUsers)
-    }
-
-    // Professor btn for query data
-    const getProfessor = async () => {
-        const professor = await axios.get(`http://localhost:3000/account/role/teacher`)
-        updateContacts(professor.data)
-    }
-
-    // Officer btn for query data
-    const getOffice = async () => {
-        const officer = await axios.get(`http://localhost:3000/account/role/staff`)
-        updateContacts(officer.data)
-    }
-
-    //student btn fro query data
-    const getStudent = async () => {
-        const student = await axios.get(`http://localhost:3000/account/role/student`)
-        updateContacts(student.data)
     }
 
     const historyQuery = () => {
@@ -88,17 +73,6 @@ export default function ContactListScreen() {
         }
     }
 
-    // toggle display query and query bar
-    const queryDisplay = () => {
-        if (toggleQuery == 0) {
-            return (
-                <QueryBar
-
-                />
-            )
-        }
-    }
-
     return (
         <ScrollView style={styles.container}>
             <SearchBar
@@ -108,7 +82,7 @@ export default function ContactListScreen() {
                 find={getSearch}
             />
             {suggestDisplay()}
-            {toggleQuery ? null : <QueryBar all={getContactUsers} professor={getProfessor} officer={getOffice} student={getStudent} />}
+            {toggleQuery ? null : <QueryBar onSelect={getContactUsers} />}
             <ContactTab contacts={contacts} headerText={headerText} />
         </ScrollView>
     )

@@ -7,34 +7,25 @@ const iconColor = colorCode.lightGrey
 
 export default function QueryBar(props) {
 
-    function all() {
-        props.all()
-    }
-    function professor() {
-        props.professor()
-    }
-    function officer() {
-        props.officer()
-    }
-    function student() {
-        props.student()
+    const onSelectFilter = (selector=null) => {
+        props.onSelect(selector)
     }
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.option} onPress={all}>
+            <TouchableOpacity style={styles.option} onPress={() => {onSelectFilter()}}>
                 <Ionicons name="ios-people-sharp" size={32} color={iconColor} />
                 <Text style={[styles.optionText, styles.marginTopSmall]}>All</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.option} onPress={professor}>
+            <TouchableOpacity style={styles.option} onPress={() => {onSelectFilter('professor')}}>
                 <FontAwesome5 name="chalkboard-teacher" size={26} color={iconColor} />
                 <Text style={[styles.optionText, styles.marginTopDefault]}>Professor</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.option} onPress={officer}>
+            <TouchableOpacity style={styles.option} onPress={() => {onSelectFilter('officer')}}>
                 <FontAwesome5 name="id-card-alt" size={26} color={iconColor} />
                 <Text style={[styles.optionText, styles.marginTopDefault]}>Officer</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.option} onPress={student}>
+            <TouchableOpacity style={styles.option} onPress={() => {onSelectFilter('student')}}>
                 <Ionicons name="school" size={32} color={iconColor} />
                 <Text style={[styles.optionText, styles.marginTopSmall]}>Student</Text>
             </TouchableOpacity>
