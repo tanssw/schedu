@@ -8,7 +8,7 @@ import SearchBar from './components/SearchTab'
 import QueryBar from './components/QueryBar'
 import ContactTab from './components/ContactTab'
 
-import { getAuthAsset } from '../../modules/auth'
+import { checkExpiredToken, getAuthAsset } from '../../modules/auth'
 
 export default function ContactListScreen() {
 
@@ -52,9 +52,13 @@ export default function ContactListScreen() {
                 role: role
             }
         }
-        const userResult = await axios.get(`http://localhost:3000/account/all`, payload)
-        const contactUsers = userResult.data.users
-        updateContacts(contactUsers)
+        try {
+            const userResult = await axios.get(`http://localhost:3000/account/all`, payload)
+            const contactUsers = userResult.data.users
+            updateContacts(contactUsers)
+        } catch (error) {
+            checkExpiredToken(error)
+        }
     }
 
     const historyQuery = () => {
