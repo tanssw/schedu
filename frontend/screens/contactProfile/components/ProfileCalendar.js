@@ -27,7 +27,7 @@ export default function ProfileCalendar(props) {
             theme={calendarTheme}
             minDate={getMinDate()}
             maxDate={getMaxDate()}
-            onDayPress={props.onDayPress}
+            onDayPress={(day) => {props.onDayPress(day.dateString)}}
         />
     )
 }

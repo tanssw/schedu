@@ -37,8 +37,8 @@ export default function ContactProfileScreen({ route, navigation }) {
         updatePhoneState(user.contact.tel)
     }
 
-    const navigateToAppointmentCreator = () => {
-        navigation.navigate('CreateAppointment', { contactId: contactId })
+    const navigateToAppointmentCreator = (selectedDate) => {
+        navigation.navigate('CreateAppointment', { contactId: contactId, date: selectedDate })
     }
 
     return (
