@@ -3,9 +3,12 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatLi
 import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 
+
 import { background, text, shadow, colorCode } from '../../styles'
 
-function AppointmentDetail(props, ref) {
+function AppointmentDetail({props,ref,route}) {
+
+    const { data } = route.params
 
     // Component's States
     const [subject, setSubject] = useState()
@@ -57,16 +60,16 @@ function AppointmentDetail(props, ref) {
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Subject</Text>
                 {/* <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/> */}
-                <Text>Tomato Meeting</Text>
+                <Text style={styles.header}>{data.subject}</Text>
             </View>
             {/* Participant Input */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Participant</Text>
                 <View style={styles.participantContainer}>
-                    <TouchableOpacity style={styles.participantAdder}>
+                    {/* <TouchableOpacity style={styles.participantAdder}>
                         <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <FlatList horizontal data={participants} renderItem={renderParticipant} keyExtractor={person => person._id} />
                 </View>
             </View>
@@ -88,19 +91,23 @@ function AppointmentDetail(props, ref) {
                     style={styles.picker}
                 /> */}
                 {/* <TextInput onChangeText={text => setCommUrl(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/> */}
-                <Text>Test</Text>
+                <Text>{data.commMethod}</Text>
             </View>
             {/* Note to participant Textbox */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Note to participant</Text>
-                <ScrollView contentContainerStyle={styles.inputBoxBorder}>
+                {/* <ScrollView contentContainerStyle={styles.inputBoxBorder}>
                     <Text>It's a note from pluto</Text>
-                </ScrollView>
+                </ScrollView> */}
+                <Text>It's a note from pluto</Text>
             </View>
             {/* Button */}
-            {/* <TouchableOpacity onPressOut={createAppointment} style={[styles.mainButton, background.blue]}>
-                <Text style={text.white}>Create Appointment</Text>
-            </TouchableOpacity> */}
+            <TouchableOpacity  style={[styles.mainButton, background.blue]}>
+                <Text style={text.white}>Approval</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  style={[styles.mainButton, background.blue]}>
+                <Text style={text.white}>Reject</Text>
+            </TouchableOpacity>
         </View>
     )
 }
