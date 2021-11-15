@@ -16,6 +16,7 @@ export default function App() {
     const rootReducer = combineReducers({
         user: userReducer
     })
+
     const store = createStore(rootReducer)
 
     return (

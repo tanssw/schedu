@@ -1,13 +1,11 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
 import { MaterialIcons, Ionicons } from '@expo/vector-icons'
-import Constants from 'expo-constants'
 
 import { colorCode, shadow } from '../../../styles'
 import axios from 'axios'
 import { getAuthAsset } from '../../../modules/auth'
-
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
+import { API_SERVER_DOMAIN } from '../../../modules/apis'
 
 function Overview(props, ref) {
 

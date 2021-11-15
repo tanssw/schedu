@@ -1,14 +1,12 @@
 import React, { useCallback, useRef, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
-import Constants from 'expo-constants'
 import axios from 'axios'
 
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 import { getAuthAsset } from '../../modules/auth'
 
 import TimeSelector from './components/TimeSelector'
 import AppointmentDetail from './components/AppointmentDetail'
-
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function AppointmentEditorScreen() {
 

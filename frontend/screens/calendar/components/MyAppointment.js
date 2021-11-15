@@ -1,6 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import Constants from 'expo-constants'
 import { FontAwesome5 } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 
