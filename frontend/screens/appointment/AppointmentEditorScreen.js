@@ -3,6 +3,7 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 import axios from 'axios'
 
 import { API_SERVER_DOMAIN } from '../../modules/apis'
+import { getAuthAsset } from '../../modules/auth'
 
 import TimeSelector from './components/TimeSelector'
 import AppointmentDetail from './components/AppointmentDetail'
@@ -16,9 +17,15 @@ export default function AppointmentEditorScreen() {
     const [formattedEnd, setFormattedEnd] = useState()
 
     const createAppointmentHandler = async (data) => {
+        const { token, userId } = await getAuthAsset()
+        const header = {
+            headers: {
+                'Schedu-Token': token
+            }
+        }
         const payload = {
             subject: data.subject,
-            sender: "6189ea797b52117c02879274",
+            sender: userId,
             receiver: "618b4cc8a996fac981059a69",
             participants: data.participants,
             startAt: formattedStart,
@@ -29,7 +36,7 @@ export default function AppointmentEditorScreen() {
         }
 
         try {
-            const result = await axios.post(`${API_SERVER_DOMAIN}/appointment`, payload)
+            const result = await axios.post(`${API_SERVER_DOMAIN}/appointment`, payload, header)
             timeSelectorComponent.current.resetChildState()
             detailComponent.current.resetChildState()
         } catch (error) {
