@@ -55,17 +55,12 @@ export default function ProfileScreen({ route, navigation }) {
         }
         alert('Profile Updated')
         navigation.navigate('AccountMenuScreen')
-        // route.params.screenNavigator.goBack()
-
-        // navigation.navigate('AccountMenuScreen')
     }
 
     const [userData, setUserData] = useState(route.params)
     const [newFirstName, setNewFirstName] = useState(userData.firstName)
     const [newLastName, setNewLastName] = useState(userData.lastName)
-    const [newPhoneNumber, setNewPhoneNumber] = useState(
-        userData.contact.tel === null ? '' : userData.contact.tel
-    )
+    const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel)
 
     return (
         <View style={styles.container}>

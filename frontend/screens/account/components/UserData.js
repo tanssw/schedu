@@ -27,6 +27,7 @@ export default function UserData(props) {
                 ]}
                 editable={editState}
                 onChangeText={changeDataHandler}
+                placeholder="—"
             >
                 {data}
             </TextInput>
