@@ -6,7 +6,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { AUTH_TOKEN_KEY,AUTH_USER_ID } from '../modules/auth'
 
 import { headerDefaultOptions } from '../styles'
-import Constants from 'expo-constants'
 
 import AccountMenuScreen from '../screens/account/AccountMenuScreen'
 import ProfileScreen from '../screens/account/ProfileScreen'
@@ -14,7 +13,6 @@ import EditProfileScreen from '../screens/account/EditProfileScreen'
 import SettingScreen from '../screens/account/SettingScreen'
 
 const AccountStack = createNativeStackNavigator()
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function AccountNavigator({ navigation }) {
     useEffect(() => {

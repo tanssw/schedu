@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import Constants from 'expo-constants'
+
+import { AUTH_TOKEN_KEY, AUTH_USER_ID } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 import axios from 'axios'
 
 // style by tanssw.com
@@ -29,10 +31,8 @@ export default function ProfileScreen({ route, navigation }) {
     }
 
     const update = async () => {
-        const { token, userId } = await getAuthAsset()
-
         const body = {
-            id: userId,
+            id: AUTH_USER_ID,
             newData: {
                 firstName: newFirstName,
                 lastName: newLastName,
@@ -44,7 +44,7 @@ export default function ProfileScreen({ route, navigation }) {
         }
 
         const headers = {
-            headers: { 'Schedu-Token': token }
+            headers: { 'Schedu-Token': AUTH_TOKEN_KEY }
         }
 
         try {
