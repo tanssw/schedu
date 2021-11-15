@@ -7,6 +7,7 @@ import { getAuthAsset } from '../../modules/auth'
 
 import TimeSelector from './components/TimeSelector'
 import AppointmentDetail from './components/AppointmentDetail'
+import { checkExpiredToken } from '../../modules/auth'
 
 export default function AppointmentEditorScreen() {
 
@@ -40,7 +41,7 @@ export default function AppointmentEditorScreen() {
             timeSelectorComponent.current.resetChildState()
             detailComponent.current.resetChildState()
         } catch (error) {
-
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
     }
 

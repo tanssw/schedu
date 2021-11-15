@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { View, ScrollView, SafeAreaView } from 'react-native'
 import axios from 'axios'
 
-import axios from 'axios'
-
 import SuggestBar from './components/SuggestBar'
 import SearchBar from './components/SearchTab'
 import QueryBar from './components/QueryBar'
@@ -25,7 +23,7 @@ export default function ContactListScreen() {
 
     useEffect(() => {
         if (search == '') {
-            getQueryAllPeople()
+            getContactUsers()
             updateToggleSuggest(0)
             updateToggleQuery(0)
         } else {

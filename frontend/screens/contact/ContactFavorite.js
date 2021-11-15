@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { useNavigation } from '@react-navigation/core'
 import { FontAwesome } from '@expo/vector-icons'
 
 import axios from 'axios'
 
-import {
-    AUTH_TOKEN_KEY,
-    AUTH_USER_ID,
-    clearAuthAsset,
-    getAuthAsset,
-    setAuthAsset
-} from '../../modules/auth'
+import { getAuthAsset, checkExpiredToken } from '../../modules/auth'
 
 export default function ContactHistoryScreen() {
+
     const [participants, updateParticipants] = useState([])
+
+    const navigation = useNavigation()
 
     const getQueryFavorite = async () => {
         const { token, userId } = await getAuthAsset()
@@ -25,10 +23,14 @@ export default function ContactHistoryScreen() {
             }
         }
 
-        const list = await axios.get(`http://localhost:3000/account/${test}`, payload)
-        console.log(list.data)
-        updateParticipants(list.data)
-        console.log(participants.data)
+        try {
+            const list = await axios.get(`http://localhost:3000/account/${test}`, payload)
+            console.log(list.data)
+            updateParticipants(list.data)
+            console.log(participants.data)
+        } catch (error) {
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+        }
     }
     useEffect(() => {
         getQueryFavorite()
@@ -63,7 +65,6 @@ export default function ContactHistoryScreen() {
                 ))} */}
             </View>
         </View>
- 
     )
 }
 const styles = StyleSheet.create({

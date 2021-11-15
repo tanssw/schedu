@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux'
 import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
-import { text, shadow, colorCode } from '../../styles'
-import { AUTH_TOKEN_KEY, clearAuthAsset } from '../../modules/auth'
+import { AUTH_TOKEN_KEY, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
+
+import { text, shadow, colorCode } from '../../styles'
 
 export default function AccountMenuScreen({ navigation }) {
 
@@ -24,8 +25,7 @@ export default function AccountMenuScreen({ navigation }) {
             await clearAuthAsset()
             navigation.navigate('SignIn')
         } catch (error) {
-            const status = error.response.status
-            if (status === 500) return
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
     }
 

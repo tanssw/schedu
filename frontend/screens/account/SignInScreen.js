@@ -43,6 +43,7 @@ export default function SignInScreen({ navigation }) {
                 redirectToMainScreen()
             }
         } catch (error) {
+            // TODO: Better handle auth error
             console.log('Authentication Error')
         }
     }

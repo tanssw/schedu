@@ -1,16 +1,20 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import { MaterialIcons, Ionicons } from '@expo/vector-icons'
-
-import { colorCode, shadow } from '../../../styles'
 import axios from 'axios'
-import { getAuthAsset } from '../../../modules/auth'
+
+import { getAuthAsset, checkExpiredToken } from '../../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../../modules/apis'
+
+import { colorCode } from '../../../styles'
 
 function Overview(props, ref) {
 
     const [appointmentCount, updateAppointmentCount] = useState(0)
     const [requestCount, updateRequestCount] = useState(0)
+
+    const navigation = useNavigation()
 
     useImperativeHandle(ref, () => ({
         loadOverview() { loadCounter() }
@@ -24,10 +28,14 @@ function Overview(props, ref) {
                 'Schedu-UID': userId
             }
         }
-        const counterResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/count`, payload)
-        let counts = counterResult.data
-        updateAppointmentCount(counts.ongoing)
-        updateRequestCount(counts.request)
+        try {
+            const counterResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/count`, payload)
+            let counts = counterResult.data
+            updateAppointmentCount(counts.ongoing)
+            updateRequestCount(counts.request)
+        } catch (error) {
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+        }
     }
 
     return (
