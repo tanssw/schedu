@@ -54,7 +54,7 @@ export default function ProfileScreen({ route, navigation }) {
             console.log(error)
         }
         alert('Profile Updated')
-        navigation.jumpTo('Account')
+        navigation.navigate('AccountMenuScreen')
         // route.params.screenNavigator.goBack()
 
         // navigation.navigate('AccountMenuScreen')
