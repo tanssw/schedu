@@ -1,16 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import Constants from 'expo-constants'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
 import { getAuthAsset, checkExpiredToken } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import CalendarOverview from './components/CalendarOverview'
 import IncomingRequest from './components/IncomingRequest'
 import MyAppointment from './components/MyAppointment'
-
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 export default function CalendarOverviewScreen({navigation}) {
 

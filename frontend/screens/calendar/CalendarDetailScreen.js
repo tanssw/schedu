@@ -1,13 +1,13 @@
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import Constants from 'expo-constants'
+import { StyleSheet, Text, View } from 'react-native'
 import { Agenda } from 'react-native-calendars'
-import { checkExpiredToken, getAuthAsset } from '../../modules/auth'
+import axios from 'axios'
 import dayjs from 'dayjs'
-import { colorCode, shadow } from '../../styles'
 
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
+import { checkExpiredToken, getAuthAsset } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
+
+import { colorCode, shadow } from '../../styles'
 
 export default function CalendarDetailScreen({route, navigation}) {
 

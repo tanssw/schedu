@@ -140,36 +140,35 @@ router.get('/count', authMiddleware, async (req, res) => {
 })
 
 // Create new Appointment
-// TODO: Add auth middleware
-router.post('/', async (req, res) => {
-    const payload = req.body
-
-    // Mapping business_id of participants to an Object with some logic keys
-    let participants = payload.participants.map(participant => {
-        return {userId: participant, main: false, confirmed: false}
-    })
-
-    // Structuring payload data before saving into the database
-    const data = {
-        subject: payload.subject,
-        status: initAppointmentStatus(),
-        sender: payload.sender,
-        participants: [
-            {userId: payload.receiver, main: true, confirmed: false},
-            ...participants
-        ],
-        startAt: payload.startAt,
-        endAt: payload.endAt,
-        commMethod: payload.commMethod,
-        commUrl: payload.commUrl,
-        note: payload.note
-    }
-
-    // TODO: Do the validation before saving into the database
-
-    // Save into the database
-    const appointment = new appointmentModel(data)
+router.post('/', authMiddleware, async (req, res) => {
     try {
+        const appointmentRequest = req.body
+
+        // Mapping business_id of participants to an Object with some logic keys
+        let participants = appointmentRequest.participants.map(participant => {
+            return {userId: participant, main: false, confirmed: false}
+        })
+
+        // Structuring appointmentRequest data before saving into the database
+        const data = {
+            subject: appointmentRequest.subject,
+            status: initAppointmentStatus(),
+            sender: appointmentRequest.sender,
+            participants: [
+                {userId: appointmentRequest.receiver, main: true, confirmed: false},
+                ...participants
+            ],
+            startAt: appointmentRequest.startAt,
+            endAt: appointmentRequest.endAt,
+            commMethod: appointmentRequest.commMethod,
+            commUrl: appointmentRequest.commUrl,
+            note: appointmentRequest.note
+        }
+
+        // TODO: Do the validation before saving into the database
+
+        // Save into the database
+        const appointment = new appointmentModel(data)
         const result = await appointment.save()
         res.json({message: `Successfully create new appointment (ID: ${result._id})`})
     } catch (error) {

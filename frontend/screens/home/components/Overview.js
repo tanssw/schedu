@@ -2,13 +2,12 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { MaterialIcons, Ionicons } from '@expo/vector-icons'
-import Constants from 'expo-constants'
+import axios from 'axios'
+
+import { getAuthAsset, checkExpiredToken } from '../../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../../modules/apis'
 
 import { colorCode } from '../../../styles'
-import axios from 'axios'
-import { getAuthAsset, checkExpiredToken } from '../../../modules/auth'
-
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
 
 function Overview(props, ref) {
 

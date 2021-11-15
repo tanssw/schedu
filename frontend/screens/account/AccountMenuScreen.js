@@ -1,14 +1,13 @@
 import React from 'react'
 import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
 import { useSelector } from 'react-redux'
-import Constants from 'expo-constants'
 import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
-import { text, shadow, colorCode } from '../../styles'
 import { AUTH_TOKEN_KEY, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
+import { text, shadow, colorCode } from '../../styles'
 
 export default function AccountMenuScreen({ navigation }) {
 
