@@ -5,19 +5,21 @@ import { useNavigation } from '@react-navigation/native'
 import { FontAwesome } from '@expo/vector-icons'
 
 export default function ContactTab(props) {
+
     const [headerText, updateHeaderText] = useState('Contact')
+
     const navigation = useNavigation()
+
+    const navigateToProfile = (userId) => {
+        navigation.navigate('ContactProfile', { objectId: userId })
+    }
+
     return (
         <View style={styles.ContactTab}>
             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{props.headerText}</Text>
             <View style={styles.listContainer}>
-                {props.participants.map(({ _id, firstName, lastName, role }, index) => (
-                    <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate('ContactProfile', { objectId: _id })
-                        }}
-                        key={`${_id + index}`}
-                    >
+                {props.participants.map(contact => (
+                    <TouchableOpacity onPress={navigateToProfile(contact._id)} key={contact._id}>
                         <View style={styles.listItem}>
                             <FontAwesome
                                 name="user-circle-o"
@@ -26,7 +28,7 @@ export default function ContactTab(props) {
                                 style={styles.personImage}
                             />
                             <View>
-                                <Text style={[styles.personName, (styles.flex = 1)]}>
+                                <Text style={styles.personName}>
                                     {firstName} {lastName}
                                 </Text>
                                 <Text style={[styles.personRole]}>{role}</Text>
@@ -39,11 +41,6 @@ export default function ContactTab(props) {
     )
 }
 const styles = StyleSheet.create({
-    participantContainer: {
-        flexDirection: 'row',
-        marginTop: 15,
-        marginBottom: 20
-    },
     personName: {
         textAlign: 'center',
         marginTop: 4

@@ -12,7 +12,7 @@ import { getAuthAsset } from '../../modules/auth'
 export default function ContactListScreen() {
 
     const [headerText, updateHeaderText] = useState('Contact')
-    const [participants, updateParticipants] = useState([])
+    const [contacts, updateContacts] = useState([])
     const [search, updateSearch] = useState('')
     const [toggleSuggest, updateToggleSuggest] = useState(0)
     const [toggleQuery, updateToggleQuery] = useState(0)
@@ -103,21 +103,15 @@ export default function ContactListScreen() {
     return (
         <SafeAreaView>
             <ScrollView nestedScrollEnabled>
-                {/* SearchBar tab*/}
                 <SearchBar
                     searchWord={updateSearch}
                     historyQuery={historyQuery}
                     StarQuery={StarQuery}
                     find={getSearch}
                 />
-                {/* Suggested Bar */}
-                {/* <SuggestBar/> */}
                 {suggestDisplay()}
-                {/* queryTab */}
-                {/* <QueryBar query={getContactUsers}/> */}
                 {queryDisplay()}
-                {/* contact tab */}
-                <ContactTab participants={participants} headerText={headerText} />
+                <ContactTab contacts={contacts} headerText={headerText} />
             </ScrollView>
         </SafeAreaView>
     )
