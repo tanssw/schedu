@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-import { FontAwesome } from '@expo/vector-icons'
-import { colorCode } from '../../../styles'
+import { FontAwesome, Feather } from '@expo/vector-icons'
+import { colorCode, text } from '../../../styles'
 
 export default function ContactTab(props) {
 
@@ -30,11 +30,18 @@ export default function ContactTab(props) {
         )
     }
 
+    const renderEmptyContact = (
+        <View style={styles.emptyContainer}>
+            <Feather name="user-x" size={64} color={colorCode.grey} />
+            <Text style={styles.emptyText}>Can't find what you're looking for ...</Text>
+        </View>
+    )
+
     return (
         <View style={styles.contactContainer}>
             <Text style={styles.header}>{props.headerText}</Text>
             <View style={styles.listContainer}>
-                {props.contacts.map(contact => renderContact(contact))}
+                {props.contacts.length ? props.contacts.map(contact => renderContact(contact)) : renderEmptyContact}
             </View>
         </View>
     )
@@ -44,6 +51,15 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         backgroundColor: 'white'
+    },
+    emptyContainer: {
+        minHeight: 144,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    emptyText: {
+        color: colorCode.grey,
+        marginTop: 8
     },
     listContainer: {
 
