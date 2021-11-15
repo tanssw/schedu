@@ -28,23 +28,11 @@ const options = {
 export default function ContactNavigator() {
     return (
         <ContactStack.Navigator initialRouteName="ContactList" screenOptions={headerDefaultOptions}>
-            <ContactStack.Screen
-                name="ContactList"
-                component={ContactListScreen}
-                options={options.contactList}
-            />
+            <ContactStack.Screen name="ContactList" component={ContactListScreen} options={options.contactList}/>
             <ContactStack.Screen name="ContactHistory" component={ContactHistoryScreen} />
             <ContactStack.Screen name="ContactFavorite" component={ContactFavorite} />
-            <ContactStack.Screen
-                name="ContactProfile"
-                component={ContactProfileScreen}
-                options={options.contactProfile}
-            />
-            <ContactStack.Screen
-                name="CreateAppointment"
-                component={AppointmentEditorScreen}
-                options={options.createAppointment}
-            />
+            <ContactStack.Screen name="ContactProfile" component={ContactProfileScreen} options={options.contactProfile} />
+            <ContactStack.Screen name="CreateAppointment" component={AppointmentEditorScreen} options={options.createAppointment} />
         </ContactStack.Navigator>
     )
 }

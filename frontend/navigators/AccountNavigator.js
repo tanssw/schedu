@@ -55,7 +55,11 @@ export default function AccountNavigator({ navigation }) {
                     headerRight: () => (
                         <Button
                             onPress={() => {
+<<<<<<< HEAD
                                 navigation.navigate('EditProfile', userData)
+=======
+                                navigation.navigate('EditProfile')
+>>>>>>> dev
                             }}
                             title="edit"
                         />
