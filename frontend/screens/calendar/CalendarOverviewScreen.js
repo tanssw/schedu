@@ -89,14 +89,20 @@ export default function CalendarOverviewScreen({navigation}) {
 
     return (
         <ScrollView style={styles.container}>
-            <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDatesState} />
-            <IncomingRequest appointments={requestAppointmentsState} />
-            <MyAppointment appointments={myAppointmentsState} />
+            <View style={styles.innerContainer}>
+                <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDatesState} />
+                <IncomingRequest appointments={requestAppointmentsState} />
+                <MyAppointment appointments={myAppointmentsState} />
+            </View>
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {}
+    container: {
+        flexGrow: 1
+    },
+    innerContainer: {
+        flex: 1
+    }
 })
-
