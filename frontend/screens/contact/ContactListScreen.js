@@ -78,25 +78,30 @@ export default function ContactListScreen({ navigation }) {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.innerContainer}>
-                <SearchBar
-                    searchWord={updateSearch}
-                    historyQuery={historyQuery}
-                    StarQuery={StarQuery}
-                    find={getSearch}
-                />
-                {suggestDisplay()}
-                {toggleQuery ? null : <QueryBar onSelect={getContactUsers} />}
-                <ContactTab contacts={contacts} headerText={headerText} />
-            </View>
-        </ScrollView>
+        <View style={styles.container}>
+            <SearchBar
+                searchWord={updateSearch}
+                historyQuery={historyQuery}
+                StarQuery={StarQuery}
+                find={getSearch}
+            />
+            <ScrollView style={styles.scrollContainer}>
+                <View style={styles.innerContainer}>
+                    {suggestDisplay()}
+                    {toggleQuery ? null : <QueryBar onSelect={getContactUsers} />}
+                    <ContactTab contacts={contacts} headerText={headerText} />
+                </View>
+            </ScrollView>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1
+        flex: 1
+    },
+    scrollContainer: {
+        flexGrow: 1,
     },
     innerContainer: {
         flex: 1
