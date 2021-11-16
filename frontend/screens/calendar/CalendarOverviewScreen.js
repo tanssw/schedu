@@ -9,6 +9,7 @@ import { API_SERVER_DOMAIN } from '../../modules/apis'
 import CalendarOverview from './components/CalendarOverview'
 import IncomingRequest from './components/IncomingRequest'
 import MyAppointment from './components/MyAppointment'
+import { colorCode } from '../../styles'
 
 export default function CalendarOverviewScreen({navigation}) {
 
@@ -17,8 +18,17 @@ export default function CalendarOverviewScreen({navigation}) {
     const [myAppointmentsState, updateMyAppointmentsState] = useState([])
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            loadAppointments()
+        const unsubscribe = navigation.addListener('focus', async () => {
+            const { myAppointments, requestAppointments } = await loadAppointments()
+            const events = await loadEvents()
+
+            updateMyAppointmentsState(myAppointments)
+            updateRequestAppointmentsState(requestAppointments)
+
+            // Update all appointments for calendar
+            const appointmentDateMarks = buildAppointmentDateMarks(myAppointments)
+            const allDateMarks = buildEventDateMarks(events, appointmentDateMarks)
+            updateMarkedDatesState(allDateMarks)
         })
         return unsubscribe
     })
@@ -45,7 +55,6 @@ export default function CalendarOverviewScreen({navigation}) {
                 const meAsSender = appointment.sender.userId === userId
                 return canShow || meAsSender || meConfirmed.length
             })
-            updateMyAppointmentsState(myAppointments)
 
             // Update incoming request appointments
             let requestAppointments = appointments.filter(appointment => {
@@ -55,23 +64,40 @@ export default function CalendarOverviewScreen({navigation}) {
                 const meAsSender = appointment.sender.userId === userId
                 return !meAsSender && meNotConfirm
             })
-            updateRequestAppointmentsState(requestAppointments)
 
-            // Update all appointments for calendar
-            updateMarkedDatesState(buildDateMarks(myAppointments))
+            return { myAppointments, requestAppointments }
 
         } catch (error) {
             if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
     }
 
-    // To build the object of MarkedDate to show in Calendar
-    const buildDateMarks = (appointments) => {
-        let object = {}
+    const loadEvents = async () => {
+        try {
+            const eventResult = await axios.get(`${API_SERVER_DOMAIN}/event`)
+            const events = eventResult.data.events
+            return events
+        } catch (error) {
+
+        }
+    }
+
+    // To build an appointment object of MarkedDate to show in Calendar
+    const buildAppointmentDateMarks = (appointments, object={}) => {
         appointments.forEach(appointment => {
             let date = dayjs(appointment.startAt).format('YYYY-MM-DD')
             let included = Object.keys(object).includes(date)
-            if (!included) object[date] = {marked: true}
+            if (!included) object[date] = {marked: true, dotColor: colorCode.lightBlue}
+        })
+        return object
+    }
+
+    // To build an event object of MarrkedDte to show in Calendar
+    const buildEventDateMarks = (events, object={}) => {
+        events.forEach(event => {
+            let date = dayjs(event.date).format('YYYY-MM-DD')
+            let included = Object.keys(object).includes(date)
+            if (!included) object[date] = {marked: true, dotColor: colorCode.grey}
         })
         return object
     }

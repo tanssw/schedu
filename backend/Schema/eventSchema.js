@@ -7,6 +7,7 @@ const eventSchema = new Schema({
   comm_method: String,
   participants: [String],
   std_participants: [String],
+  date: String
 })
 
 module.exports = eventSchema
