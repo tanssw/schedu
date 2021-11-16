@@ -10,7 +10,7 @@ import ContactTab from './components/ContactTab'
 
 import { checkExpiredToken, getAuthAsset } from '../../modules/auth'
 
-export default function ContactListScreen() {
+export default function ContactListScreen({ navigation }) {
 
     const [contacts, updateContacts] = useState([])
 
@@ -57,7 +57,7 @@ export default function ContactListScreen() {
             const contactUsers = userResult.data.users
             updateContacts(contactUsers)
         } catch (error) {
-            checkExpiredToken(error)
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
     }
 
@@ -79,19 +79,26 @@ export default function ContactListScreen() {
 
     return (
         <ScrollView style={styles.container}>
-            <SearchBar
-                searchWord={updateSearch}
-                historyQuery={historyQuery}
-                StarQuery={StarQuery}
-                find={getSearch}
-            />
-            {suggestDisplay()}
-            {toggleQuery ? null : <QueryBar onSelect={getContactUsers} />}
-            <ContactTab contacts={contacts} headerText={headerText} />
+            <View style={styles.innerContainer}>
+                <SearchBar
+                    searchWord={updateSearch}
+                    historyQuery={historyQuery}
+                    StarQuery={StarQuery}
+                    find={getSearch}
+                />
+                {suggestDisplay()}
+                {toggleQuery ? null : <QueryBar onSelect={getContactUsers} />}
+                <ContactTab contacts={contacts} headerText={headerText} />
+            </View>
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {}
+    container: {
+        flexGrow: 1
+    },
+    innerContainer: {
+        flex: 1
+    }
 })
