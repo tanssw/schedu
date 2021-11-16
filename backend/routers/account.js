@@ -12,20 +12,19 @@ const router = express()
 
 // Get all users except myself from database
 router.get('/all', authMiddleware, async (req, res) => {
+
+    const role = req.query.role
+
     try {
         const userId = req.headers['schedu-uid']
         // Find all user except the one that user id equal to userId
-        const users = await accountModel.find({_id: {$ne: userId}})
+        let users
+        if (role) users = await accountModel.find({_id: {$ne: userId}, role: role})
+        else users = await accountModel.find({_id: {$ne: userId}})
         res.json({users: users})
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again.'})
     }
-})
-
-router.get('/role/:role', async (req, res) => {
-    const { role } = req.params
-    const user = await accountModel.find({ role: role }).exec()
-    res.json(user)
 })
 
 router.get('/search/:word', async (req, res) => {

@@ -12,7 +12,7 @@ const createNewUser = async (data) => {
 
     const isStudent = !isNaN(emailAccount)
     const businessId = isStudent ? emailAccount : ''
-    const role = isStudent ? 'student' : 'teacher'
+    const role = isStudent ? 'student' : 'professor'
 
     const document = {
         googleId: data.id,

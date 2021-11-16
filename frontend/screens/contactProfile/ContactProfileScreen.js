@@ -17,7 +17,7 @@ export default function ContactProfileScreen({ route, navigation }) {
     const [emailState, updateEmailState] = useState()
     const [phoneState, updatePhoneState] = useState()
 
-    const { objectId } = route.params
+    const { contactId } = route.params
 
     useEffect(() => {
         getUserProfile()
@@ -30,7 +30,7 @@ export default function ContactProfileScreen({ route, navigation }) {
                 'Schedu-Token': token
             }
         }
-        const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/${objectId}`, payload)
+        const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/${contactId}`, payload)
         const user = userResult.data.user
         updateProfileState(user)
         updateEmailState(user.contact.email)

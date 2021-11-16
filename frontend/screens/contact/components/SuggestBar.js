@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 
+import { colorCode } from '../../../styles'
+
 export default function SuggestBar() {
     const navigation = useNavigation()
     const [participants, updateParticipants] = useState([
@@ -57,30 +59,23 @@ export default function SuggestBar() {
         }
     ])
 
-    const renderParticipant = ({ item }) => {
+    const navigateContactProfile = () => {
+        navigation.navigate('ContactProfile', { contactId: '617fb3f0396613a9e99b86a8' })
+    }
+
+    const renderParticipant = ({ item, index }) => {
         return (
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.navigate('ContactProfile', { objectId: '617fb3f0396613a9e99b86a8' })
-                }}
-            >
-                <View>
-                    <FontAwesome
-                        name="user-circle-o"
-                        size={44}
-                        color="grey"
-                        style={styles.personImage}
-                    />
-                    <Text style={styles.personName}>{item.firstname}</Text>
-                </View>
+            <TouchableOpacity onPress={() => {navigateContactProfile()}} style={index ? styles.marginLeftDefault : ''}>
+                <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} style={styles.personImage} />
+                <Text style={styles.personName}>{item.firstname} {item.lastname[0]}.</Text>
             </TouchableOpacity>
         )
     }
 
     return (
-        <View style={styles.suggestTab}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Suggested</Text>
-            <View style={styles.participantContainer}>
+        <View style={styles.container}>
+            <Text style={styles.header}>Suggested</Text>
+            <View style={styles.suggestionContainer}>
                 <FlatList
                     horizontal
                     data={participants}
@@ -92,24 +87,28 @@ export default function SuggestBar() {
     )
 }
 const styles = StyleSheet.create({
-    suggestTab: {
-        margin: 15
+    container: {
+        backgroundColor: 'white',
+        padding: 16,
+        marginBottom: 8
     },
-    participantContainer: {
-        flexDirection: 'row',
-        marginTop: 15,
-        marginBottom: 20
+    header: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 16
+    },
+    suggestionContainer: {
+        flexDirection: 'row'
     },
     personName: {
         textAlign: 'center',
-        marginTop: 4
-    },
-    personRole: {
-        textAlign: 'left'
+        marginTop: 6,
+        fontWeight: '300'
     },
     personImage: {
-        textAlign: 'center',
-        marginVertical: 3,
-        marginHorizontal: 20
+        textAlign: 'center'
+    },
+    marginLeftDefault: {
+        marginLeft: 12
     }
 })
