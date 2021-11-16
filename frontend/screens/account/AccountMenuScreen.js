@@ -20,11 +20,11 @@ export default function AccountMenuScreen({ navigation }) {
         const { token, userId } = await getAuthAsset()
 
         const payload = {
-            headers: { 'Schedu-Token': userId }
+            headers: { 'Schedu-Token': token }
         }
 
         try {
-            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${token}`, payload)
+            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${userId}`, payload)
             setUserData(user.data.user)
         } catch (error) {
             // Clear stored token in Secure Store

@@ -25,10 +25,10 @@ export default function AccountNavigator({ navigation }) {
     const getUser = async () => {
         const { token, userId } = await getAuthAsset()
 
-        const payload = { headers: { 'Schedu-Token': userId } }
+        const payload = { headers: { 'Schedu-Token': token } }
 
         try {
-            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${token}`, payload)
+            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${userId}`, payload)
             setUserData(user.data.user)
         } catch (error) {
             // Clear stored token in Secure Store
