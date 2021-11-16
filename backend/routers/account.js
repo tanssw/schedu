@@ -3,8 +3,10 @@ const express = require('express')
 const accountSchema = require('../schema/accountSchema')
 const conn = require('../config/connectionMongoDB/ScheduConnect')
 
+const { authMiddleware } = require('../middlewares/auth')
+const { isValidObjectId } = require('mongoose')
+
 const accountModel = conn.model('accounts', accountSchema, process.env.ACCOUNTS_COLLECTION)
-const {authMiddleware}= require('../middlewares/auth')
 
 const router = express()
 
@@ -40,11 +42,12 @@ router.post('/addUser', async (req, res) => {
 })
 
 // Update user in mongoDB
-router.put('/updateUser/:id', async (req, res) => {
-    const payload = req.body
-    const { id } = req.params
+router.put('/updateUser', authMiddleware, async (req, res) => {
+    const id = req.body.id
+    const payload = req.body.newData
     const user = await accountModel.findByIdAndUpdate(id, { $set: payload })
     res.json(user)
+
 })
 
 // Delete user in mongoDB

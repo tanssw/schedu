@@ -24,7 +24,6 @@ export default function CalendarOverviewScreen({navigation}) {
     })
 
     const loadAppointments = async () => {
-
         const { token, userId } = await getAuthAsset()
 
         // Request my appointments from server

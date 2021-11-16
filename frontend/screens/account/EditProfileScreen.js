@@ -1,23 +1,16 @@
 import React, { useState } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 
-// Redux
-import { useSelector, useDispatch } from 'react-redux'
-import { updateData } from './../../store/actions/userAction'
+import { getAuthAsset } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
+import axios from 'axios'
 
 // style by tanssw.com
 import { text, shadow } from '../../styles'
 
 // import components
 import UserData from './components/UserData'
-
-export default function ProfileScreen({ navigation }) {
-    const userData = useSelector(state => state.user.userData)
-
-    const [newFirstName, setNewFirstName] = useState(userData.firstName)
-    const [newLastName, setNewLastName] = useState(userData.lastName)
-    const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel)
-
+export default function ProfileScreen({ route, navigation }) {
     const updateDataHandler = data => {
         switch (data.topic) {
             case 'First name':
@@ -32,51 +25,67 @@ export default function ProfileScreen({ navigation }) {
         }
     }
 
-    const dispatch = useDispatch()
+    const update = async () => {
+        const { token, userId } = await getAuthAsset()
 
-    const update = () => {
-        dispatch(
-            updateData({
+        const body = {
+            id: userId,
+            newData: {
                 firstName: newFirstName,
                 lastName: newLastName,
-                tel: newPhoneNumber
-            })
-        )
+                contact: {
+                    email: userData.contact.email,
+                    tel: newPhoneNumber
+                }
+            }
+        }
 
+        const headers = {
+            headers: { 'Schedu-Token': token }
+        }
+
+        try {
+            const user = await axios.put(`${API_SERVER_DOMAIN}/account/updateUser`, body, headers)
+            setUserData(user.data)
+        } catch (error) {
+            console.log(error)
+        }
         alert('Profile Updated')
-        navigation.navigate('Profile', {})
+        navigation.navigate('AccountMenuScreen')
     }
 
+    const [userData, setUserData] = useState(route.params)
+    const [newFirstName, setNewFirstName] = useState(userData.firstName)
+    const [newLastName, setNewLastName] = useState(userData.lastName)
+    const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel)
+
     return (
-        <ScrollView nestedScrollEnabled>
-            <View style={styles.container}>
-                <Image
-                    style={styles.profileImage}
-                    source={{
-                        url: userData.image
-                    }}
-                />
-                <View style={[styles.userProfileContainer, shadow.boxTopMedium]}>
+        <View style={styles.container}>
+            <Image
+                style={styles.profileImage}
+                source={{
+                    url: userData.image
+                }}
+            />
+            <View style={[styles.editProfileContainer, shadow.boxTopMedium]}>
+                <View>
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>General</Text>
                         <UserData
                             topicData={'First name'}
-                            data={userData.firstName}
+                            data={newFirstName}
                             edit={true}
                             update={updateDataHandler}
                         />
                         <UserData
                             topicData={'Last name'}
-                            data={userData.lastName}
+                            data={newLastName}
                             edit={true}
                             update={updateDataHandler}
                         />
-
-                        <UserData topicData={'Role'} data={userData.role} edit={false} />
                     </View>
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>Contact</Text>
-                        <UserData topicData={'Email'} data={userData.contact.email} edit={false} />
                         <UserData
                             topicData={'Phone number'}
                             data={newPhoneNumber}
@@ -84,12 +93,12 @@ export default function ProfileScreen({ navigation }) {
                             update={updateDataHandler}
                         />
                     </View>
-                    <TouchableOpacity style={[styles.updateBtn]} onPress={update}>
-                        <Text style={(text.blue, styles.updateBtnText)}>Update Profile</Text>
-                    </TouchableOpacity>
                 </View>
+                <TouchableOpacity style={[styles.updateBtn]} onPress={update}>
+                    <Text style={(text.blue, styles.updateBtnText)}>Update Profile</Text>
+                </TouchableOpacity>
             </View>
-        </ScrollView>
+        </View>
     )
 }
 
@@ -100,13 +109,14 @@ const styles = StyleSheet.create({
         paddingTop: 32,
         alignItems: 'center'
     },
-    userProfileContainer: {
+    editProfileContainer: {
         flex: 1,
         width: '100%',
         padding: 32,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        justifyContent: 'space-between'
     },
     dataBlock: {
         marginBottom: 32
