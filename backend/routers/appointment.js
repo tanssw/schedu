@@ -52,8 +52,7 @@ router.get('/:year/:month', authMiddleware, async(req, res) => {
         // Get User ID from Auth Token
         const userId = req.headers['schedu-uid']
 
-        const year = req.params.year
-        const month = req.params.month
+        const { year, month } = req.params
         const minDate = dayjs(`${year}-${month}-01`)
         const lastDate = minDate.daysInMonth()
         const maxDate = dayjs(`${year}-${month}-${lastDate}`).add(1, 'days')
@@ -85,7 +84,7 @@ router.get('/:year/:month', authMiddleware, async(req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.status(500).send({message: 'error'})
+        res.status(500).send({message: 'Something went wrong. Please try aagain later.'})
     }
 })
 

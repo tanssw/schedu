@@ -16,18 +16,28 @@ export default function CalendarDetailScreen({route, navigation}) {
     const { selectedDay } = route.params
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            loadAppointments()
+        const unsubscribe = navigation.addListener('focus', async () => {
+            // Request my appointments from server
+            const year = dayjs(selectedDay).get('year')
+            const month = dayjs(selectedDay).get('month') + 1
+
+            const appointments = await loadAppointments(year, month)
+            const events = await loadEvents(year, month)
+
+            createAgendaTemplate(year, month)
+
+            appointments.forEach(appointment => {
+                let date = dayjs(appointment.startAt).format('YYYY-MM-DD')
+                myAgenda[date].push(appointment)
+            })
+            updateMyAgenda(myAgenda)
+
         })
         return unsubscribe
     })
 
-    const loadAppointments = async () => {
+    const loadAppointments = async (year, month) => {
         const { token, userId } = await getAuthAsset()
-
-        // Request my appointments from server
-        const year = dayjs(selectedDay).get('year')
-        const month = dayjs(selectedDay).get('month') + 1
         const payload = {
             headers: {
                 'Schedu-Token': token,
@@ -37,16 +47,19 @@ export default function CalendarDetailScreen({route, navigation}) {
         try {
             const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${year}/${month}`, payload)
             const appointments = appointmentResult.data.appointments
-
-            createAgendaTemplate(year, month)
-
-            appointments.forEach(appointment => {
-                let date = dayjs(appointment.startAt).format('YYYY-MM-DD')
-                myAgenda[date].push(appointment)
-            })
-            updateMyAgenda(myAgenda)
+            return appointments
         } catch (error) {
             if (checkExpiredToken(error)) navigation.navigate('SignIn')
+        }
+    }
+
+    const loadEvents = async (year, month) => {
+        try {
+            const eventResult = await axios.get(`${API_SERVER_DOMAIN}/event/${year}/${month}`)
+            const events = eventResult.data.events
+            return events
+        } catch (error) {
+
         }
     }
 

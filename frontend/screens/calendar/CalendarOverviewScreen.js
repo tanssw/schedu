@@ -20,7 +20,7 @@ export default function CalendarOverviewScreen({navigation}) {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', async () => {
             const { myAppointments, requestAppointments } = await loadAppointments()
-            const { events } = await loadEvents()
+            const events = await loadEvents()
 
             updateMyAppointmentsState(myAppointments)
             updateRequestAppointmentsState(requestAppointments)
@@ -77,7 +77,7 @@ export default function CalendarOverviewScreen({navigation}) {
         try {
             const eventResult = await axios.get(`${API_SERVER_DOMAIN}/event`)
             const events = eventResult.data.events
-            return { events }
+            return events
         } catch (error) {
 
         }
