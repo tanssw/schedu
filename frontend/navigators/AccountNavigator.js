@@ -3,7 +3,7 @@ import { Button } from 'react-native'
 import axios from 'axios'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { AUTH_TOKEN_KEY,AUTH_USER_ID } from '../modules/auth'
+import { getAuthAsset } from '../modules/auth'
 
 import { headerDefaultOptions } from '../styles'
 
@@ -23,10 +23,12 @@ export default function AccountNavigator({ navigation }) {
     })
 
     const getUser = async () => {
-        const payload = { headers: { 'Schedu-Token': AUTH_USER_ID } }
+        const { token, userId } = await getAuthAsset()
+
+        const payload = { headers: { 'Schedu-Token': userId } }
 
         try {
-            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${AUTH_TOKEN_KEY}`, payload)
+            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${token}`, payload)
             setUserData(user.data.user)
         } catch (error) {
             // Clear stored token in Secure Store

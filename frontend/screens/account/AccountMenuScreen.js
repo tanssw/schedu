@@ -3,7 +3,7 @@ import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
-import { AUTH_TOKEN_KEY, AUTH_USER_ID } from '../../modules/auth'
+import { getAuthAsset } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import { text, shadow, colorCode } from '../../styles'
@@ -17,12 +17,14 @@ export default function AccountMenuScreen({ navigation }) {
     })
 
     const getUser = async () => {
+        const { token, userId } = await getAuthAsset()
+
         const payload = {
-            headers: { 'Schedu-Token': AUTH_TOKEN_KEY }
+            headers: { 'Schedu-Token': userId }
         }
 
         try {
-            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${AUTH_USER_ID}`, payload)
+            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${token}`, payload)
             setUserData(user.data.user)
         } catch (error) {
             // Clear stored token in Secure Store
