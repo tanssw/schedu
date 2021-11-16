@@ -7,6 +7,7 @@ const colorCode = {
     grey: 'grey',
     lightGrey: '#888',
     yellow: '#ffaa54',
+    gold: '#b58d3d',
     green: '#23644e',
     red: 'crimson',
     dark: '#444'

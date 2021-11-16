@@ -26,10 +26,20 @@ export default function CalendarDetailScreen({route, navigation}) {
 
             createAgendaTemplate(year, month)
 
+            // Add appointments into each day
             appointments.forEach(appointment => {
                 let date = dayjs(appointment.startAt).format('YYYY-MM-DD')
+                appointment._cardType = 'appointment'
                 myAgenda[date].push(appointment)
             })
+
+            // Add events into each day
+            events.forEach(event => {
+                let date = dayjs(event.date).format('YYYY-MM-DD')
+                event._cardType = 'event'
+                myAgenda[date].push(event)
+            })
+
             updateMyAgenda(myAgenda)
 
         })
@@ -77,12 +87,31 @@ export default function CalendarDetailScreen({route, navigation}) {
     }
 
     const renderItem = (item, firstItem) => {
+        switch (item._cardType) {
+            case 'appointment': return renderAppointment(item, firstItem)
+            case 'event': return renderEvent(item, firstItem)
+        }
+    }
+
+    const renderEvent = (item, firstItem) => {
+        return (
+            <View style={[styles.eventBox, shadow.boxBottomSmall, {marginTop: (firstItem) ? 16: 6}]}>
+                <Text style={styles.eventTime}>
+                    All-day
+                </Text>
+                <Text numberOfLines={1} style={[styles.eventHeader, {color: colorCode.gold}]}>{item.title}</Text>
+                <Text style={styles.eventDesc}>{item.type}</Text>
+            </View>
+        )
+    }
+
+    const renderAppointment = (item, firstItem) => {
         return (
             <View style={[styles.eventBox, shadow.boxBottomSmall, {marginTop: (firstItem) ? 16: 6}]}>
                 <Text style={styles.eventTime}>
                     {dayjs(item.startAt).format('HH:mm')} — {dayjs(item.endAt).format('HH:mm')}
                 </Text>
-                <Text style={styles.eventHeader}>{item.subject}</Text>
+                <Text numberOfLines={1} style={styles.eventHeader}>{item.subject}</Text>
                 <Text style={styles.eventDesc}>with {getParticipant(item.participants)}</Text>
             </View>
         )
