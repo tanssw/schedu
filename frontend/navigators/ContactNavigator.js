@@ -1,4 +1,5 @@
 import React from 'react'
+import dayjs from 'dayjs'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
@@ -16,10 +17,9 @@ const options = {
     contactList: {
         headerShown: false
     },
-    createAppointment: {
-        headerTitle: 'Appointment',
-        headerShown: false
-    },
+    createAppointment: ({ route }) => ({
+        headerTitle: dayjs(route.params.date).format('DD MMMM YYYY')
+    }),
     contactProfile: {
         title: '',
         headerBackTitle: 'Contact'
