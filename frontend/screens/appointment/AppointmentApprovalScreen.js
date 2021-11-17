@@ -19,6 +19,8 @@ import {
 } from '../../modules/auth'
 import Time from '../appointment/components/TimeDisplay'
 
+import axios from 'axios'
+
 import { background, text, shadow, colorCode } from '../../styles'
 
 function AppointmentDetail({ props, ref, route }) {
@@ -30,12 +32,19 @@ function AppointmentDetail({ props, ref, route }) {
     const [commUrl, setCommUrl] = useState()
     const [note, setNote] = useState()
 
-    const [participants, setParticipants] = useState([
+    const [participants, setParticipants] = useState([])
+    const [test, setTest] = useState([])
+
+    const [usersTest, setUserTest] = useState([
         {
-            _id: '618b4d47a996fac981059a6f',
-            business_id: '62070184',
-            firstname: 'Loukhin',
-            lastname: 'Dotcom'
+            // userId: '618e888a63474f31e4c7bd2d',
+            main: false,
+            confirmed: false,
+            join: true,
+            firstName: 'test',
+            lastName: 'test2',
+            userId: '618e888a63474f31e4c7bd2d',
+            
         }
     ])
 
@@ -67,13 +76,57 @@ function AppointmentDetail({ props, ref, route }) {
             setCommMethod('Zoom Application')
         }
     }
-    // FUNCTION : user decline this appointment
-    const decline = () =>{
-        alert("decline")
+    // FUNCTION : Change confirm state participant
+    const getParticipant = (participants, uid, state) => {
+        const participant = participants.filter(participant => participant.userId === uid)
+        const update = {
+            userId: participant[0].userId,
+            main: participant[0].main,
+            confirmed: participant[0].confirmed,
+            join: state,
+            _id: participant[0]._id
+        }
+        //TODO update test for use it to update confirmState
+        // console.log(update)
+        return update
     }
+    // FUNCTION: update confirm state participant in appointment
+    const submit = async() => {
+        const { token, userId } = await getAuthAsset()
+        const payload = {
+            subject: 'super codeeeeeeee',
+            sender: data.sender.userId,
+            participants: usersTest,
+            startAt: data.startAt,
+            endAt: data.endAt,
+            commMethod: data.commMethod,
+            commUrl: data.commUrl,
+            note: 'test from pluto'
+        }
+        try {
+            console.log('test for submit')
+            console.log(usersTest)
+            console.log("This is payload")
+            console.log(payload)
+            // TODO test it about payload is correct
+            const result = await axios.put(`http://localhost:3000/appointment/update/${data._id}`, payload)
+            console.log("This data._id")
+            console.log(data._id)
+        } catch (error) {}
+    }
+
+    // FUNCTION : user decline this appointment
+    const decline = async () => {}
     //FUNCTION : user approval this appointment
-    const approval = () =>{
-        alert("Approval")
+    const approval = async () => {
+       // TODO  make sure setTest is not empty and can use this state to update confirmState
+        const { token, userId } = await getAuthAsset()
+        const update = getParticipant(data.participants, userId, true)
+        console.log(update)
+        console.log('this for approval method')
+        setTest(update)
+        console.log(test)
+        submit()
     }
 
     useImperativeHandle(
@@ -140,35 +193,35 @@ function AppointmentDetail({ props, ref, route }) {
     //TODO: time display startAt and endAt from appointment
     return (
         <ScrollView>
-        <View style={styles.container}>
-            <Time startAt={data.startAt} endAt={data.endAt}/>
-            <View style={[styles.detailContainer, shadow.boxTopMedium]}>
-                {/* Subject Input */}
-                <View style={styles.spaceBetweenInput}>
-                    <Text style={styles.header}>Subject</Text>
-                    {/* <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/> */}
-                    <Text style={styles.topic}>{data.subject}</Text>
-                </View>
-                {/* Participant Input */}
-                <View style={styles.spaceBetweenInput}>
-                    <Text style={styles.header}>Participant</Text>
-                    <View style={styles.participantContainer}>
-                        {/* <TouchableOpacity style={styles.participantAdder}>
+            <View style={styles.container}>
+                <Time startAt={data.startAt} endAt={data.endAt} />
+                <View style={[styles.detailContainer, shadow.boxTopMedium]}>
+                    {/* Subject Input */}
+                    <View style={styles.spaceBetweenInput}>
+                        <Text style={styles.header}>Subject</Text>
+                        {/* <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/> */}
+                        <Text style={styles.topic}>{data.subject}</Text>
+                    </View>
+                    {/* Participant Input */}
+                    <View style={styles.spaceBetweenInput}>
+                        <Text style={styles.header}>Participant</Text>
+                        <View style={styles.participantContainer}>
+                            {/* <TouchableOpacity style={styles.participantAdder}>
                         <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity> */}
-                        <FlatList
-                            horizontal
-                            data={data.participants}
-                            renderItem={renderParticipant}
-                            keyExtractor={person => person._id}
-                        />
+                            <FlatList
+                                horizontal
+                                data={data.participants}
+                                renderItem={renderParticipant}
+                                keyExtractor={person => person._id}
+                            />
+                        </View>
                     </View>
-                </View>
-                {/* Communication Method Dropdown & Input */}
-                <View style={styles.spaceBetweenInput}>
-                    <Text style={styles.header}>Communication Method</Text>
-                    {/* <Picker
+                    {/* Communication Method Dropdown & Input */}
+                    <View style={styles.spaceBetweenInput}>
+                        <Text style={styles.header}>Communication Method</Text>
+                        {/* <Picker
                     onItemChange={setCommMethod}
                     item={commMethod}
                     items={[
@@ -182,28 +235,38 @@ function AppointmentDetail({ props, ref, route }) {
                     isNullable={true}
                     style={styles.picker}
                 /> */}
-                    {/* <TextInput onChangeText={text => setCommUrl(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/> */}
-                    <Text>{commMethod}</Text>
-                </View>
-                {/* Note to participant Textbox */}
-                <View style={styles.spaceBetweenInput}>
-                    <Text style={styles.header}>Note to participant</Text>
-                    {/* <ScrollView contentContainerStyle={styles.inputBoxBorder}>
+                        {/* <TextInput onChangeText={text => setCommUrl(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/> */}
+                        <Text>{commMethod}</Text>
+                    </View>
+                    {/* Note to participant Textbox */}
+                    <View style={styles.spaceBetweenInput}>
+                        <Text style={styles.header}>Note to participant</Text>
+                        {/* <ScrollView contentContainerStyle={styles.inputBoxBorder}>
                 
                 </ScrollView> */}
-                    <Text>{data.note}</Text>
-                </View>
-                {/* Button */}
-                <View style={styles.acceptationTab}>
-                    <TouchableOpacity style={[styles.mainButton,styles.decline]} onPress={() => {decline()}}>
-                        <Text style={text.red}>Decline</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.mainButton, background.blue]} onPress={() => {approval()}}>
-                        <Text style={text.white}>Approval</Text>
-                    </TouchableOpacity>
+                        <Text>{data.note}</Text>
+                    </View>
+                    {/* Button */}
+                    <View style={styles.acceptationTab}>
+                        <TouchableOpacity
+                            style={[styles.mainButton, styles.decline]}
+                            onPress={() => {
+                                decline()
+                            }}
+                        >
+                            <Text style={text.red}>Decline</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.mainButton, background.blue]}
+                            onPress={() => {
+                                approval()
+                            }}
+                        >
+                            <Text style={text.white}>Approval</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
-        </View>
         </ScrollView>
     )
 }
@@ -229,7 +292,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         fontSize: 18
     },
-    topic:{
+    topic: {
         fontSize: 16
     },
     inputUnderline: {
@@ -278,9 +341,9 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     decline: {
-        backgroundColor : "white",
+        backgroundColor: 'white',
         borderWidth: 2,
-        borderColor: "red",
+        borderColor: 'red',
         color: 'black'
     },
     acceptationTab: {

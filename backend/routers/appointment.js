@@ -146,7 +146,7 @@ router.post('/', async (req, res) => {
 
     // Mapping business_id of participants to an Object with some logic keys
     let participants = payload.participants.map(participant => {
-        return {userId: participant, main: false, confirmed: false}
+        return {userId: participant, main: false, confirmed: false, join: participant.join}
     })
 
     // Structuring payload data before saving into the database
@@ -155,7 +155,7 @@ router.post('/', async (req, res) => {
         status: initAppointmentStatus(),
         sender: payload.sender,
         participants: [
-            {userId: payload.receiver, main: true, confirmed: false},
+            {userId: payload.receiver, main: true, confirmed: false, join: false},
             ...participants
         ],
         startAt: payload.startAt,
@@ -176,5 +176,54 @@ router.post('/', async (req, res) => {
         console.log(error)
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
+})
+router.put('/update/:objectId', async(req,res) =>{
+    const payload = req.body
+    const {objectId} = req.params
+
+     // Mapping business_id of participants to an Object with some logic keys
+     let participants = payload.participants.map(participant => {
+        return {userId: participant, main: false, confirmed: false, join: participant.join}
+    })
+
+    // Structuring payload data before saving into the database
+    const data = {
+        subject: payload.subject,
+        status: initAppointmentStatus(),
+        sender: payload.sender,
+        participants: [
+            {userId: payload.receiver, main: true, confirmed: false, join: payload.join},
+            ...participants
+        ],
+        startAt: payload.startAt,
+        endAt: payload.endAt,
+        commMethod: payload.commMethod,
+        commUrl: payload.commUrl,
+        note: payload.note
+    }
+
+    // TODO: Do the validation before saving into the database
+
+    // Save into the database
+    // const appointment = new appointmentModel(data)
+
+
+    // try {
+    //     const result = await appointment.save()
+    //     res.json({message: `Successfully create new appointment (ID: ${result._id})`})
+    // } catch (error) {
+    //     console.log(error)
+    //     res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
+    // }
+    try{
+        const appointmentUpdate = await appointmentModel.findByIdAndUpdate(objectId, {$set : payload })
+        // const user = await accountModel.findByIdAndUpdate(id, { $set: payload })
+        res.json({message : "OK"})
+
+    }
+    catch(error){
+
+    }
+
 })
 module.exports = router
