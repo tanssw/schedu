@@ -196,10 +196,7 @@ router.put('/update/', async(req,res) =>{
         subject: payload.data.subject,
         status: initAppointmentStatus(),
         sender: payload.data.sender.userId,
-        participants: [
-            // {userId: payload.receiver, main: true, confirmed: false, join: payload.join},
-            ...participants
-        ],
+        participants: participants,
         startAt: payload.data.startAt,
         endAt: payload.data.endAt,
         commMethod: payload.data.commMethod,
@@ -207,25 +204,11 @@ router.put('/update/', async(req,res) =>{
         note: payload.note
     }
 
-    // TODO: Do the validation before saving into the database
 
-    // Save into the database
-    // const appointment = new appointmentModel(data)
-
-
-    // try {
-    //     const result = await appointment.save()
-    //     res.json({message: `Successfully create new appointment (ID: ${result._id})`})
-    // } catch (error) {
-    //     console.log(error)
-    //     res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
-    // }
     try{
         console.log("Test from appointment put")
         console.log(payload.appointmentId)
         const appointmentUpdate = await appointmentModel.findByIdAndUpdate(payload.appointmentId, {$set : data })
-        // const user = await accountModel.findByIdAndUpdate(id, { $set: payload })
-        res.json({message : "OK"})
 
     }
     catch(error){

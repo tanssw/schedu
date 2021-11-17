@@ -22,9 +22,12 @@ import Time from '../appointment/components/TimeDisplay'
 import axios from 'axios'
 
 import { background, text, shadow, colorCode } from '../../styles'
+import { useNavigation } from '@react-navigation/native'
+import ContactProfile from '../contact/ContactProfileScreen'
 
-function AppointmentApprovalScreen({ props, ref, route }) {
+function AppointmentApprovalScreen({ props,route }) {
     const { data } = route.params
+    const navigation = useNavigation()
 
     // Component's States
     const [subject, setSubject] = useState()
@@ -33,7 +36,6 @@ function AppointmentApprovalScreen({ props, ref, route }) {
     const [note, setNote] = useState()
 
     const [participants, setParticipants] = useState([])
-    
 
     //FUNCTION: Get details user for display they name
     const getDetailsParticipants = async uid => {
@@ -63,92 +65,56 @@ function AppointmentApprovalScreen({ props, ref, route }) {
             setCommMethod('Zoom Application')
         }
     }
-    // FUNCTION : Change confirm state participant
-    // const getParticipant = (participants, uid, state) => {
-    //     const participant = participants.filter(participant => participant.userId === uid)
-    //     const update = {
-    //         userId: participant[0].userId,
-    //         main: participant[0].main,
-    //         confirmed: participant[0].confirmed,
-    //         join: state,
-    //         _id: participant[0]._id
-    //     }
-    // }
     // FUNCTION: update confirm state participant in appointment
-    const submit = async(status, objectId) => {
+    const submit = async (status, objectId) => {
         const { token, userId } = await getAuthAsset()
         const payload = {
-            uid : userId,
+            uid: userId,
             join: status,
-            appointmentId : objectId,
+            appointmentId: objectId,
             data: data
         }
         try {
             // TODO test it about payload is correct
             const result = await axios.put(`http://localhost:3000/appointment/update`, payload)
+            navigation.navigate('CalendarOverview')
         } catch (error) {
             console.error(error)
         }
     }
 
     // FUNCTION : user decline this appointment
-    const decline = async () => {
+    const decline = async() => {
         const join = false
-        submit(join, data._id)
+        await submit(join, data._id)
     }
     //FUNCTION : user approval this appointment
-    const approval = async () => {
+    const approval = async() => {
         const join = true
-        submit(join, data._id)
+        await submit(join, data._id)
     }
 
-    useImperativeHandle(
-        ref,
-        () => ({
-            resetChildState() {
-                resetState()
-            }
-        }),
-        []
-    )
-
-    useEffect(() => {
+    useEffect(async() => {
         try {
             for (let index = 0; index < data.participants.length; index++) {
                 const uid = data.participants[index]
-                getDetailsParticipants(uid)
+                await getDetailsParticipants(uid)
             }
             getCommMethod()
         } catch (error) {
             console.log(error)
         }
     }, [])
-    // FUNCTION: to reset all form state
-    const resetState = () => {
-        setSubject()
-        setCommMethod()
-        setCommUrl()
-        setNote()
-    }
 
-    // FUNCTION: to structure appointment data
-    const createAppointment = () => {
-        const data = {
-            subject: subject,
-            participants: participants.map(participant => participant._id),
-            commMethod: commMethod ? commMethod.value : undefined,
-            commUrl: commUrl,
-            note: note
-        }
-        props.onCreateAppointment(data)
-    }
 
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item }) => {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    alert('Go Profiles')
+                    navigation.navigate('ContactProfile', { objectId: item.userId })
+                    console.log('this is item')
+                    // console.log(item)
                 }}
             >
                 <View style={styles.profile}>
@@ -163,7 +129,6 @@ function AppointmentApprovalScreen({ props, ref, route }) {
             </TouchableOpacity>
         )
     }
-    //TODO: time display startAt and endAt from appointment
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -172,17 +137,12 @@ function AppointmentApprovalScreen({ props, ref, route }) {
                     {/* Subject Input */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Subject</Text>
-                        {/* <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/> */}
                         <Text style={styles.topic}>{data.subject}</Text>
                     </View>
                     {/* Participant Input */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Participant</Text>
                         <View style={styles.participantContainer}>
-                            {/* <TouchableOpacity style={styles.participantAdder}>
-                        <EvilIcons name="plus" size={64} color={colorCode.blue} />
-                        <Text style={styles.personName}>Add</Text>
-                    </TouchableOpacity> */}
                             <FlatList
                                 horizontal
                                 data={data.participants}
@@ -194,29 +154,12 @@ function AppointmentApprovalScreen({ props, ref, route }) {
                     {/* Communication Method Dropdown & Input */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Communication Method</Text>
-                        {/* <Picker
-                    onItemChange={setCommMethod}
-                    item={commMethod}
-                    items={[
-                        {label: 'Face to Face', value: 'face'},
-                        {label: 'Microsoft Teams', value: 'msteam'},
-                        {label: 'Google Meet', value: 'meet'},
-                        {label: 'Zoom Application', value: 'zoom'}
-                    ]}
-                    title="Communication Methods"
-                    placeholder="Choose method ..."
-                    isNullable={true}
-                    style={styles.picker}
-                /> */}
-                        {/* <TextInput onChangeText={text => setCommUrl(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/> */}
+                        
                         <Text>{commMethod}</Text>
                     </View>
                     {/* Note to participant Textbox */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Note to participant</Text>
-                        {/* <ScrollView contentContainerStyle={styles.inputBoxBorder}>
-                
-                </ScrollView> */}
                         <Text>{data.note}</Text>
                     </View>
                     {/* Button */}
@@ -244,7 +187,7 @@ function AppointmentApprovalScreen({ props, ref, route }) {
     )
 }
 
-export default forwardRef(AppointmentApprovalScreen)
+export default (AppointmentApprovalScreen)
 
 const styles = StyleSheet.create({
     container: {
