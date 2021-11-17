@@ -33,7 +33,6 @@ router.get('/:year/:month', async (req, res) => {
             const date = dayjs(event.date, 'YYYY-MM-DD')
             return date > minDate && date < maxDate
         })
-        console.log(filteredEvents)
         res.json({events: filteredEvents})
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again later.'})

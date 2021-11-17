@@ -23,17 +23,16 @@ export default function CalendarOverviewScreen({navigation}) {
 
             const { myAppointments, requestAppointments } = await loadAppointments(token, userId)
             const events = await loadEvents()
-            const timetable = await loadStudyTimetable(token, userId)
-
-            console.log(timetable)
+            const studyTimetable = await loadStudyTimetable(token, userId)
 
             updateMyAppointmentsState(myAppointments)
             updateRequestAppointmentsState(requestAppointments)
 
             // Update all appointments for calendar
             const appointmentDateMarks = buildAppointmentDateMarks(myAppointments)
-            const allDateMarks = buildEventDateMarks(events, appointmentDateMarks)
-            updateMarkedDatesState(allDateMarks)
+            const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
+            const studyDateMarks = buildStudyTimetableDateMarks(studyTimetable, eventDateMarks)
+            updateMarkedDatesState(eventDateMarks)
         })
         return unsubscribe
     })
@@ -114,13 +113,25 @@ export default function CalendarOverviewScreen({navigation}) {
         return object
     }
 
-    // To build an event object of MarrkedDte to show in Calendar
+    // To build an event object of MarkedDate to show in Calendar
     const buildEventDateMarks = (events, object={}) => {
         events.forEach(event => {
             if (!event.date) return
             let date = dayjs(event.date).format('YYYY-MM-DD')
             let included = Object.keys(object).includes(date)
             if (!included) object[date] = {marked: true, dotColor: colorCode.grey}
+        })
+        return object
+    }
+
+    // To build an study timetable object of MarkedDte to show in Calendar
+    const buildStudyTimetableDateMarks = (courses, object={}) => {
+        courses.forEach(course => {
+            console.log(course)
+            // if (!course.date) return
+            // let date = dayjs(course.date).format('YYYY-MM-DD')
+            // let included = Object.keys(object).includes(date)
+            // if (!included) object[date] = {marked: true, dotColor: colorCode.grey}
         })
         return object
     }
