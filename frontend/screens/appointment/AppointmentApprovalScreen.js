@@ -23,7 +23,7 @@ import axios from 'axios'
 
 import { background, text, shadow, colorCode } from '../../styles'
 
-function AppointmentDetail({ props, ref, route }) {
+function AppointmentApprovalScreen({ props, ref, route }) {
     const { data } = route.params
 
     // Component's States
@@ -33,20 +33,7 @@ function AppointmentDetail({ props, ref, route }) {
     const [note, setNote] = useState()
 
     const [participants, setParticipants] = useState([])
-    const [test, setTest] = useState([])
-
-    const [usersTest, setUserTest] = useState([
-        {
-            // userId: '618e888a63474f31e4c7bd2d',
-            main: false,
-            confirmed: false,
-            join: true,
-            firstName: 'test',
-            lastName: 'test2',
-            userId: '618e888a63474f31e4c7bd2d',
-            
-        }
-    ])
+    
 
     //FUNCTION: Get details user for display they name
     const getDetailsParticipants = async uid => {
@@ -77,56 +64,42 @@ function AppointmentDetail({ props, ref, route }) {
         }
     }
     // FUNCTION : Change confirm state participant
-    const getParticipant = (participants, uid, state) => {
-        const participant = participants.filter(participant => participant.userId === uid)
-        const update = {
-            userId: participant[0].userId,
-            main: participant[0].main,
-            confirmed: participant[0].confirmed,
-            join: state,
-            _id: participant[0]._id
-        }
-        //TODO update test for use it to update confirmState
-        // console.log(update)
-        return update
-    }
+    // const getParticipant = (participants, uid, state) => {
+    //     const participant = participants.filter(participant => participant.userId === uid)
+    //     const update = {
+    //         userId: participant[0].userId,
+    //         main: participant[0].main,
+    //         confirmed: participant[0].confirmed,
+    //         join: state,
+    //         _id: participant[0]._id
+    //     }
+    // }
     // FUNCTION: update confirm state participant in appointment
-    const submit = async() => {
+    const submit = async(status, objectId) => {
         const { token, userId } = await getAuthAsset()
         const payload = {
-            subject: 'super codeeeeeeee',
-            sender: data.sender.userId,
-            participants: usersTest,
-            startAt: data.startAt,
-            endAt: data.endAt,
-            commMethod: data.commMethod,
-            commUrl: data.commUrl,
-            note: 'test from pluto'
+            uid : userId,
+            join: status,
+            appointmentId : objectId,
+            data: data
         }
         try {
-            console.log('test for submit')
-            console.log(usersTest)
-            console.log("This is payload")
-            console.log(payload)
             // TODO test it about payload is correct
-            const result = await axios.put(`http://localhost:3000/appointment/update/${data._id}`, payload)
-            console.log("This data._id")
-            console.log(data._id)
-        } catch (error) {}
+            const result = await axios.put(`http://localhost:3000/appointment/update`, payload)
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     // FUNCTION : user decline this appointment
-    const decline = async () => {}
+    const decline = async () => {
+        const join = false
+        submit(join, data._id)
+    }
     //FUNCTION : user approval this appointment
     const approval = async () => {
-       // TODO  make sure setTest is not empty and can use this state to update confirmState
-        const { token, userId } = await getAuthAsset()
-        const update = getParticipant(data.participants, userId, true)
-        console.log(update)
-        console.log('this for approval method')
-        setTest(update)
-        console.log(test)
-        submit()
+        const join = true
+        submit(join, data._id)
     }
 
     useImperativeHandle(
@@ -271,7 +244,7 @@ function AppointmentDetail({ props, ref, route }) {
     )
 }
 
-export default forwardRef(AppointmentDetail)
+export default forwardRef(AppointmentApprovalScreen)
 
 const styles = StyleSheet.create({
     container: {

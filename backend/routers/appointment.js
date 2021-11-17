@@ -177,28 +177,33 @@ router.post('/', async (req, res) => {
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
 })
-router.put('/update/:objectId', async(req,res) =>{
+router.put('/update/', async(req,res) =>{
     const payload = req.body
-    const {objectId} = req.params
 
      // Mapping business_id of participants to an Object with some logic keys
-     let participants = payload.participants.map(participant => {
-        return {userId: participant, main: false, confirmed: false, join: participant.join}
+     let participants = payload.data.participants.map(participant => {
+         if(payload.uid === participant.userId){
+            return {userId: participant.userId, main: participant.main, confirmed: participant.confirmed, join: payload.join}
+         }
+         else{
+            return participant
+         }
+        
     })
 
     // Structuring payload data before saving into the database
     const data = {
-        subject: payload.subject,
+        subject: payload.data.subject,
         status: initAppointmentStatus(),
-        sender: payload.sender,
+        sender: payload.data.sender.userId,
         participants: [
-            {userId: payload.receiver, main: true, confirmed: false, join: payload.join},
+            // {userId: payload.receiver, main: true, confirmed: false, join: payload.join},
             ...participants
         ],
-        startAt: payload.startAt,
-        endAt: payload.endAt,
-        commMethod: payload.commMethod,
-        commUrl: payload.commUrl,
+        startAt: payload.data.startAt,
+        endAt: payload.data.endAt,
+        commMethod: payload.data.commMethod,
+        commUrl: payload.data.commUrl,
         note: payload.note
     }
 
@@ -216,13 +221,15 @@ router.put('/update/:objectId', async(req,res) =>{
     //     res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     // }
     try{
-        const appointmentUpdate = await appointmentModel.findByIdAndUpdate(objectId, {$set : payload })
+        console.log("Test from appointment put")
+        console.log(payload.appointmentId)
+        const appointmentUpdate = await appointmentModel.findByIdAndUpdate(payload.appointmentId, {$set : data })
         // const user = await accountModel.findByIdAndUpdate(id, { $set: payload })
         res.json({message : "OK"})
 
     }
     catch(error){
-
+        console.error(error)
     }
 
 })
