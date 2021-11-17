@@ -23,49 +23,57 @@ router.get('/all', async (req, res) => {
 //Get registrar by student_id
 router.get('/:businessId/courses', async (req, res) => {
 
-    const { businessId } = req.params
+    try {
+        const { businessId } = req.params
 
-    //create connection to mySQL Database
-    const conn = await pool.getConnection()
-    await conn.beginTransaction()
+        // Create connection to mySQL Database
+        const conn = await pool.getConnection()
+        await conn.beginTransaction()
 
-    const result = await conn.query(`
-        SELECT registrar.subject_id, registrar.section_id, study_start,study_end, day, title_en, mid_exam, mid_start, mid_end, final_exam, final_start, final_end
-        FROM registrar
-        INNER JOIN section ON registrar.subject_id = section.subject_id AND registrar.section_id = section.section_id
-        INNER JOIN subject ON registrar.subject_id = subject.subject_id
-        WHERE student_id = ?
-    `, [businessId])
+        const result = await conn.query(`
+            SELECT registrar.subject_id, registrar.section_id, study_start,study_end, day, title_en, mid_exam, mid_start, mid_end, final_exam, final_start, final_end
+            FROM registrar
+            INNER JOIN section ON registrar.subject_id = section.subject_id AND registrar.section_id = section.section_id
+            INNER JOIN subject ON registrar.subject_id = subject.subject_id
+            WHERE student_id = ?
+        `, [businessId])
 
-    conn.release()
+        conn.release()
 
-    const timetable = result[0]
-    let formattedTimetable = []
-    timetable.forEach(subject => {
-        let formattedSubject = {
-            study: {
-                subjectId: subject.subject_id,
-                sectionId: subject.section_id,
-                title: subject.title_en,
-                day: getFullDayOfWeek(subject.day),
-                startAt: subject.study_start,
-                endAt: subject.study_end,
-            },
-            midterm: {
-                date: subject.mid_exam,
-                startAt: subject.mid_start,
-                endAt: subject.mid_end
-            },
-            final: {
-                date: subject.final_exam,
-                startAt: subject.final_start,
-                endAt: subject.final_end
+        // Formatting timetable
+        const timetable = result[0]
+        let formattedTimetable = []
+        timetable.forEach(subject => {
+            let formattedSubject = {
+                study: {
+                    subjectId: subject.subject_id,
+                    sectionId: subject.section_id,
+                    title: subject.title_en,
+                    day: getFullDayOfWeek(subject.day),
+                    startAt: subject.study_start,
+                    endAt: subject.study_end,
+                },
+                midterm: {
+                    date: subject.mid_exam,
+                    startAt: subject.mid_start,
+                    endAt: subject.mid_end
+                },
+                final: {
+                    date: subject.final_exam,
+                    startAt: subject.final_start,
+                    endAt: subject.final_end
+                }
             }
-        }
-        formattedTimetable.push(formattedSubject)
-    })
+            formattedTimetable.push(formattedSubject)
+        })
 
-    res.send(formattedTimetable)
+        res.send(formattedTimetable)
+
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again.'})
+    }
+
+
 })
 
 module.exports = router
