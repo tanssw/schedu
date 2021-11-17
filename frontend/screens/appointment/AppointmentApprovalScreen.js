@@ -75,23 +75,23 @@ function AppointmentApprovalScreen({ props,route }) {
             data: data
         }
         try {
-            // TODO test it about payload is correct
-            const result = await axios.put(`http://localhost:3000/appointment/update`, payload)
             navigation.navigate('CalendarOverview')
+            const result = await axios.put(`http://localhost:3000/appointment/update`, payload)
+            
         } catch (error) {
             console.error(error)
         }
     }
 
     // FUNCTION : user decline this appointment
-    const decline = async() => {
+    const decline = () => {
         const join = false
-        await submit(join, data._id)
+        submit(join, data._id)
     }
     //FUNCTION : user approval this appointment
-    const approval = async() => {
+    const approval = () => {
         const join = true
-        await submit(join, data._id)
+        submit(join, data._id)
     }
 
     useEffect(async() => {
@@ -129,6 +129,7 @@ function AppointmentApprovalScreen({ props,route }) {
             </TouchableOpacity>
         )
     }
+    //TODO: time display startAt and endAt from appointment
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -137,12 +138,14 @@ function AppointmentApprovalScreen({ props,route }) {
                     {/* Subject Input */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Subject</Text>
+                        {/* <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/> */}
                         <Text style={styles.topic}>{data.subject}</Text>
                     </View>
                     {/* Participant Input */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Participant</Text>
                         <View style={styles.participantContainer}>
+                            
                             <FlatList
                                 horizontal
                                 data={data.participants}
@@ -154,7 +157,6 @@ function AppointmentApprovalScreen({ props,route }) {
                     {/* Communication Method Dropdown & Input */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Communication Method</Text>
-                        
                         <Text>{commMethod}</Text>
                     </View>
                     {/* Note to participant Textbox */}
