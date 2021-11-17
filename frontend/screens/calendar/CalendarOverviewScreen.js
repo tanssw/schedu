@@ -23,7 +23,9 @@ export default function CalendarOverviewScreen({navigation}) {
 
             const { myAppointments, requestAppointments } = await loadAppointments(token, userId)
             const events = await loadEvents()
-            const timetable = await loadStudyTimetable()
+            const timetable = await loadStudyTimetable(token, userId)
+
+            console.log(timetable)
 
             updateMyAppointmentsState(myAppointments)
             updateRequestAppointmentsState(requestAppointments)
@@ -84,9 +86,10 @@ export default function CalendarOverviewScreen({navigation}) {
         }
     }
 
-    const loadStudyTimetable = async (userId) => {
+    const loadStudyTimetable = async (token, userId) => {
         const payload = {
             headers: {
+                'Schedu-Token': token,
                 'Schedu-UID': userId
             }
         }

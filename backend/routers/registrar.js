@@ -3,6 +3,7 @@ const express = require('express')
 const pool = require('../config/mysql')
 const { getUserByObjectId } = require('../helpers/account')
 const { getFullDayOfWeek } = require('../helpers/registrar')
+const { authMiddleware } = require('../middlewares/auth')
 
 const router = express()
 
@@ -22,7 +23,7 @@ router.get('/all', async (req, res) => {
     conn.release()
 })
 //Get registrar by student_id
-router.get('/courses', async (req, res) => {
+router.get('/courses', authMiddleware, async (req, res) => {
 
     try {
         const userId = req.headers['schedu-uid']
