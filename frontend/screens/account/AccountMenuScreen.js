@@ -1,18 +1,38 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
-import { useSelector } from 'react-redux'
-import Constants from 'expo-constants'
 import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
-import { text, shadow, colorCode } from '../../styles'
-import { AUTH_TOKEN_KEY, clearAuthAsset } from '../../modules/auth'
+import { getAuthAsset } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
+import { text, shadow, colorCode } from '../../styles'
 
 export default function AccountMenuScreen({ navigation }) {
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getUser()
+        })
+        return unsubscribe
+    })
 
-    const userData = useSelector(state => state.user.userData)
+    const getUser = async () => {
+        const { token, userId } = await getAuthAsset()
+
+        const payload = {
+            headers: { 'Schedu-Token': token }
+        }
+
+        try {
+            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${userId}`, payload)
+            setUserData(user.data.user)
+        } catch (error) {
+            // Clear stored token in Secure Store
+            await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY, {})
+        }
+    }
+
+    const [userData, setUserData] = useState({})
 
     const signOut = async () => {
         const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
@@ -26,8 +46,7 @@ export default function AccountMenuScreen({ navigation }) {
             await clearAuthAsset()
             navigation.navigate('SignIn')
         } catch (error) {
-            const status = error.response.status
-            if (status === 500) return
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
     }
 
@@ -53,7 +72,7 @@ export default function AccountMenuScreen({ navigation }) {
                 <View>
                     <TouchableOpacity
                         style={styles.menuBtn}
-                        onPress={() => navigation.navigate('Profile')}
+                        onPress={() => navigation.navigate('Profile', userData)}
                     >
                         <Text style={styles.menuText}>Profile</Text>
                     </TouchableOpacity>
@@ -61,7 +80,7 @@ export default function AccountMenuScreen({ navigation }) {
                     {/* setting navigation */}
                     <TouchableOpacity
                         style={styles.menuBtn}
-                        onPress={() => navigation.navigate('Setting')}
+                        onPress={() => navigation.navigate('Setting', userData.setting)}
                     >
                         <Text style={styles.menuText}>Settings</Text>
                     </TouchableOpacity>

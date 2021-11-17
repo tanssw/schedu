@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import Constants from 'expo-constants'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
-import { getAuthAsset } from '../../modules/auth'
+import { getAuthAsset, checkExpiredToken } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import CalendarOverview from './components/CalendarOverview'
 import IncomingRequest from './components/IncomingRequest'
 import MyAppointment from './components/MyAppointment'
-
-const API_SERVER_DOMAIN = Constants.manifest.extra.apiServerDomain
+import { colorCode } from '../../styles'
 
 export default function CalendarOverviewScreen({navigation}) {
 
@@ -19,14 +18,22 @@ export default function CalendarOverviewScreen({navigation}) {
     const [myAppointmentsState, updateMyAppointmentsState] = useState([])
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            loadAppointments()
+        const unsubscribe = navigation.addListener('focus', async () => {
+            const { myAppointments, requestAppointments } = await loadAppointments()
+            const events = await loadEvents()
+
+            updateMyAppointmentsState(myAppointments)
+            updateRequestAppointmentsState(requestAppointments)
+
+            // Update all appointments for calendar
+            const appointmentDateMarks = buildAppointmentDateMarks(myAppointments)
+            const allDateMarks = buildEventDateMarks(events, appointmentDateMarks)
+            updateMarkedDatesState(allDateMarks)
         })
         return unsubscribe
     })
 
     const loadAppointments = async () => {
-
         const { token, userId } = await getAuthAsset()
 
         // Request my appointments from server
@@ -36,40 +43,61 @@ export default function CalendarOverviewScreen({navigation}) {
                 'Schedu-UID': userId
             }
         }
-        const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
-        const appointments = appointmentResult.data.appointments
+        try {
+            const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
+            const appointments = appointmentResult.data.appointments
 
-        // Update my appointments
-        const shownStatus = ['ongoing']
-        let myAppointments = appointments.filter(appointment => {
-            const canShow = shownStatus.includes(appointment.status)
-            const meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
-            const meAsSender = appointment.sender.userId === userId
-            return canShow || meAsSender || meConfirmed.length
-        })
-        updateMyAppointmentsState(myAppointments)
+            // Update my appointments
+            const shownStatus = ['ongoing']
+            let myAppointments = appointments.filter(appointment => {
+                const canShow = shownStatus.includes(appointment.status)
+                const meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
+                const meAsSender = appointment.sender.userId === userId
+                return canShow || meAsSender || meConfirmed.length
+            })
 
-        // Update incoming request appointments
-        let requestAppointments = appointments.filter(appointment => {
-            const myself = appointment.participants.find(participant => participant.userId === userId)
-            if (!myself) return false
-            const meNotConfirm = !myself.confirmed
-            const meAsSender = appointment.sender.userId === userId
-            return !meAsSender && meNotConfirm
-        })
-        updateRequestAppointmentsState(requestAppointments)
+            // Update incoming request appointments
+            let requestAppointments = appointments.filter(appointment => {
+                const myself = appointment.participants.find(participant => participant.userId === userId)
+                if (!myself) return false
+                const meNotConfirm = !myself.confirmed
+                const meAsSender = appointment.sender.userId === userId
+                return !meAsSender && meNotConfirm
+            })
 
-        // Update all appointments for calendar
-        updateMarkedDatesState(buildDateMarks(myAppointments))
+            return { myAppointments, requestAppointments }
+
+        } catch (error) {
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+        }
     }
 
-    // To build the object of MarkedDate to show in Calendar
-    const buildDateMarks = (appointments) => {
-        let object = {}
+    const loadEvents = async () => {
+        try {
+            const eventResult = await axios.get(`${API_SERVER_DOMAIN}/event`)
+            const events = eventResult.data.events
+            return events
+        } catch (error) {
+
+        }
+    }
+
+    // To build an appointment object of MarkedDate to show in Calendar
+    const buildAppointmentDateMarks = (appointments, object={}) => {
         appointments.forEach(appointment => {
             let date = dayjs(appointment.startAt).format('YYYY-MM-DD')
             let included = Object.keys(object).includes(date)
-            if (!included) object[date] = {marked: true}
+            if (!included) object[date] = {marked: true, dotColor: colorCode.lightBlue}
+        })
+        return object
+    }
+
+    // To build an event object of MarrkedDte to show in Calendar
+    const buildEventDateMarks = (events, object={}) => {
+        events.forEach(event => {
+            let date = dayjs(event.date).format('YYYY-MM-DD')
+            let included = Object.keys(object).includes(date)
+            if (!included) object[date] = {marked: true, dotColor: colorCode.grey}
         })
         return object
     }
@@ -87,15 +115,20 @@ export default function CalendarOverviewScreen({navigation}) {
 
     return (
         <ScrollView style={styles.container}>
-            <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDatesState} />
-            <IncomingRequest appointments={requestAppointmentsState} />
-            <MyAppointment appointments={myAppointmentsState} />
+            <View style={styles.innerContainer}>
+                <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDatesState} />
+                <IncomingRequest appointments={requestAppointmentsState} />
+                <MyAppointment appointments={myAppointmentsState} />
+            </View>
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-
+        flexGrow: 1
+    },
+    innerContainer: {
+        flex: 1
     }
 })

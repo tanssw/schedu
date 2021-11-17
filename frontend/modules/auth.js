@@ -20,10 +20,17 @@ const clearAuthAsset = async () => {
     await SecureStore.deleteItemAsync(AUTH_USER_ID, {})
 }
 
+const checkExpiredToken = (error) => {
+    const status = error.response.status
+    if (status !== 403) return false
+    return true
+}
+
 export {
     AUTH_TOKEN_KEY,
     AUTH_USER_ID,
     getAuthAsset,
     setAuthAsset,
-    clearAuthAsset
+    clearAuthAsset,
+    checkExpiredToken
 }

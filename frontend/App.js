@@ -1,25 +1,23 @@
 import React from 'react'
-import { LogBox } from 'react-native'
-import { createStore, combineReducers } from 'redux'
-import { Provider } from 'react-redux'
-
-import userReducer from './store/reducers/userReducer'
+import { LogBox, SafeAreaView, StyleSheet } from 'react-native'
 
 import AuthNavigator from './navigators/AuthNavigator'
+import { colorCode } from './styles'
 
 // Disable Yellow box warning
 LogBox.ignoreLogs(['AsyncStorage'])
 
 export default function App() {
-
-    const rootReducer = combineReducers({
-        user: userReducer
-    })
-    const store = createStore(rootReducer)
-
     return (
-        <Provider store={store}>
-            <AuthNavigator />
-        </Provider>
+        <>
+            <SafeAreaView style={styles.safeArea} />
+                <AuthNavigator />
+        </>
     )
 }
+
+const styles = StyleSheet.create({
+    safeArea: {
+        backgroundColor: colorCode.blue
+    }
+})

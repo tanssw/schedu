@@ -1,42 +1,43 @@
-const express = require('express');
+const express = require('express')
 const mongoose = require('mongoose')
-const eventSchema = require('../schema/eventSchema')
-var conn = require('../config/connectionMongoDB/IT_CalendarConnect')
-const router = express();
+const dayjs = require('dayjs')
 
+const eventSchema = require('../schema/eventSchema')
+const conn = require('../config/connectionMongoDB/IT_CalendarConnect')
 const eventModel = conn.model('events' , eventSchema, process.env.EVENTS_COLLECTION)
 
-//Get all event in mongoDB
-router.get('/all', async(req, res) =>{
-    const event = await eventModel.find({})
-    res.json(event)
-})
-//Get event by event object id
-router.get('/:id', async(req, res) =>{
-    const { id } = req.params
-    const event = await eventModel.findById(id)
-    res.json(event)
-})
-//Add New event in mongoDB
-router.post('/addEvent', async(req, res) =>{
-    const payload = req.body
-    const event = new eventModel(payload)
-    await event.save()
-    res.json({Message: "Success"})
-})
-//Update event in mongoDB
-router.put('/updateEvent/:id', async(req, res) =>{
-    const payload = req.body
-    const { id } = req.params
-    const event = await eventModel.findByIdAndUpdate(id, {$set: payload})
-    res.json(event)
+const router = express()
 
+// Get every events in IT Calendar
+router.get('/', async (req, res) => {
+    try {
+        const events = await eventModel.find({})
+        res.json({events: events})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
 })
-//Delete event in mongoDB
-router.delete('/delEvent/:id', async(req, res) => {
-    const { id } = req.params
-    await eventModel.findByIdAndDelete(id)
 
-    res.status(200).end()
+// Get every events in specific year and month from IT Calendar
+router.get('/:year/:month', async (req, res) => {
+
+    const { year, month } = req.params
+    const minDate = dayjs(`${year}-${month}-01`)
+    const lastDate = minDate.daysInMonth()
+    const maxDate = dayjs(`${year}-${month}-${lastDate}`).add(1, 'days')
+
+    try {
+        const events = await eventModel.find({})
+        const filteredEvents = events.filter(event => {
+            if (!event.date) return false
+            const date = dayjs(event.date, 'YYYY-MM-DD')
+            return date > minDate && date < maxDate
+        })
+        console.log(filteredEvents)
+        res.json({events: filteredEvents})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
 })
+
 module.exports = router

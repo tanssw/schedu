@@ -5,9 +5,12 @@ const colorCode = {
     lightBlue: '#005295',
     lighterBlue: '#4f89c4',
     grey: 'grey',
+    lightGrey: '#888',
     yellow: '#ffaa54',
+    gold: '#b58d3d',
     green: '#23644e',
-    red: 'crimson'
+    red: 'crimson',
+    dark: '#444'
 }
 
 const background = StyleSheet.create({
@@ -64,9 +67,21 @@ const shadow = StyleSheet.create({
     }
 })
 
+const headerDefaultOptions = {
+    headerStyle: {
+        backgroundColor: colorCode.blue
+    },
+    headerTitleStyle: {
+        fontWeight: '300',
+        fontSize: 20
+    },
+    headerTintColor: 'white'
+}
+
 export {
     colorCode,
     background,
     text,
-    shadow
+    shadow,
+    headerDefaultOptions
 }
