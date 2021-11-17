@@ -72,7 +72,8 @@ export default function CalendarOverviewScreen({navigation}) {
             return { myAppointments, requestAppointments }
 
         } catch (error) {
-            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            if (checkExpiredToken(error)) return navigation.navigate('SignIn')
+            return []
         }
     }
 
@@ -82,7 +83,7 @@ export default function CalendarOverviewScreen({navigation}) {
             const events = eventResult.data.events
             return events
         } catch (error) {
-
+            return []
         }
     }
 
@@ -99,7 +100,7 @@ export default function CalendarOverviewScreen({navigation}) {
             const timetable = timetableResult.data.timetable
             return timetable
         } catch (error) {
-
+            return []
         }
     }
 
