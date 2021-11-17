@@ -19,8 +19,11 @@ export default function CalendarOverviewScreen({navigation}) {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', async () => {
-            const { myAppointments, requestAppointments } = await loadAppointments()
+            const { token, userId } = await getAuthAsset()
+
+            const { myAppointments, requestAppointments } = await loadAppointments(token, userId)
             const events = await loadEvents()
+            const timetable = await loadStudyTimetable()
 
             updateMyAppointmentsState(myAppointments)
             updateRequestAppointmentsState(requestAppointments)
@@ -33,8 +36,7 @@ export default function CalendarOverviewScreen({navigation}) {
         return unsubscribe
     })
 
-    const loadAppointments = async () => {
-        const { token, userId } = await getAuthAsset()
+    const loadAppointments = async (token, userId) => {
 
         // Request my appointments from server
         const payload = {
@@ -77,6 +79,22 @@ export default function CalendarOverviewScreen({navigation}) {
             const eventResult = await axios.get(`${API_SERVER_DOMAIN}/event`)
             const events = eventResult.data.events
             return events
+        } catch (error) {
+
+        }
+    }
+
+    const loadStudyTimetable = async (userId) => {
+        const payload = {
+            headers: {
+                'Schedu-UID': userId
+            }
+        }
+
+        try {
+            const timetableResult = await axios.get(`${API_SERVER_DOMAIN}/registrar/courses`, payload)
+            const timetable = timetableResult.data.timetable
+            return timetable
         } catch (error) {
 
         }

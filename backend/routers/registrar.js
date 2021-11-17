@@ -1,6 +1,7 @@
 const express = require('express')
 
 const pool = require('../config/mysql')
+const { getUserByObjectId } = require('../helpers/account')
 const { getFullDayOfWeek } = require('../helpers/registrar')
 
 const router = express()
@@ -21,10 +22,11 @@ router.get('/all', async (req, res) => {
     conn.release()
 })
 //Get registrar by student_id
-router.get('/:businessId/courses', async (req, res) => {
+router.get('/courses', async (req, res) => {
 
     try {
-        const { businessId } = req.params
+        const userId = req.headers['schedu-uid']
+        const { businessId } = await getUserByObjectId(userId)
 
         // Create connection to mySQL Database
         const conn = await pool.getConnection()
@@ -67,7 +69,7 @@ router.get('/:businessId/courses', async (req, res) => {
             formattedTimetable.push(formattedSubject)
         })
 
-        res.send(formattedTimetable)
+        res.send({timetable: formattedTimetable})
 
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again.'})
