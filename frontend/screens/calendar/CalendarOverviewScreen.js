@@ -95,6 +95,7 @@ export default function CalendarOverviewScreen({navigation}) {
     // To build an event object of MarrkedDte to show in Calendar
     const buildEventDateMarks = (events, object={}) => {
         events.forEach(event => {
+            if (!event.date) return
             let date = dayjs(event.date).format('YYYY-MM-DD')
             let included = Object.keys(object).includes(date)
             if (!included) object[date] = {marked: true, dotColor: colorCode.grey}
