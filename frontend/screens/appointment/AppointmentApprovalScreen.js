@@ -23,7 +23,7 @@ import axios from 'axios'
 
 import { background, text, shadow, colorCode } from '../../styles'
 import { useNavigation } from '@react-navigation/native'
-import ContactProfile from '../contact/ContactProfileScreen'
+
 
 function AppointmentApprovalScreen({ props,route }) {
     const { data } = route.params
@@ -110,13 +110,7 @@ function AppointmentApprovalScreen({ props,route }) {
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item }) => {
         return (
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.navigate('ContactProfile', { objectId: item.userId })
-                    console.log('this is item')
-                    // console.log(item)
-                }}
-            >
+         
                 <View style={styles.profile}>
                     <FontAwesome
                         name="user-circle-o"
@@ -126,7 +120,6 @@ function AppointmentApprovalScreen({ props,route }) {
                     />
                     <Text style={styles.personName}>{item.firstName}</Text>
                 </View>
-            </TouchableOpacity>
         )
     }
     //TODO: time display startAt and endAt from appointment
@@ -145,7 +138,6 @@ function AppointmentApprovalScreen({ props,route }) {
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Participant</Text>
                         <View style={styles.participantContainer}>
-                            
                             <FlatList
                                 horizontal
                                 data={data.participants}
