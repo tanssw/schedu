@@ -4,7 +4,7 @@ import { Agenda } from 'react-native-calendars'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
-import { checkExpiredToken, getAuthAsset } from '../../modules/auth'
+import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import { colorCode, shadow } from '../../styles'
@@ -69,7 +69,10 @@ export default function CalendarDetailScreen({route, navigation}) {
             const appointments = appointmentResult.data.appointments
             return appointments
         } catch (error) {
-            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
             return []
         }
     }

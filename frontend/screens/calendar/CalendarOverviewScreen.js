@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
-import { getAuthAsset, checkExpiredToken } from '../../modules/auth'
+import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import CalendarOverview from './components/CalendarOverview'
@@ -71,7 +71,10 @@ export default function CalendarOverviewScreen({navigation}) {
             return { myAppointments, requestAppointments }
 
         } catch (error) {
-            if (checkExpiredToken(error)) return navigation.navigate('SignIn')
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
             return []
         }
     }

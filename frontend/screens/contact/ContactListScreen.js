@@ -8,7 +8,7 @@ import SearchBar from './components/SearchTab'
 import QueryBar from './components/QueryBar'
 import ContactTab from './components/ContactTab'
 
-import { checkExpiredToken, getAuthAsset } from '../../modules/auth'
+import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../modules/auth'
 
 export default function ContactListScreen({ navigation }) {
 
@@ -57,7 +57,10 @@ export default function ContactListScreen({ navigation }) {
             const contactUsers = userResult.data.users
             updateContacts(contactUsers)
         } catch (error) {
-            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
         }
     }
 

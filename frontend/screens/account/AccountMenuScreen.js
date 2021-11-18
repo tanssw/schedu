@@ -1,40 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
-import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
 import { clearAuthAsset, getAuthAsset } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import { text, shadow, colorCode } from '../../styles'
-import { fonts } from 'react-native-elements/dist/config'
 
-export default function AccountMenuScreen({ navigation }) {
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            getUser()
-        })
-        return unsubscribe
-    })
-
-    const getUser = async () => {
-        const { token, userId } = await getAuthAsset()
-
-        const payload = {
-            headers: { 'Schedu-Token': token }
-        }
-
-        try {
-            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${userId}`, payload)
-            setUserData(user.data.user)
-        } catch (error) {
-            // Clear stored token in Secure Store
-            await clearAuthAsset()
-            navigation.navigate('SignIn')
-        }
-    }
-
-    const [userData, setUserData] = useState({})
+export default function AccountMenuScreen({ navigation, userData }) {
 
     const signOut = async () => {
         const { token, userId } = await getAuthAsset()
@@ -45,10 +18,9 @@ export default function AccountMenuScreen({ navigation }) {
                 }
             }
             const result = axios.delete(`${API_SERVER_DOMAIN}/auth`, payload)
+        } finally {
             await clearAuthAsset()
-            navigation.navigate('SignIn')
-        } catch (error) {
-            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            return navigation.navigate('SignIn')
         }
     }
 
