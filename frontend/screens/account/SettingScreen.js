@@ -2,22 +2,22 @@ import React, { useState, useEffect } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import axios from 'axios'
 
-// import components
 import SettingData from './components/SettingData'
 import TimePicker from './components/TimePicker'
 
-import { getAuthAsset } from '../../modules/auth'
+import { getAuthAsset, clearAuthAsset, checkExpiredToken } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 import { hourItems, minuteItems } from './data/timeItems'
 
-export default function SettingScreen({ route, navigation }) {
-    const [settings, setSettings] = useState(route.params)
+import { colorCode } from '../../styles'
 
-    const [displayTel, setDisplaytel] = useState(settings.displayTel)
-    const [weekendReceive, setWeekendReceive] = useState(settings.weekendReceive)
+export default function SettingScreen({ route, navigation, setting, onSettingUpdated }) {
 
-    const [start, setStart] = useState(settings.activeTime.startAt)
-    const [end, setEnd] = useState(settings.activeTime.endAt)
+    const [displayTel, setDisplaytel] = useState(setting.displayTel)
+    const [weekendReceive, setWeekendReceive] = useState(setting.weekendReceive)
+
+    const [start, setStart] = useState(setting.activeTime.startAt)
+    const [end, setEnd] = useState(setting.activeTime.endAt)
 
     const [hour, setHour] = useState(null)
 
@@ -52,9 +52,14 @@ export default function SettingScreen({ route, navigation }) {
         }
 
         try {
-            await axios.put(`${API_SERVER_DOMAIN}/account/`, body, headers)
+            const updatedResult = await axios.put(`${API_SERVER_DOMAIN}/account/`, body, headers)
+            const user = updatedResult.data.user
+            onSettingUpdated(user)
         } catch (error) {
-            console.log(error)
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
         }
     }
 
@@ -86,12 +91,11 @@ export default function SettingScreen({ route, navigation }) {
         <View style={styles.container}>
             <View style={styles.dataBlock}>
                 <Text style={styles.settingMenu}>Calendar</Text>
-
-                <TimePicker topic={'Start'} data={start} update={changeActiveTimeHandler} />
+                <TimePicker topic={'Start'} data={start} update={changeActiveTimeHandler} style={styles.topSection} />
                 <TimePicker topic={'End'} data={end} update={changeActiveTimeHandler} />
                 <SettingData
-                    topic={'Receive weekend appointment'}
-                    data={settings.weekendReceive}
+                    topic={'Receive Weekend Appointment'}
+                    data={setting.weekendReceive}
                     timeHour={hourItems}
                     timeMin={minuteItems}
                     update={changeSettingHandler}
@@ -100,11 +104,12 @@ export default function SettingScreen({ route, navigation }) {
             <View style={styles.dataBlock}>
                 <Text style={styles.settingMenu}>Privacy</Text>
                 <SettingData
-                    topic={'Display phone number'}
-                    data={settings.displayTel}
+                    topic={'Display Phone Number'}
+                    data={setting.displayTel}
                     timeHour={hourItems}
                     timeMin={minuteItems}
                     update={changeSettingHandler}
+                    style={styles.topSection}
                 />
             </View>
         </View>
@@ -114,18 +119,25 @@ export default function SettingScreen({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 32,
+        paddingVertical: 24,
         backgroundColor: 'white'
     },
     settingMenu: {
         fontWeight: 'bold',
-        paddingLeft: 20
+        fontSize: 16,
+        color: colorCode.blue,
+        paddingHorizontal: 24,
+        marginBottom: 16
     },
     dataBlock: {
-        marginBottom: 20
+        marginBottom: 48
     },
     bottomLine: {
         borderBottomWidth: 1,
         borderColor: '#cccccc'
+    },
+    topSection: {
+        borderTopWidth: 0.75,
+        borderTopColor: colorCode.lighterGrey
     }
 })

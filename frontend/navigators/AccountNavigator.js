@@ -65,7 +65,9 @@ export default function AccountNavigator({ navigation }) {
             <AccountStack.Screen name="EditProfile" options={{ headerTitle: 'Edit Profile' }}>
                 {props => <EditProfileScreen {...props} userData={userData} onProfileUpdated={updateUserData} />}
             </AccountStack.Screen>
-            <AccountStack.Screen name="Setting" component={SettingScreen} />
+            <AccountStack.Screen name="Setting">
+                {props => <SettingScreen {...props} setting={userData.setting} onSettingUpdated={updateUserData} />}
+            </AccountStack.Screen>
         </AccountStack.Navigator>
     )
 }
