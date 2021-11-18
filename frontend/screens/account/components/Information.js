@@ -3,14 +3,12 @@ import { Text, View, StyleSheet, TextInput } from 'react-native'
 
 export default function Information(props) {
 
-    const [topic, setTopic] = useState(props.topicData)
-    const [data, setdata] = useState(props.data)
-
     const changeDataHandler = text => {
-        props.update({ topic: topic, data: text })
+        props.update({ topic: props.topicData, data: text })
     }
 
     let editState = props.edit
+
     return (
         <View style={[styles.bottomLine, styles.userData]}>
             <Text
@@ -19,7 +17,7 @@ export default function Information(props) {
                     editState ? styles.editable : styles.textComponentStyle
                 ]}
             >
-                {topic}
+                {props.topicData}
             </Text>
             <TextInput
                 style={[
@@ -30,7 +28,7 @@ export default function Information(props) {
                 onChangeText={changeDataHandler}
                 placeholder="—"
             >
-                {data}
+                {props.data}
             </TextInput>
         </View>
     )

@@ -9,8 +9,9 @@ import axios from 'axios'
 import { text, shadow } from '../../styles'
 
 // import components
-import UserData from './components/Information'
+import Information from './components/Information'
 export default function ProfileScreen({ route, navigation, userData, onProfileUpdated }) {
+
     const updateDataHandler = data => {
         switch (data.topic) {
             case 'First name':
@@ -75,13 +76,13 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
                 <View>
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>General</Text>
-                        <UserData
+                        <Information
                             topicData={'First name'}
                             data={newFirstName}
                             edit={true}
                             update={updateDataHandler}
                         />
-                        <UserData
+                        <Information
                             topicData={'Last name'}
                             data={newLastName}
                             edit={true}
@@ -90,7 +91,7 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
                     </View>
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>Contact</Text>
-                        <UserData
+                        <Information
                             topicData={'Phone number'}
                             data={newPhoneNumber}
                             edit={true}
