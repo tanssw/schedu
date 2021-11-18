@@ -46,7 +46,7 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
         }
 
         try {
-            const userResult = await axios.put(`${API_SERVER_DOMAIN}/account/updateUser`, body, headers)
+            const userResult = await axios.put(`${API_SERVER_DOMAIN}/account/`, body, headers)
             const updatedProfile = userResult.data.user
             onProfileUpdated(updatedProfile)
             alert('Your profile has been updated')

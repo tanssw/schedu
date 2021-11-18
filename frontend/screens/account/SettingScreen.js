@@ -32,7 +32,7 @@ export default function SettingScreen({ route, navigation }) {
 
     const updateSetting = async () => {
         const { token, userId } = await getAuthAsset()
-        
+
         const body = {
             id: userId,
             newData: {
@@ -52,7 +52,7 @@ export default function SettingScreen({ route, navigation }) {
         }
 
         try {
-            await axios.put(`${API_SERVER_DOMAIN}/account/updateUser`, body, headers)
+            await axios.put(`${API_SERVER_DOMAIN}/account/`, body, headers)
         } catch (error) {
             console.log(error)
         }
