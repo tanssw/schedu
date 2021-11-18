@@ -78,8 +78,9 @@ router.get('/courses/:year/:month', authMiddleware, async (req, res) => {
             INNER JOIN section ON registrar.subject_id = section.subject_id AND registrar.section_id = section.section_id
             INNER JOIN subject ON registrar.subject_id = subject.subject_id
             WHERE student_id = ?
-            AND mid_exam BETWEEN ? AND ?
-            OR final_exam BETWEEN ? AND ?
+            AND (
+                mid_exam BETWEEN ? AND ? OR final_exam BETWEEN ? AND ?
+            )
 
         `, [businessId, minDate, maxDate, minDate, maxDate])
 

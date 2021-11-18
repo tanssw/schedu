@@ -8,6 +8,7 @@ import { checkExpiredToken, getAuthAsset } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import { colorCode, shadow } from '../../styles'
+import { color } from 'react-native-elements/dist/helpers'
 
 export default function CalendarDetailScreen({route, navigation}) {
 
@@ -17,12 +18,15 @@ export default function CalendarDetailScreen({route, navigation}) {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', async () => {
-            // Request my appointments from server
+
+            const { token, userId } = await getAuthAsset()
             const year = dayjs(selectedDay).get('year')
             const month = dayjs(selectedDay).get('month') + 1
 
-            const appointments = await loadAppointments(year, month)
+            // Request my agenda from server
+            const appointments = await loadAppointments(year, month, token, userId)
             const events = await loadEvents(year, month)
+            const studies = await loadStudies(year, month, token, userId)
 
             createAgendaTemplate(year, month)
 
@@ -40,14 +44,20 @@ export default function CalendarDetailScreen({route, navigation}) {
                 myAgenda[date].push(event)
             })
 
+            // Add exams into each day
+            studies.forEach(course => {
+                let date = dayjs(course.exam.date).format('YYYY-MM-DD')
+                course._cardType = 'study'
+                myAgenda[date].push(course)
+            })
+
             updateMyAgenda(myAgenda)
 
         })
         return unsubscribe
     })
 
-    const loadAppointments = async (year, month) => {
-        const { token, userId } = await getAuthAsset()
+    const loadAppointments = async (year, month, token, userId) => {
         const payload = {
             headers: {
                 'Schedu-Token': token,
@@ -60,6 +70,7 @@ export default function CalendarDetailScreen({route, navigation}) {
             return appointments
         } catch (error) {
             if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            return []
         }
     }
 
@@ -69,11 +80,11 @@ export default function CalendarDetailScreen({route, navigation}) {
             const events = eventResult.data.events
             return events
         } catch (error) {
-
+            return []
         }
     }
 
-    const loadStudies = async (token, userId) => {
+    const loadStudies = async (year, month, token, userId) => {
         const payload = {
             headers: {
                 'Schedu-Token': token,
@@ -82,7 +93,7 @@ export default function CalendarDetailScreen({route, navigation}) {
         }
 
         try {
-            const timetableResult = await axios.get(`${API_SERVER_DOMAIN}/registrar/courses`, payload)
+            const timetableResult = await axios.get(`${API_SERVER_DOMAIN}/registrar/courses/${year}/${month}`, payload)
             const timetable = timetableResult.data.timetable
             return timetable
         } catch (error) {
@@ -107,7 +118,20 @@ export default function CalendarDetailScreen({route, navigation}) {
         switch (item._cardType) {
             case 'appointment': return renderAppointment(item, firstItem)
             case 'event': return renderEvent(item, firstItem)
+            case 'study': return renderStudy(item, firstItem)
         }
+    }
+
+    const renderAppointment = (item, firstItem) => {
+        return (
+            <View style={[styles.eventBox, shadow.boxBottomSmall, {marginTop: (firstItem) ? 16: 6}]}>
+                <Text style={styles.eventTime}>
+                    {dayjs(item.startAt).format('HH:mm')} - {dayjs(item.endAt).format('HH:mm')}
+                </Text>
+                <Text numberOfLines={1} style={styles.eventHeader}>{item.subject}</Text>
+                <Text style={styles.eventDesc}>with {getParticipant(item.participants)}</Text>
+            </View>
+        )
     }
 
     const renderEvent = (item, firstItem) => {
@@ -122,14 +146,15 @@ export default function CalendarDetailScreen({route, navigation}) {
         )
     }
 
-    const renderAppointment = (item, firstItem) => {
+    const renderStudy = (item, firstItem) => {
+        const startAt = dayjs(`${dayjs().format('YYYY-MM-DD')} ${item.exam.startAt}`, 'YYYY-MM-DD HH:mm:ss')
+        const endAt = dayjs(`${dayjs().format('YYYY-MM-DD')} ${item.exam.endAt}`, 'YYYY-MM-DD HH:mm:ss')
         return (
-            <View style={[styles.eventBox, shadow.boxBottomSmall, {marginTop: (firstItem) ? 16: 6}]}>
-                <Text style={styles.eventTime}>
-                    {dayjs(item.startAt).format('HH:mm')} — {dayjs(item.endAt).format('HH:mm')}
+            <View style={[styles.eventSmallBox, shadow.boxBottomSmall, {marginTop: (firstItem) ? 16: 6}]}>
+                <Text style={styles.eventSmallTime}>
+                    {startAt.format('HH:mm')} - {endAt.format('HH:mm')} ({item.exam.type} exam)
                 </Text>
-                <Text numberOfLines={1} style={styles.eventHeader}>{item.subject}</Text>
-                <Text style={styles.eventDesc}>with {getParticipant(item.participants)}</Text>
+                <Text numberOfLines={1} style={[styles.eventSmallHeader, {color: colorCode.orange}]}>{item.title}</Text>
             </View>
         )
     }
@@ -160,7 +185,10 @@ export default function CalendarDetailScreen({route, navigation}) {
             selected={selectedDay}
             minDate={getFirstDate()}
             maxDate={getLastDate()}
+            pastScrollRange={1}
+            futureScrollRange={1}
             hideKnob={true}
+            refreshing={true}
             theme={{
                 selectedDayBackgroundColor: colorCode.lightBlue,
                 selectedDayTextColor: 'white',
@@ -180,15 +208,32 @@ const styles = StyleSheet.create({
         marginVertical: 6,
         borderRadius: 16
     },
+    eventSmallBox: {
+        backgroundColor: 'white',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        marginRight: 16,
+        marginVertical: 6,
+        borderRadius: 16
+    },
     eventTime: {
         fontWeight: '300',
         marginBottom: 4
+    },
+    eventSmallTime: {
+        fontWeight: '300',
+        fontSize: 12
     },
     eventHeader: {
         fontSize: 16,
         fontWeight: '300',
         color: colorCode.lightBlue,
         marginBottom: 8
+    },
+    eventSmallHeader: {
+        fontSize: 14,
+        fontWeight: '300',
+        color: colorCode.lightBlue,
     },
     eventDesc: {
         color: colorCode.grey

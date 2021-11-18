@@ -53,10 +53,9 @@ const formatMonthTimetable = (timetable, year, month) => {
             endAt: subject.study_end
         }
 
+        month = (month.length === 1) ? `0${month}`: month
         let isMidterm = dayjs(subject.mid_exam).format('YYYY-MM') === `${year}-${month}`
         let isFinal = dayjs(subject.final_exam).format('YYYY-MM') === `${year}-${month}`
-
-        console.log(isMidterm, isFinal)
 
         if (isMidterm) {
             formattedSubject.exam = {
