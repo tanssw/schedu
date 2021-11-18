@@ -56,7 +56,7 @@ export default function CalendarOverviewScreen({navigation}) {
                 const canShow = shownStatus.includes(appointment.status)
                 const meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
                 const meAsSender = appointment.sender.userId === userId
-                return canShow || meAsSender || meConfirmed.length
+                return canShow && (meAsSender || meConfirmed.length)
             })
 
             // Update incoming request appointments
