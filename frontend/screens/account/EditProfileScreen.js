@@ -6,7 +6,7 @@ import { API_SERVER_DOMAIN } from '../../modules/apis'
 import axios from 'axios'
 
 // style by tanssw.com
-import { text, shadow } from '../../styles'
+import { text, shadow, colorCode } from '../../styles'
 
 // import components
 import Information from './components/Information'
@@ -81,6 +81,7 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
                             data={newFirstName}
                             edit={true}
                             update={updateDataHandler}
+                            style={styles.topSection}
                         />
                         <Information
                             topicData={'Last name'}
@@ -96,12 +97,15 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
                             data={newPhoneNumber}
                             edit={true}
                             update={updateDataHandler}
+                            style={styles.topSection}
                         />
                     </View>
                 </View>
-                <TouchableOpacity style={[styles.updateBtn]} onPress={update}>
-                    <Text style={(text.blue, styles.updateBtnText)}>Update Profile</Text>
-                </TouchableOpacity>
+                <View style={styles.updateBtnContainer}>
+                    <TouchableOpacity style={[styles.updateBtn]} onPress={update}>
+                        <Text style={(text.blue, styles.updateBtnText)}>Update Profile</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     )
@@ -116,7 +120,6 @@ const styles = StyleSheet.create({
     editProfileContainer: {
         flex: 1,
         width: '100%',
-        padding: 32,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
         backgroundColor: 'white',
@@ -133,17 +136,30 @@ const styles = StyleSheet.create({
     },
     userProfileMenu: {
         fontWeight: 'bold',
-        color: '#000'
+        color: colorCode.blue,
+        fontSize: 16,
+        paddingHorizontal: 24,
+        marginTop: 32,
+        marginBottom: 12
+    },
+    updateBtnContainer: {
+        padding: 24
     },
     updateBtn: {
         width: '100%',
         padding: 16,
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#001e6a',
+        borderColor: colorCode.blue,
         alignItems: 'center'
     },
     updateBtnText: {
-        fontWeight: 'bold'
+        fontWeight: '300',
+        fontSize: 16,
+        color: colorCode.blue
+    },
+    topSection: {
+        borderTopWidth: 0.75,
+        borderTopColor: colorCode.lighterGrey
     }
 })
