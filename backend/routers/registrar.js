@@ -2,8 +2,9 @@ const express = require('express')
 
 const pool = require('../config/mysql')
 const { getUserByObjectId } = require('../helpers/account')
-const { getFullDayOfWeek } = require('../helpers/registrar')
+const { formatDefaultTimetable, formatMonthTimetable } = require('../helpers/registrar')
 const { authMiddleware } = require('../middlewares/auth')
+const { getDateRange } = require('../helpers/date')
 
 const router = express()
 
@@ -22,14 +23,14 @@ router.get('/all', async (req, res) => {
     //when fin close connection to database
     conn.release()
 })
-//Get registrar by student_id
-router.get('/courses', authMiddleware, async (req, res) => {
 
+// Get Timetable from User ID
+router.get('/courses', authMiddleware, async (req, res) => {
     try {
         const userId = req.headers['schedu-uid']
         const { businessId } = await getUserByObjectId(userId)
 
-        // Create connection to mySQL Database
+        // Get study timetable
         const conn = await pool.getConnection()
         await conn.beginTransaction()
 
@@ -43,40 +44,55 @@ router.get('/courses', authMiddleware, async (req, res) => {
 
         conn.release()
 
-        // Formatting timetable
+        // Format study timetable
         const timetable = result[0]
-        let formattedTimetable = []
-        timetable.forEach(subject => {
-            let formattedSubject = {
-                study: {
-                    subjectId: subject.subject_id,
-                    sectionId: subject.section_id,
-                    title: subject.title_en,
-                    day: getFullDayOfWeek(subject.day),
-                    startAt: subject.study_start,
-                    endAt: subject.study_end,
-                },
-                midterm: {
-                    date: subject.mid_exam,
-                    startAt: subject.mid_start,
-                    endAt: subject.mid_end
-                },
-                final: {
-                    date: subject.final_exam,
-                    startAt: subject.final_start,
-                    endAt: subject.final_end
-                }
-            }
-            formattedTimetable.push(formattedSubject)
-        })
-
+        const formattedTimetable = formatDefaultTimetable(timetable)
         res.send({timetable: formattedTimetable})
 
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again.'})
     }
+})
+
+// Get Timetable by year and month from User ID
+router.get('/courses/:year/:month', authMiddleware, async (req, res) => {
+
+    const { year, month } = req.params
 
 
+    try {
+        let { minDate, maxDate } = getDateRange(year, month)
+        minDate = minDate.format('YYYY-MM-DD')
+        maxDate = maxDate.format('YYYY-MM-DD')
+
+        const userId = req.headers['schedu-uid']
+        const { businessId } = await getUserByObjectId(userId)
+
+        // Get study timetable by month
+        const conn = await pool.getConnection()
+        await conn.beginTransaction()
+
+        const result = await conn.query(`
+            SELECT registrar.subject_id, registrar.section_id, study_start,study_end, day, title_en, mid_exam, mid_start, mid_end, final_exam, final_start, final_end
+            FROM registrar
+            INNER JOIN section ON registrar.subject_id = section.subject_id AND registrar.section_id = section.section_id
+            INNER JOIN subject ON registrar.subject_id = subject.subject_id
+            WHERE student_id = ?
+            AND mid_exam BETWEEN ? AND ?
+            OR final_exam BETWEEN ? AND ?
+
+        `, [businessId, minDate, maxDate, minDate, maxDate])
+
+        conn.release()
+
+        // Format study timetable
+        const timetable = result[0]
+        const formattedTimetable = formatMonthTimetable(timetable, year, month)
+        res.send({timetable: formattedTimetable})
+
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again.'})
+    }
 })
 
 module.exports = router

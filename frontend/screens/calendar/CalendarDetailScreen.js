@@ -73,6 +73,23 @@ export default function CalendarDetailScreen({route, navigation}) {
         }
     }
 
+    const loadStudies = async (token, userId) => {
+        const payload = {
+            headers: {
+                'Schedu-Token': token,
+                'Schedu-UID': userId
+            }
+        }
+
+        try {
+            const timetableResult = await axios.get(`${API_SERVER_DOMAIN}/registrar/courses`, payload)
+            const timetable = timetableResult.data.timetable
+            return timetable
+        } catch (error) {
+            return []
+        }
+    }
+
     // Create empty date arrays for agenda
     const createAgendaTemplate = (year, month) => {
         const minDate = dayjs(`${year}-${month}-01`)
