@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, TextInput } from 'react-native'
 
-export default function UserData(props) {
+export default function Information(props) {
+
     const [topic, setTopic] = useState(props.topicData)
     const [data, setdata] = useState(props.data)
 

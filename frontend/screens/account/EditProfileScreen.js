@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 
-import { getAuthAsset } from '../../modules/auth'
+import { getAuthAsset, clearAuthAsset, checkExpiredToken } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 import axios from 'axios'
 
@@ -9,8 +9,8 @@ import axios from 'axios'
 import { text, shadow } from '../../styles'
 
 // import components
-import UserData from './components/UserData'
-export default function ProfileScreen({ route, navigation }) {
+import UserData from './components/Information'
+export default function ProfileScreen({ route, navigation, userData, onProfileUpdated }) {
     const updateDataHandler = data => {
         switch (data.topic) {
             case 'First name':
@@ -45,16 +45,20 @@ export default function ProfileScreen({ route, navigation }) {
         }
 
         try {
-            const user = await axios.put(`${API_SERVER_DOMAIN}/account/updateUser`, body, headers)
-            setUserData(user.data)
+            const userResult = await axios.put(`${API_SERVER_DOMAIN}/account/updateUser`, body, headers)
+            const updatedProfile = userResult.data.user
+            onProfileUpdated(updatedProfile)
+            alert('Your profile has been updated')
+            return navigation.navigate('Profile')
         } catch (error) {
-            console.log(error)
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
+            alert('Error occured during update')
         }
-        alert('Profile Updated')
-        navigation.navigate('AccountMenuScreen')
     }
 
-    const [userData, setUserData] = useState(route.params)
     const [newFirstName, setNewFirstName] = useState(userData.firstName)
     const [newLastName, setNewLastName] = useState(userData.lastName)
     const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel)
@@ -103,7 +107,6 @@ export default function ProfileScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-    // container styles
     container: {
         flex: 1,
         paddingTop: 32,
@@ -121,7 +124,6 @@ const styles = StyleSheet.create({
     dataBlock: {
         marginBottom: 32
     },
-    // image profile style
     profileImage: {
         width: 100,
         height: 100,

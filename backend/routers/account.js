@@ -43,11 +43,14 @@ router.post('/addUser', async (req, res) => {
 
 // Update user in mongoDB
 router.put('/updateUser', authMiddleware, async (req, res) => {
-    const id = req.body.id
-    const payload = req.body.newData
-    const user = await accountModel.findByIdAndUpdate(id, { $set: payload })
-    res.json(user)
-
+    try {
+        const id = req.body.id
+        const payload = req.body.newData
+        const updatedUser = await accountModel.findByIdAndUpdate(id, { $set: payload }, {new: true})
+        res.json({user: updatedUser})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
 })
 
 // Delete user in mongoDB

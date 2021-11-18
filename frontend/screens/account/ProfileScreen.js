@@ -1,15 +1,11 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, Image } from 'react-native'
 
-// style by tanssw.com
 import { shadow } from '../../styles'
 
-// import components
-import UserData from './components/UserData'
+import Information from './components/Information'
 
-export default function ProfileScreen({ route }) {
-    const [userData, setUserData] = useState(route.params)
-
+export default function ProfileScreen({ route, navigation, userData }) {
     return (
         <View style={styles.container}>
             <Image
@@ -21,18 +17,18 @@ export default function ProfileScreen({ route }) {
             <View style={[styles.userProfileContainer, shadow.boxTopMedium]}>
                 <View style={styles.dataBlock}>
                     <Text style={styles.userProfileMenu}>General</Text>
-                    <UserData
-                        topicData={'Name'}
+                    <Information
+                        topicData="Fullname"
                         data={userData.firstName + ' ' + userData.lastName}
                         edit={false}
                     />
-                    <UserData topicData={'Role'} data={userData.role} edit={false} />
+                    <Information topicData="Role" data={userData.role} edit={false} />
                 </View>
 
                 <View style={styles.dataBlock}>
                     <Text style={styles.userProfileMenu}>Contact</Text>
-                    <UserData topicData={'Email'} data={userData.contact.email} edit={false} />
-                    <UserData topicData={'Phone number'} data={userData.contact.tel} edit={false} />
+                    <Information topicData="Email" data={userData.contact.email} edit={false} />
+                    <Information topicData="Phone Number" data={userData.contact.tel} edit={false} />
                 </View>
             </View>
         </View>
@@ -40,7 +36,6 @@ export default function ProfileScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
-    // container styles
     container: {
         flex: 1,
         paddingTop: 32,
@@ -57,7 +52,6 @@ const styles = StyleSheet.create({
     dataBlock: {
         marginBottom: 20
     },
-    // image profile style
     profileImage: {
         width: 100,
         height: 100,

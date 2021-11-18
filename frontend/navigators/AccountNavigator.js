@@ -40,6 +40,9 @@ export default function AccountNavigator({ navigation }) {
         }
     }
 
+    const updateUserData = (newUserData) => {
+        setUserData(newUserData)
+    }
 
     return (
         <AccountStack.Navigator
@@ -51,19 +54,17 @@ export default function AccountNavigator({ navigation }) {
             </AccountStack.Screen>
             <AccountStack.Screen
                 name="Profile"
-                component={ProfileScreen}
                 options={{
                     headerRight: () => (
-                        <Button
-                            onPress={() => {
-                                navigation.navigate('EditProfile', userData)
-                            }}
-                            title="edit"
-                        />
+                        <Button onPress={() => {navigation.navigate('EditProfile', userData)}} title="Edit" color="white" />
                     )
                 }}
-            />
-            <AccountStack.Screen name="EditProfile" component={EditProfileScreen} />
+            >
+                {props => <ProfileScreen {...props} userData={userData} />}
+            </AccountStack.Screen>
+            <AccountStack.Screen name="EditProfile" options={{ headerTitle: 'Edit Profile' }}>
+                {props => <EditProfileScreen {...props} userData={userData} onProfileUpdated={updateUserData} />}
+            </AccountStack.Screen>
             <AccountStack.Screen name="Setting" component={SettingScreen} />
         </AccountStack.Navigator>
     )
