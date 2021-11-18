@@ -18,6 +18,7 @@ export default function CalendarOverviewScreen({navigation}) {
     const [myAppointmentsState, updateMyAppointmentsState] = useState([])
 
     useEffect(() => {
+        
         const unsubscribe = navigation.addListener('focus', async () => {
             const { myAppointments, requestAppointments } = await loadAppointments()
             const events = await loadEvents()

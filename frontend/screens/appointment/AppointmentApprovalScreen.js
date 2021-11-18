@@ -11,11 +11,8 @@ import {
 import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 import {
-    AUTH_TOKEN_KEY,
-    AUTH_USER_ID,
-    clearAuthAsset,
     getAuthAsset,
-    setAuthAsset
+    checkExpiredToken
 } from '../../modules/auth'
 import Time from '../appointment/components/TimeDisplay'
 
@@ -71,7 +68,7 @@ function AppointmentApprovalScreen({ props, route }) {
             appointmentId: objectId,
             data: data
         }
-        const config = { headers: { 'Schedu-Token': token } }
+        const config = { headers: { 'Schedu-Token': "test" } }
         try {
             navigation.navigate('CalendarOverview')
             const result = await axios.put(
@@ -80,8 +77,9 @@ function AppointmentApprovalScreen({ props, route }) {
                 config
             ).then()
         } catch (error) {
-            console.log('error for submit function')
-            console.error(error)
+            // alert("Please confirm your token isn't expired.")
+            // navigation.navigate('SignIn')
+            if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
     }
 
