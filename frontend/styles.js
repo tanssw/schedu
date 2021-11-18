@@ -6,6 +6,7 @@ const colorCode = {
     lighterBlue: '#4f89c4',
     grey: 'grey',
     lightGrey: '#888',
+    lighterGrey: '#aaa',
     yellow: '#ffaa54',
     orange: '#e35205',
     gold: '#b58d3d',

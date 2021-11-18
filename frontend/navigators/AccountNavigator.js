@@ -4,6 +4,7 @@ import axios from 'axios'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { getAuthAsset } from '../modules/auth'
+import { API_SERVER_DOMAIN } from '../modules/apis'
 
 import { headerDefaultOptions } from '../styles'
 
