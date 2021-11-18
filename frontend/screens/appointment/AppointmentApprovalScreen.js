@@ -68,18 +68,22 @@ function AppointmentApprovalScreen({ props, route }) {
             appointmentId: objectId,
             data: data
         }
-        const config = { headers: { 'Schedu-Token': "test" } }
+        const config = { headers: { 'Schedu-Token': token } }
         try {
             navigation.navigate('CalendarOverview')
             const result = await axios.put(
                 `http://localhost:3000/appointment/update/`,
                 payload,
                 config
-            ).then()
+            )
         } catch (error) {
-            // alert("Please confirm your token isn't expired.")
-            // navigation.navigate('SignIn')
-            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            console.log(error)
+            if(error.state.code == 403){
+                alert("Please confirm your token isn't expired.")
+                navigation.navigate('SignIn')
+            }
+            
+            // if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
     }
 

@@ -210,7 +210,6 @@ router.put('/update',authMiddleware,async(req,res) =>{
     }
     catch(error){
         console.error(error)
-        
     }
 
 })
