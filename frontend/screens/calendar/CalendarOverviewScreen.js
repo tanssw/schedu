@@ -23,7 +23,7 @@ export default function CalendarOverviewScreen({navigation}) {
 
             const { myAppointments, requestAppointments } = await loadAppointments(token, userId)
             const events = await loadEvents()
-            const studyTimetable = await loadStudyTimetable(token, userId)
+            const studies = await loadStudies(token, userId)
 
             updateMyAppointmentsState(myAppointments)
             updateRequestAppointmentsState(requestAppointments)
@@ -31,8 +31,8 @@ export default function CalendarOverviewScreen({navigation}) {
             // Update all appointments for calendar
             const appointmentDateMarks = buildAppointmentDateMarks(myAppointments)
             const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
-            const studyDateMarks = buildStudyTimetableDateMarks(studyTimetable, eventDateMarks)
-            updateMarkedDatesState(eventDateMarks)
+            const examDateMarks = buildExamDateMarks(studies, eventDateMarks)
+            updateMarkedDatesState(examDateMarks)
         })
         return unsubscribe
     })
@@ -86,7 +86,7 @@ export default function CalendarOverviewScreen({navigation}) {
         }
     }
 
-    const loadStudyTimetable = async (token, userId) => {
+    const loadStudies = async (token, userId) => {
         const payload = {
             headers: {
                 'Schedu-Token': token,
@@ -125,13 +125,19 @@ export default function CalendarOverviewScreen({navigation}) {
     }
 
     // To build an study timetable object of MarkedDte to show in Calendar
-    const buildStudyTimetableDateMarks = (courses, object={}) => {
+    const buildExamDateMarks = (courses, object={}) => {
         courses.forEach(course => {
-            console.log(course)
-            // if (!course.date) return
-            // let date = dayjs(course.date).format('YYYY-MM-DD')
-            // let included = Object.keys(object).includes(date)
-            // if (!included) object[date] = {marked: true, dotColor: colorCode.grey}
+            let date, included
+            if (course.midterm.date) {
+                date = dayjs(course.midterm.date).format('YYYY-MM-DD')
+                included = Object.keys(object).includes(date)
+                if (!included) object[date] = {marked: true, dotColor: colorCode.orange}
+            }
+            if (course.final.date) {
+                date = dayjs(course.final.date).format('YYYY-MM-DD')
+                included = Object.keys(object).includes(date)
+                if (!included) object[date] = {marked: true, dotColor: colorCode.orange}
+            }
         })
         return object
     }
