@@ -175,7 +175,7 @@ router.post('/', authMiddleware, async (req, res) => {
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
 })
-router.put('/update/', async(req,res) =>{
+router.put('/update',authMiddleware,async(req,res) =>{
     const payload = req.body
 
      // Mapping business_id of participants to an Object with some logic keys
@@ -204,13 +204,13 @@ router.put('/update/', async(req,res) =>{
 
 
     try{
-        console.log("Test from appointment put")
-        console.log(payload.appointmentId)
         const appointmentUpdate = await appointmentModel.findByIdAndUpdate(payload.appointmentId, {$set : data })
+        res.status(200).send()
 
     }
     catch(error){
         console.error(error)
+        
     }
 
 })

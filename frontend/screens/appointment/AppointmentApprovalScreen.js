@@ -24,8 +24,7 @@ import axios from 'axios'
 import { background, text, shadow, colorCode } from '../../styles'
 import { useNavigation } from '@react-navigation/native'
 
-
-function AppointmentApprovalScreen({ props,route }) {
+function AppointmentApprovalScreen({ props, route }) {
     const { data } = route.params
     const navigation = useNavigation()
 
@@ -46,9 +45,7 @@ function AppointmentApprovalScreen({ props,route }) {
             }
         }
         const peoples = await axios.get(
-            `http://localhost:3000/account/`,
-            { params: { id: uid } },
-            payload
+            `http://localhost:3000/account/${uid.userId}`, payload
         )
         setParticipants(peoples)
     }
@@ -74,11 +71,16 @@ function AppointmentApprovalScreen({ props,route }) {
             appointmentId: objectId,
             data: data
         }
+        const config = { headers: { 'Schedu-Token': token } }
         try {
             navigation.navigate('CalendarOverview')
-            const result = await axios.put(`http://localhost:3000/appointment/update`, payload)
-            
+            const result = await axios.put(
+                `http://localhost:3000/appointment/update/`,
+                payload,
+                config
+            ).then()
         } catch (error) {
+            console.log('error for submit function')
             console.error(error)
         }
     }
@@ -94,7 +96,7 @@ function AppointmentApprovalScreen({ props,route }) {
         submit(join, data._id)
     }
 
-    useEffect(async() => {
+    useEffect(async () => {
         try {
             for (let index = 0; index < data.participants.length; index++) {
                 const uid = data.participants[index]
@@ -106,20 +108,18 @@ function AppointmentApprovalScreen({ props,route }) {
         }
     }, [])
 
-
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item }) => {
         return (
-         
-                <View style={styles.profile}>
-                    <FontAwesome
-                        name="user-circle-o"
-                        size={44}
-                        color="grey"
-                        style={styles.personImage}
-                    />
-                    <Text style={styles.personName}>{item.firstName}</Text>
-                </View>
+            <View style={styles.profile}>
+                <FontAwesome
+                    name="user-circle-o"
+                    size={44}
+                    color="grey"
+                    style={styles.personImage}
+                />
+                <Text style={styles.personName}>{item.firstName}</Text>
+            </View>
         )
     }
     //TODO: time display startAt and endAt from appointment
@@ -131,7 +131,6 @@ function AppointmentApprovalScreen({ props,route }) {
                     {/* Subject Input */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Subject</Text>
-                        {/* <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/> */}
                         <Text style={styles.topic}>{data.subject}</Text>
                     </View>
                     {/* Participant Input */}
@@ -181,7 +180,7 @@ function AppointmentApprovalScreen({ props,route }) {
     )
 }
 
-export default (AppointmentApprovalScreen)
+export default AppointmentApprovalScreen
 
 const styles = StyleSheet.create({
     container: {

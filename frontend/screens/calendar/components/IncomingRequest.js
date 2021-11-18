@@ -42,7 +42,6 @@ export default function IncomingRequest(props) {
 
     const requestList = (
         <View>
-            {/* {props.appointments.map(request => renderRequest(request))} */}
             {props.appointments.map(request => renderRequest(request))}
         </View>
     )
