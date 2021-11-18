@@ -13,6 +13,7 @@ const { getUserByObjectId } = require('../helpers/account')
 const { initAppointmentStatus, formatAppointmentsBasic } = require('../helpers/appointment')
 const { getUserIdFromToken } = require('../helpers/auth')
 const { authMiddleware } = require('../middlewares/auth')
+const { getDateRange } = require('../helpers/date')
 
 const router = express()
 
@@ -53,9 +54,7 @@ router.get('/:year/:month', authMiddleware, async(req, res) => {
         const userId = req.headers['schedu-uid']
 
         const { year, month } = req.params
-        const minDate = dayjs(`${year}-${month}-01`)
-        const lastDate = minDate.daysInMonth()
-        const maxDate = dayjs(`${year}-${month}-${lastDate}`).add(1, 'days')
+        const { minDate, maxDate } = getDateRange(year, month)
 
         // Find all appointments that user associated to.
         let appointments = await appointmentModel.find({

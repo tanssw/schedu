@@ -19,22 +19,25 @@ export default function CalendarOverviewScreen({navigation}) {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', async () => {
-            const { myAppointments, requestAppointments } = await loadAppointments()
+            const { token, userId } = await getAuthAsset()
+
+            const { myAppointments, requestAppointments } = await loadAppointments(token, userId)
             const events = await loadEvents()
+            const studies = await loadStudies(token, userId)
 
             updateMyAppointmentsState(myAppointments)
             updateRequestAppointmentsState(requestAppointments)
 
             // Update all appointments for calendar
             const appointmentDateMarks = buildAppointmentDateMarks(myAppointments)
-            const allDateMarks = buildEventDateMarks(events, appointmentDateMarks)
-            updateMarkedDatesState(allDateMarks)
+            const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
+            const examDateMarks = buildExamDateMarks(studies, eventDateMarks)
+            updateMarkedDatesState(examDateMarks)
         })
         return unsubscribe
     })
 
-    const loadAppointments = async () => {
-        const { token, userId } = await getAuthAsset()
+    const loadAppointments = async (token, userId) => {
 
         // Request my appointments from server
         const payload = {
@@ -53,7 +56,7 @@ export default function CalendarOverviewScreen({navigation}) {
                 const canShow = shownStatus.includes(appointment.status)
                 const meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
                 const meAsSender = appointment.sender.userId === userId
-                return canShow || meAsSender || meConfirmed.length
+                return canShow && (meAsSender || meConfirmed.length)
             })
 
             // Update incoming request appointments
@@ -68,7 +71,8 @@ export default function CalendarOverviewScreen({navigation}) {
             return { myAppointments, requestAppointments }
 
         } catch (error) {
-            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            if (checkExpiredToken(error)) return navigation.navigate('SignIn')
+            return []
         }
     }
 
@@ -78,7 +82,24 @@ export default function CalendarOverviewScreen({navigation}) {
             const events = eventResult.data.events
             return events
         } catch (error) {
+            return []
+        }
+    }
 
+    const loadStudies = async (token, userId) => {
+        const payload = {
+            headers: {
+                'Schedu-Token': token,
+                'Schedu-UID': userId
+            }
+        }
+
+        try {
+            const timetableResult = await axios.get(`${API_SERVER_DOMAIN}/registrar/courses`, payload)
+            const timetable = timetableResult.data.timetable
+            return timetable
+        } catch (error) {
+            return []
         }
     }
 
@@ -92,12 +113,31 @@ export default function CalendarOverviewScreen({navigation}) {
         return object
     }
 
-    // To build an event object of MarrkedDte to show in Calendar
+    // To build an event object of MarkedDate to show in Calendar
     const buildEventDateMarks = (events, object={}) => {
         events.forEach(event => {
+            if (!event.date) return
             let date = dayjs(event.date).format('YYYY-MM-DD')
             let included = Object.keys(object).includes(date)
             if (!included) object[date] = {marked: true, dotColor: colorCode.grey}
+        })
+        return object
+    }
+
+    // To build an study timetable object of MarkedDte to show in Calendar
+    const buildExamDateMarks = (courses, object={}) => {
+        courses.forEach(course => {
+            let date, included
+            if (course.midterm.date) {
+                date = dayjs(course.midterm.date).format('YYYY-MM-DD')
+                included = Object.keys(object).includes(date)
+                if (!included) object[date] = {marked: true, dotColor: colorCode.orange}
+            }
+            if (course.final.date) {
+                date = dayjs(course.final.date).format('YYYY-MM-DD')
+                included = Object.keys(object).includes(date)
+                if (!included) object[date] = {marked: true, dotColor: colorCode.orange}
+            }
         })
         return object
     }
