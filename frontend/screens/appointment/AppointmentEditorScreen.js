@@ -35,7 +35,7 @@ export default function AppointmentEditorScreen({ route, navigation }) {
             endAt: formattedEnd,
             commMethod: data.commMethod,
             commUrl: data.commUrl,
-            note: data.note
+            note: data.note,
         }
 
         try {

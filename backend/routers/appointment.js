@@ -173,7 +173,43 @@ router.post('/', authMiddleware, async (req, res) => {
         console.log(error)
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
+})
+router.put('/update',authMiddleware,async(req,res) =>{
+    const payload = req.body
+
+     // Mapping business_id of participants to an Object with some logic keys
+     let participants = payload.data.participants.map(participant => {
+         if(payload.uid === participant.userId){
+            return {userId: participant.userId, main: participant.main, confirmed: participant.confirmed, join: payload.join}
+         }
+         else{
+            return participant
+         }
+        
+    })
+
+    // Structuring payload data before saving into the database
+    const data = {
+        subject: payload.data.subject,
+        status: initAppointmentStatus(),
+        sender: payload.data.sender.userId,
+        participants: participants,
+        startAt: payload.data.startAt,
+        endAt: payload.data.endAt,
+        commMethod: payload.data.commMethod,
+        commUrl: payload.data.commUrl,
+        note: payload.note
+    }
+
+
+    try{
+        const appointmentUpdate = await appointmentModel.findByIdAndUpdate(payload.appointmentId, {$set : data })
+        res.status(200).send()
+
+    }
+    catch(error){
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
 
 })
-
 module.exports = router
