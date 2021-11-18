@@ -3,7 +3,8 @@ import { Button } from 'react-native'
 import axios from 'axios'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { getAuthAsset } from '../modules/auth'
+import { clearAuthAsset, getAuthAsset } from '../modules/auth'
+import { API_SERVER_DOMAIN } from '../modules/apis'
 
 import { headerDefaultOptions } from '../styles'
 
@@ -15,6 +16,9 @@ import SettingScreen from '../screens/account/SettingScreen'
 const AccountStack = createNativeStackNavigator()
 
 export default function AccountNavigator({ navigation }) {
+
+    const [userData, setUserData] = useState({})
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getUser()
@@ -31,39 +35,39 @@ export default function AccountNavigator({ navigation }) {
             const user = await axios.get(`${API_SERVER_DOMAIN}/account/${userId}`, payload)
             setUserData(user.data.user)
         } catch (error) {
-            // Clear stored token in Secure Store
-            console.log(error)
+            await clearAuthAsset()
+            navigation.navigate('SignIn')
         }
     }
 
-    const [userData, setUserData] = useState({})
+    const updateUserData = (newUserData) => {
+        setUserData(newUserData)
+    }
 
     return (
         <AccountStack.Navigator
             initialRouteName="AccountMenuScreen"
             screenOptions={headerDefaultOptions}
         >
-            <AccountStack.Screen
-                name="AccountMenuScreen"
-                component={AccountMenuScreen}
-                options={{ headerTitle: 'Account' }}
-            />
+            <AccountStack.Screen name="AccountMenuScreen" options={{ headerTitle: 'Account' }}>
+                {props => <AccountMenuScreen {...props} userData={userData} />}
+            </AccountStack.Screen>
             <AccountStack.Screen
                 name="Profile"
-                component={ProfileScreen}
                 options={{
                     headerRight: () => (
-                        <Button
-                            onPress={() => {
-                                navigation.navigate('EditProfile', userData)
-                            }}
-                            title="edit"
-                        />
+                        <Button onPress={() => {navigation.navigate('EditProfile', userData)}} title="Edit" color="white" />
                     )
                 }}
-            />
-            <AccountStack.Screen name="EditProfile" component={EditProfileScreen} />
-            <AccountStack.Screen name="Setting" component={SettingScreen} />
+            >
+                {props => <ProfileScreen {...props} userData={userData} />}
+            </AccountStack.Screen>
+            <AccountStack.Screen name="EditProfile" options={{ headerTitle: 'Edit Profile' }}>
+                {props => <EditProfileScreen {...props} userData={userData} onProfileUpdated={updateUserData} />}
+            </AccountStack.Screen>
+            <AccountStack.Screen name="Setting">
+                {props => <SettingScreen {...props} setting={userData.setting} onSettingUpdated={updateUserData} />}
+            </AccountStack.Screen>
         </AccountStack.Navigator>
     )
 }

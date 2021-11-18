@@ -3,7 +3,7 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 import axios from 'axios'
 
 import { API_SERVER_DOMAIN } from '../../modules/apis'
-import { getAuthAsset } from '../../modules/auth'
+import { clearAuthAsset, getAuthAsset } from '../../modules/auth'
 
 import TimeSelector from './components/TimeSelector'
 import AppointmentDetail from './components/AppointmentDetail'
@@ -44,7 +44,10 @@ export default function AppointmentEditorScreen({ route, navigation }) {
             detailComponent.current.resetChildState()
             navigation.navigate('ContactProfile', { contactId: contactId })
         } catch (error) {
-            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
         }
     }
 

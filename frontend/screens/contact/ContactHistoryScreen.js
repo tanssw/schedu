@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import axios from 'axios'
 
-import { getAuthAsset, checkExpiredToken } from '../../modules/auth'
+import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
 
 export default function ContactHistoryScreen({ route, navigation }) {
     const [participants, updateParticipants] = useState([])
@@ -21,7 +21,10 @@ export default function ContactHistoryScreen({ route, navigation }) {
             const historyLog = await axios.get(`http://localhost:3000/appointment/`, { params: { id: userId } }, payload)
             updateParticipants(historyLog.data)
         } catch (error) {
-            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
         }
     }
     useEffect(() => {

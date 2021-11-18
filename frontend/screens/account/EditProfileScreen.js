@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 
-import { getAuthAsset } from '../../modules/auth'
+import { getAuthAsset, clearAuthAsset, checkExpiredToken } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 import axios from 'axios'
 
 // style by tanssw.com
-import { text, shadow } from '../../styles'
+import { text, shadow, colorCode } from '../../styles'
 
 // import components
-import UserData from './components/UserData'
-export default function ProfileScreen({ route, navigation }) {
+import Information from './components/Information'
+export default function ProfileScreen({ route, navigation, userData, onProfileUpdated }) {
+
     const updateDataHandler = data => {
         switch (data.topic) {
             case 'First name':
@@ -45,39 +46,41 @@ export default function ProfileScreen({ route, navigation }) {
         }
 
         try {
-            const user = await axios.put(`${API_SERVER_DOMAIN}/account/updateUser`, body, headers)
-            setUserData(user.data)
+            const userResult = await axios.put(`${API_SERVER_DOMAIN}/account/`, body, headers)
+            const updatedProfile = userResult.data.user
+            onProfileUpdated(updatedProfile)
+            alert('Your profile has been updated')
+            return navigation.navigate('Profile')
         } catch (error) {
-            console.log(error)
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
+            alert('Error occured during update')
         }
-        alert('Profile Updated')
-        navigation.navigate('AccountMenuScreen')
     }
 
-    const [userData, setUserData] = useState(route.params)
     const [newFirstName, setNewFirstName] = useState(userData.firstName)
     const [newLastName, setNewLastName] = useState(userData.lastName)
     const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel)
 
     return (
         <View style={styles.container}>
-            <Image
-                style={styles.profileImage}
-                source={{
-                    url: userData.image
-                }}
-            />
+            <View style={styles.imageContainer}>
+                <Image style={styles.profileImage} source={{ url: userData.image }} />
+            </View>
             <View style={[styles.editProfileContainer, shadow.boxTopMedium]}>
                 <View>
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>General</Text>
-                        <UserData
+                        <Information
                             topicData={'First name'}
                             data={newFirstName}
                             edit={true}
                             update={updateDataHandler}
+                            style={styles.topSection}
                         />
-                        <UserData
+                        <Information
                             topicData={'Last name'}
                             data={newLastName}
                             edit={true}
@@ -86,33 +89,38 @@ export default function ProfileScreen({ route, navigation }) {
                     </View>
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>Contact</Text>
-                        <UserData
+                        <Information
                             topicData={'Phone number'}
                             data={newPhoneNumber}
                             edit={true}
                             update={updateDataHandler}
+                            style={styles.topSection}
                         />
                     </View>
                 </View>
-                <TouchableOpacity style={[styles.updateBtn]} onPress={update}>
-                    <Text style={(text.blue, styles.updateBtnText)}>Update Profile</Text>
-                </TouchableOpacity>
+                <View style={styles.updateBtnContainer}>
+                    <TouchableOpacity style={[styles.updateBtn]} onPress={update}>
+                        <Text style={(text.blue, styles.updateBtnText)}>Update Profile</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    // container styles
     container: {
         flex: 1,
-        paddingTop: 32,
+        alignItems: 'center'
+    },
+    imageContainer: {
+        padding: 16,
+        marginVertical: 24,
         alignItems: 'center'
     },
     editProfileContainer: {
         flex: 1,
         width: '100%',
-        padding: 32,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
         backgroundColor: 'white',
@@ -121,26 +129,37 @@ const styles = StyleSheet.create({
     dataBlock: {
         marginBottom: 32
     },
-    // image profile style
     profileImage: {
         width: 100,
         height: 100,
-        marginBottom: 32,
-        borderRadius: 360
+        borderRadius: 512
     },
     userProfileMenu: {
         fontWeight: 'bold',
-        color: '#000'
+        color: colorCode.blue,
+        fontSize: 16,
+        paddingHorizontal: 24,
+        marginTop: 32,
+        marginBottom: 12
+    },
+    updateBtnContainer: {
+        padding: 24
     },
     updateBtn: {
         width: '100%',
         padding: 16,
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#001e6a',
+        borderColor: colorCode.blue,
         alignItems: 'center'
     },
     updateBtnText: {
-        fontWeight: 'bold'
+        fontWeight: '300',
+        fontSize: 16,
+        color: colorCode.blue
+    },
+    topSection: {
+        borderTopWidth: 0.75,
+        borderTopColor: colorCode.lighterGrey
     }
 })
