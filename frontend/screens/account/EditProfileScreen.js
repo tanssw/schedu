@@ -66,12 +66,9 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
 
     return (
         <View style={styles.container}>
-            <Image
-                style={styles.profileImage}
-                source={{
-                    url: userData.image
-                }}
-            />
+            <View style={styles.imageContainer}>
+                <Image style={styles.profileImage} source={{ url: userData.image }} />
+            </View>
             <View style={[styles.editProfileContainer, shadow.boxTopMedium]}>
                 <View>
                     <View style={styles.dataBlock}>
@@ -114,7 +111,11 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 32,
+        alignItems: 'center'
+    },
+    imageContainer: {
+        padding: 16,
+        marginVertical: 24,
         alignItems: 'center'
     },
     editProfileContainer: {
@@ -131,8 +132,7 @@ const styles = StyleSheet.create({
     profileImage: {
         width: 100,
         height: 100,
-        marginBottom: 32,
-        borderRadius: 360
+        borderRadius: 512
     },
     userProfileMenu: {
         fontWeight: 'bold',
