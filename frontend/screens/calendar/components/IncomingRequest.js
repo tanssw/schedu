@@ -10,13 +10,6 @@ export default function IncomingRequest(props) {
 
     const navigation = useNavigation()
 
-    const [requests, updateRequests] = useState([
-        {id: 1, from: 'Tasanai Srisawat', date: '2021-10-08', start: '01:00 PM', end: '01:45 PM'},
-        {id: 2, from: 'Tasanai Srisawat', date: '2021-10-08', start: '01:00 PM', end: '01:45 PM'},
-        {id: 3, from: 'Tasanai Srisawat', date: '2021-10-08', start: '01:00 PM', end: '01:45 PM'},
-        {id: 4, from: 'Tasanai Srisawat', date: '2021-10-08', start: '01:00 PM', end: '01:45 PM'},
-    ])
-
     const renderRequest = (request) => {
         return (
             <TouchableOpacity key={request._id} style={styles.requestItem} onPress={() => {
@@ -26,7 +19,7 @@ export default function IncomingRequest(props) {
                 <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} />
                 <View style={styles.requestBody}>
                     <View style={styles.requestTitle}>
-                        <Text>{request.subject}</Text>
+                        <Text numberOfLines={1} style={styles.requestTitleText}>{request.subject}</Text>
                         <Text style={text.bold}>{dayjs(request.startAt).format('DD MMM YYYY')}</Text>
                     </View>
                     <View style={styles.requestDesc}>
@@ -97,6 +90,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginVertical: 4
+    },
+    requestTitleText: {
+        flex: 1,
+        marginRight: 8
     },
     requestDesc: {
         display: 'flex',

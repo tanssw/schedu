@@ -18,46 +18,51 @@ export default function CalendarOverviewScreen({navigation}) {
     const [myAppointmentsState, updateMyAppointmentsState] = useState([])
 
     useEffect(() => {
-        
+
         const unsubscribe = navigation.addListener('focus', async () => {
-            const { token, userId } = await getAuthAsset()
+            try {
+                const { token, userId } = await getAuthAsset()
 
-            const { myAppointments, requestAppointments } = await loadAppointments(token, userId)
-            const events = await loadEvents()
-            const studies = await loadStudies(token, userId)
+                const { myAppointments, requestAppointments } = await loadAppointments(token, userId)
+                const events = await loadEvents()
+                const studies = await loadStudies(token, userId)
 
-            updateMyAppointmentsState(myAppointments)
-            updateRequestAppointmentsState(requestAppointments)
+                updateMyAppointmentsState(myAppointments)
+                updateRequestAppointmentsState(requestAppointments)
 
-            // Update all appointments for calendar
-            const appointmentDateMarks = buildAppointmentDateMarks(myAppointments)
-            const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
-            const examDateMarks = buildExamDateMarks(studies, eventDateMarks)
-            updateMarkedDatesState(examDateMarks)
+                // Update all appointments for calendar
+                const appointmentDateMarks = buildAppointmentDateMarks(myAppointments)
+                const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
+                const examDateMarks = buildExamDateMarks(studies, eventDateMarks)
+                updateMarkedDatesState(examDateMarks)
+            } catch (error) {
+
+            }
         })
         return unsubscribe
     })
 
     const loadAppointments = async (token, userId) => {
 
-        // Request my appointments from server
-        const payload = {
-            headers: {
-                'Schedu-Token': token,
-                'Schedu-UID': userId
-            }
-        }
         try {
+            // Request my appointments from server
+            const payload = {
+                headers: {
+                    'Schedu-Token': token,
+                    'Schedu-UID': userId
+                }
+            }
+
             const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
             const appointments = appointmentResult.data.appointments
 
             // Update my appointments
-            const shownStatus = ['ongoing']
+            const ignoredStatus = ['abandoned', 'done']
             let myAppointments = appointments.filter(appointment => {
-                const canShow = shownStatus.includes(appointment.status)
-                const meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
+                const canShow = !ignoredStatus.includes(appointment.status)
+                const meConfirmedAndJoin = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed && participant.join)
                 const meAsSender = appointment.sender.userId === userId
-                return canShow && (meAsSender || meConfirmed.length)
+                return canShow && (meAsSender || (meConfirmedAndJoin.length))
             })
 
             // Update incoming request appointments
@@ -103,6 +108,10 @@ export default function CalendarOverviewScreen({navigation}) {
             const timetable = timetableResult.data.timetable
             return timetable
         } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
             return []
         }
     }
