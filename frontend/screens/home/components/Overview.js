@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
         borderColor: 'lightgrey',
         padding: 12,
         flex: 0.45,
+        justifyContent: 'space-between'
     },
     titleLine: {
         flexDirection: 'row',
