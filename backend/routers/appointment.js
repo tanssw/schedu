@@ -174,42 +174,43 @@ router.post('/', authMiddleware, async (req, res) => {
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
 })
-router.put('/update', authMiddleware, async (req,res) => {
-    const payload = req.body
 
-     // Mapping business_id of participants to an Object with some logic keys
-     let participants = payload.data.participants.map(participant => {
-         if(payload.uid === participant.userId){
-            return {userId: participant.userId, main: participant.main, confirmed: participant.confirmed, join: payload.join}
-         }
-         else{
-            return participant
-         }
+// Update Accept/Decline Appointment Approval
+router.put('/', authMiddleware, async (req,res) => {
 
-    })
+    try {
 
-    // Structuring payload data before saving into the database
-    const data = {
-        subject: payload.data.subject,
-        status: initAppointmentStatus(),
-        sender: payload.data.sender.userId,
-        participants: participants,
-        startAt: payload.data.startAt,
-        endAt: payload.data.endAt,
-        commMethod: payload.data.commMethod,
-        commUrl: payload.data.commUrl,
-        note: payload.note
-    }
+        const { join, userId, appointmentId, appointmentData } = req.body
 
+        // Mapping business_id of participants to an Object with some logic keys
+        let participants = appointmentData.participants.map(participant => {
+            if (userId === participant.userId){
+               return {userId: userId, main: participant.main, confirmed: true, join: join}
+            } else {
+               return participant
+            }
+        })
 
-    try{
-        const appointmentUpdate = await appointmentModel.findByIdAndUpdate(payload.appointmentId, {$set : data })
-        res.status(200).send()
+        // Structuring payload data before saving into the database
+        const data = {
+            subject: appointmentData.subject,
+            status: appointmentData.status,
+            sender: appointmentData.sender.userId,
+            participants: participants,
+            startAt: appointmentData.startAt,
+            endAt: appointmentData.endAt,
+            commMethod: appointmentData.commMethod,
+            commUrl: appointmentData.commUrl,
+            note: appointmentData.note
+        }
 
-    }
-    catch(error){
+        const updatedAppointment = await appointmentModel.findByIdAndUpdate(appointmentId, {$set: data})
+        res.json({message: `Successfully updated appointment with id: ${updatedAppointment._id}`})
+
+    } catch(error){
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 
 })
+
 module.exports = router

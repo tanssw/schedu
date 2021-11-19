@@ -64,15 +64,15 @@ export default function AppointmentApprovalScreen({ props, route }) {
         try {
             const { token, userId } = await getAuthAsset()
             const payload = {
-                uid: userId,
+                userId: userId,
                 join: status,
                 appointmentId: objectId,
-                data: data
+                appointmentData: data
             }
             const config = {
                 headers: { 'Schedu-Token': token }
             }
-            await axios.put(`http://localhost:3000/appointment/update/`, payload, config)
+            await axios.put(`http://localhost:3000/appointment/`, payload, config)
             navigation.navigate('CalendarOverview')
         } catch (error) {
             if (checkExpiredToken(error)) {
