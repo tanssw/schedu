@@ -15,7 +15,6 @@ export default function ContactListScreen({ navigation }) {
 
     const [contacts, updateContacts] = useState([])
 
-    const [headerText, updateHeaderText] = useState('Contact')
     const [search, updateSearch] = useState('')
     const [toggleSuggest, updateToggleSuggest] = useState(0)
     const [toggleQuery, updateToggleQuery] = useState(0)
@@ -95,7 +94,7 @@ export default function ContactListScreen({ navigation }) {
                 <View style={styles.innerContainer}>
                     {suggestDisplay()}
                     {toggleQuery ? null : <QueryBar onSelect={getContactUsers} />}
-                    <ContactTab contacts={contacts} headerText={headerText} />
+                    <ContactTab contacts={contacts} headerText="Contact" />
                 </View>
             </ScrollView>
         </View>
