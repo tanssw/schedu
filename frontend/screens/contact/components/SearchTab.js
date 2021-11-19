@@ -1,21 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView } from 'react-native'
-import { background, colorCode } from '../../../styles'
-import { useNavigation } from '@react-navigation/native'
+import React from 'react'
+import { StyleSheet, View, TextInput} from 'react-native'
+import { colorCode } from '../../../styles'
 
-import { AntDesign, MaterialIcons } from '@expo/vector-icons'
 
 export default function SearchTab(props) {
-
-    const navigation = useNavigation()
-
-    const navigateToHistory = () => {
-        navigation.navigate('ContactHistory')
-    }
-
-    const navigateToFavorite = () => {
-        navigation.navigate('ContactFavorite')
-    }
 
     return (
         <View style={styles.container}>
@@ -27,12 +15,6 @@ export default function SearchTab(props) {
                 multiline={false}
                 onSubmitEditing={props.find}
             />
-            <TouchableOpacity onPress={() => {navigateToHistory()}}>
-                <MaterialIcons name="history" size={28} color="white" style={styles.history} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {navigateToFavorite()}}>
-                <AntDesign name="staro" size={24} color="white" style={styles.favorite} />
-            </TouchableOpacity>
         </View>
     )
 }
@@ -50,11 +32,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingHorizontal: 8,
         borderRadius: 4,
-        marginRight: 24
     },
     history: {
-        marginRight: 24
-    },
-    favorite: {
+        marginLeft: 16
     }
 })

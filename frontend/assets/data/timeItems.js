@@ -1,5 +1,5 @@
-const hourItems = [
-    { label: '00', value: 'oo' },
+var hourItems = [
+    { label: '00', value: '00' },
     { label: '01', value: '01' },
     { label: '02', value: '02' },
     { label: '03', value: '03' },
@@ -25,7 +25,7 @@ const hourItems = [
     { label: '23', value: '23' }
 ]
 
-const minuteItems = [
+var minuteItems = [
     { label: '00', value: '00' },
     { label: '05', value: '05' },
     { label: '10', value: '10' },
@@ -40,7 +40,19 @@ const minuteItems = [
     { label: '55', value: '55' }
 ]
 
-export { hourItems, minuteItems }
+const filterHour = (start, stop, isShift) => {
+    const hour = hourItems.filter((item) => item.label >= start && item.label <= stop)
+    if (isShift) hour.shift()
+    return hour
+}
+
+const filterMinute = (start, stop, isShift) => {
+    const minute = minuteItems.filter((item) => item.label >= Math.min(start, stop) && item.label <= Math.max(start, stop))
+    if (isShift) minute.shift()
+    return minute
+}
+
+export { hourItems, minuteItems, filterHour, filterMinute }
 
 // export default timeItems = [
 //     { label: '00:00', value: '00:00' },

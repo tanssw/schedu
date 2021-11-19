@@ -21,15 +21,12 @@ function AppointmentDetail(props, ref) {
     const [note, setNote] = useState()
     const [join, setJoin] = useState(false)
 
-    const [participants, setParticipants] = useState([
-        {
-            _id: '618b4d47a996fac981059a6f',
-            business_id: '62070184',
-            firstname: 'Loukhin',
-            lastname: 'Dotcom',
-            join: true
-        }
-    ])
+    // validate state
+    const [isEmptySubject, setIsEmptySubject] = useState(true)
+    const [isEmptyCommMethod, setIsEmptyCommMethod] = useState(true)
+    const [isEmptyCommUrl, setIsEmptyCommUrl] = useState(true)
+
+    const [participants, setParticipants] = useState([])
 
     useImperativeHandle(
         ref,
@@ -51,14 +48,18 @@ function AppointmentDetail(props, ref) {
 
     // FUNCTION: to structure appointment data
     const createAppointment = () => {
-        const data = {
-            subject: subject,
-            participants: participants.map(participant => participant._id),
-            commMethod: commMethod ? commMethod.value : undefined,
-            commUrl: commUrl,
-            note: note,
+        if (subject) {
+            const data = {
+                subject: subject,
+                participants: participants.map(participant => participant._id),
+                commMethod: commMethod ? commMethod.value : undefined,
+                commUrl: commUrl,
+                note: note
+            }
+            props.onCreateAppointment(data)
+        } else {
+            if (isEmptySubject) alert('Please enter Subject!')
         }
-        props.onCreateAppointment(data)
     }
 
     // FUNCTION: to render the participant into a Flatlist
@@ -118,7 +119,7 @@ function AppointmentDetail(props, ref) {
                     ]}
                     title="Communication Methods"
                     placeholder="Choose method ..."
-                    isNullable={true}
+                    isNullable={false}
                     style={styles.picker}
                 />
                 <TextInput
