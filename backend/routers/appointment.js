@@ -178,10 +178,32 @@ router.post('/', authMiddleware, async (req, res) => {
         const result = await appointment.save()
         res.json({message: `Successfully create new appointment (ID: ${result._id})`})
     } catch (error) {
-        console.log(error)
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
 })
+
+// Get users that client recently contacted with
+router.get('/recently', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.headers['schedu-uid']
+        const appointments = await appointmentModel.find({sender: userId})
+
+        // Get array of contacted receivers
+        const receiverArray = appointments.map(appointment => {
+            const receiver = appointment.participants.find(participant => participant.main)
+            return receiver.userId
+        })
+
+        // Get only 1 per user ID
+        const receivers = Array.from(new Set(receiverArray))
+
+        res.json({result: receivers})
+
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
+})
+
 
 // Update Accept/Decline Appointment Approval
 router.put('/', authMiddleware, async (req,res) => {
