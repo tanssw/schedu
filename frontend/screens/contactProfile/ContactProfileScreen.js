@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native'
 import axios from 'axios'
 
-import { getAuthAsset } from '../../modules/auth'
+import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import { shadow } from '../../styles'
@@ -25,18 +25,25 @@ export default function ContactProfileScreen({ route, navigation }) {
     }, [])
 
     const getUserProfile = async () => {
-        const { token } = await getAuthAsset()
-        const payload = {
-            headers: {
-                'Schedu-Token': token
+        try {
+            const { token } = await getAuthAsset()
+            const payload = {
+                headers: {
+                    'Schedu-Token': token
+                }
+            }
+            const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/${contactId}`, payload)
+            const user = userResult.data.user
+            updateProfileState(user)
+            updateEmailState(user.contact.email)
+            updatePhoneState(user.contact.tel)
+            updateActiveTimeState(user.setting.activeTime)
+        } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                navigation.navigate('SignIn')
             }
         }
-        const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/${contactId}`, payload)
-        const user = userResult.data.user
-        updateProfileState(user)
-        updateEmailState(user.contact.email)
-        updatePhoneState(user.contact.tel)
-        updateActiveTimeState(user.setting.activeTime)
     }
 
     const navigateToAppointmentCreator = (selectedDate) => {
