@@ -28,14 +28,10 @@ app.use(express.json())
 app.use("/auth", auth)
 app.use("/appointment", appointment)
 app.use("/account", account)
+app.use("/event", event)
+app.use("/registrar", registrar)
 
 // Inactive Routers
-app.use("/student", student)
-app.use("/subject", subject)
-app.use("/teacher", teacher)
-app.use("/registrar", registrar)
-app.use("/teach", teach)
-app.use("/event", event)
 app.use("/notification", notification)
 
 app.get('/health', (req, res) => {
