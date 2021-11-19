@@ -13,10 +13,6 @@ export default function SearchTab(props) {
         navigation.navigate('ContactHistory')
     }
 
-    const navigateToFavorite = () => {
-        navigation.navigate('ContactFavorite')
-    }
-
     return (
         <View style={styles.container}>
             <TextInput
@@ -29,9 +25,6 @@ export default function SearchTab(props) {
             />
             <TouchableOpacity onPress={() => {navigateToHistory()}}>
                 <MaterialIcons name="history" size={28} color="white" style={styles.history} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {navigateToFavorite()}}>
-                <AntDesign name="staro" size={24} color="white" style={styles.favorite} />
             </TouchableOpacity>
         </View>
     )
@@ -50,11 +43,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingHorizontal: 8,
         borderRadius: 4,
-        marginRight: 24
     },
     history: {
-        marginRight: 24
-    },
-    favorite: {
+        marginLeft: 16
     }
 })

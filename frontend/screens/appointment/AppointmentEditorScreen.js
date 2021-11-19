@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import axios from 'axios'
 
@@ -10,7 +10,6 @@ import AppointmentDetail from './components/AppointmentDetail'
 import { checkExpiredToken } from '../../modules/auth'
 
 export default function AppointmentEditorScreen({ route, navigation }) {
-
     const timeSelectorComponent = useRef()
     const detailComponent = useRef()
 
@@ -19,30 +18,33 @@ export default function AppointmentEditorScreen({ route, navigation }) {
 
     const { contactId, date } = route.params
 
-    const createAppointmentHandler = async (data) => {
+    const createAppointmentHandler = async data => {
         const { token, userId } = await getAuthAsset()
         const header = {
             headers: {
                 'Schedu-Token': token
             }
         }
-        const payload = {
-            subject: data.subject,
-            sender: userId,
-            receiver: contactId,
-            participants: data.participants,
-            startAt: formattedStart,
-            endAt: formattedEnd,
-            commMethod: data.commMethod,
-            commUrl: data.commUrl,
-            note: data.note
-        }
 
         try {
-            const result = await axios.post(`${API_SERVER_DOMAIN}/appointment`, payload, header)
-            timeSelectorComponent.current.resetChildState()
-            detailComponent.current.resetChildState()
-            navigation.navigate('ContactProfile', { contactId: contactId })
+            if (formattedStart && formattedEnd) {
+                const payload = {
+                    subject: data.subject,
+                    sender: userId,
+                    receiver: contactId,
+                    participants: data.participants,
+                    startAt: formattedStart,
+                    endAt: formattedEnd,
+                    commMethod: data.commMethod,
+                    commUrl: data.commUrl,
+                    note: data.note
+                }
+                const result = await axios.post(`${API_SERVER_DOMAIN}/appointment`, payload, header)
+                timeSelectorComponent.current.resetChildState()
+                detailComponent.current.resetChildState()
+                navigation.navigate('ContactProfile', { contactId: contactId })
+            } else alert('Please select appointment time!')
+            console.log(payload)
         } catch (error) {
             if (checkExpiredToken(error)) navigation.navigate('SignIn')
         }
@@ -51,8 +53,17 @@ export default function AppointmentEditorScreen({ route, navigation }) {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.innerContainer}>
-                <TimeSelector ref={timeSelectorComponent} date={date} onStartChange={setFormattedStart} onEndChange={setFormattedEnd} />
-                <AppointmentDetail ref={detailComponent} onCreateAppointment={createAppointmentHandler} />
+                <TimeSelector
+                    ref={timeSelectorComponent}
+                    date={date}
+                    onStartChange={setFormattedStart}
+                    onEndChange={setFormattedEnd}
+                    activeTime={route.params.activeTime}
+                />
+                <AppointmentDetail
+                    ref={detailComponent}
+                    onCreateAppointment={createAppointmentHandler}
+                />
             </View>
         </ScrollView>
     )
@@ -60,7 +71,7 @@ export default function AppointmentEditorScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
+        flexGrow: 1
     },
     innerContainer: {
         flex: 1

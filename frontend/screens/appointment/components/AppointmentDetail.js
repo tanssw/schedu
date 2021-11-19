@@ -1,25 +1,48 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from "react-native"
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    ScrollView,
+    StyleSheet,
+    FlatList
+} from 'react-native'
 import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 
 import { background, text, shadow, colorCode } from '../../../styles'
 
 function AppointmentDetail(props, ref) {
-
     // Component's States
     const [subject, setSubject] = useState()
     const [commMethod, setCommMethod] = useState()
     const [commUrl, setCommUrl] = useState()
     const [note, setNote] = useState()
 
+    // validate state
+    const [isEmptySubject, setIsEmptySubject] = useState(true)
+    const [isEmptyCommMethod, setIsEmptyCommMethod] = useState(true)
+    const [isEmptyCommUrl, setIsEmptyCommUrl] = useState(true)
+
     const [participants, setParticipants] = useState([
-        {_id: "618b4d47a996fac981059a6f", business_id: '62070184', firstname: 'Loukhin', lastname: 'Dotcom'},
+        {
+            _id: '618b4d47a996fac981059a6f',
+            business_id: '62070184',
+            firstname: 'Loukhin',
+            lastname: 'Dotcom'
+        }
     ])
 
-    useImperativeHandle(ref, () => ({
-        resetChildState() { resetState() }
-    }), [])
+    useImperativeHandle(
+        ref,
+        () => ({
+            resetChildState() {
+                resetState()
+            }
+        }),
+        []
+    )
 
     // FUNCTION: to reset all form state
     const resetState = () => {
@@ -29,23 +52,40 @@ function AppointmentDetail(props, ref) {
         setNote()
     }
 
+    // const validate = () => {
+    //     console.log(subject, commMethod)
+    //     if (subject !== null) setIsEmptySubject(false)
+    //     if (commMethod !== null) setIsEmptyCommMethod(false)
+    //     console.log(!isEmptySubject && !isEmptyCommMethod)
+    //     return (!isEmptySubject && !isEmptyCommMethod)
+    // }
+
     // FUNCTION: to structure appointment data
     const createAppointment = () => {
-        const data = {
-            subject: subject,
-            participants: participants.map(participant => participant._id),
-            commMethod: commMethod ? commMethod.value : undefined,
-            commUrl: commUrl,
-            note: note
+        if (subject) {
+            const data = {
+                subject: subject,
+                participants: participants.map(participant => participant._id),
+                commMethod: commMethod ? commMethod.value : undefined,
+                commUrl: commUrl,
+                note: note
+            }
+            props.onCreateAppointment(data)
+        } else {
+            if (isEmptySubject) alert('Please enter Subject!')
         }
-        props.onCreateAppointment(data)
     }
 
     // FUNCTION: to render the participant into a Flatlist
-    const renderParticipant = ({item}) => {
+    const renderParticipant = ({ item }) => {
         return (
             <View>
-                <FontAwesome name="user-circle-o" size={44} color="grey" style={styles.personImage} />
+                <FontAwesome
+                    name="user-circle-o"
+                    size={44}
+                    color="grey"
+                    style={styles.personImage}
+                />
                 <Text style={styles.personName}>{item.firstname}</Text>
             </View>
         )
@@ -56,7 +96,12 @@ function AppointmentDetail(props, ref) {
             {/* Subject Input */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Subject</Text>
-                <TextInput onChangeText={text => setSubject(text)} value={subject} placeholder="Tomato Meeting" style={[styles.inputUnderline]}/>
+                <TextInput
+                    onChangeText={text => setSubject(text)}
+                    value={subject}
+                    placeholder="Tomato Meeting"
+                    style={[styles.inputUnderline]}
+                />
             </View>
             {/* Participant Input */}
             <View style={styles.spaceBetweenInput}>
@@ -66,7 +111,12 @@ function AppointmentDetail(props, ref) {
                         <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity>
-                    <FlatList horizontal data={participants} renderItem={renderParticipant} keyExtractor={person => person._id} />
+                    <FlatList
+                        horizontal
+                        data={participants}
+                        renderItem={renderParticipant}
+                        keyExtractor={person => person._id}
+                    />
                 </View>
             </View>
             {/* Communication Method Dropdown & Input */}
@@ -76,27 +126,40 @@ function AppointmentDetail(props, ref) {
                     onItemChange={setCommMethod}
                     item={commMethod}
                     items={[
-                        {label: 'Face to Face', value: 'face'},
-                        {label: 'Microsoft Teams', value: 'msteam'},
-                        {label: 'Google Meet', value: 'meet'},
-                        {label: 'Zoom Application', value: 'zoom'}
+                        { label: 'Face to Face', value: 'face' },
+                        { label: 'Microsoft Teams', value: 'msteam' },
+                        { label: 'Google Meet', value: 'meet' },
+                        { label: 'Zoom Application', value: 'zoom' }
                     ]}
                     title="Communication Methods"
                     placeholder="Choose method ..."
-                    isNullable={true}
+                    isNullable={false}
                     style={styles.picker}
                 />
-                <TextInput onChangeText={text => setCommUrl(text)} placeholder="https://www.url.com/join/" style={styles.inputUnderline}/>
+                <TextInput
+                    onChangeText={text => setCommUrl(text)}
+                    placeholder="https://www.url.com/join/"
+                    style={styles.inputUnderline}
+                />
             </View>
             {/* Note to participant Textbox */}
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Note to participant</Text>
                 <ScrollView contentContainerStyle={styles.inputBoxBorder}>
-                    <TextInput onChangeText={text => setNote(text)} value={note} multiline numberOfLines={4} placeholder="This is a note ..." />
+                    <TextInput
+                        onChangeText={text => setNote(text)}
+                        value={note}
+                        multiline
+                        numberOfLines={4}
+                        placeholder="This is a note ..."
+                    />
                 </ScrollView>
             </View>
             {/* Button */}
-            <TouchableOpacity onPressOut={createAppointment} style={[styles.mainButton, background.blue]}>
+            <TouchableOpacity
+                onPressOut={createAppointment}
+                style={[styles.mainButton, background.blue]}
+            >
                 <Text style={text.white}>Create Appointment</Text>
             </TouchableOpacity>
         </View>
@@ -121,11 +184,11 @@ const styles = StyleSheet.create({
     inputUnderline: {
         borderBottomWidth: 1,
         borderBottomColor: '#cccccc',
-        paddingBottom: 8,
+        paddingBottom: 8
     },
     participantContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-between'
     },
     personName: {
         textAlign: 'center',

@@ -40,7 +40,7 @@ export default function ContactProfileScreen({ route, navigation }) {
     }
 
     const navigateToAppointmentCreator = (selectedDate) => {
-        navigation.navigate('CreateAppointment', { contactId: contactId, date: selectedDate })
+        navigation.navigate('CreateAppointment', { contactId: contactId, date: selectedDate, activeTime: activeTimeState })
     }
 
     return (

@@ -8,7 +8,7 @@ import TimePicker from './components/TimePicker'
 
 import { getAuthAsset } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
-import { hourItems, minuteItems } from './data/timeItems'
+import { hourItems, minuteItems } from '../../assets/data/timeItems'
 
 export default function SettingScreen({ route, navigation }) {
     const [settings, setSettings] = useState(route.params)
