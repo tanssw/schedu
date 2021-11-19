@@ -57,9 +57,9 @@ export default function CalendarOverviewScreen({navigation}) {
             const appointments = appointmentResult.data.appointments
 
             // Update my appointments
-            const shownStatus = ['ongoing']
+            const ignoredStatus = ['abandoned', 'done']
             let myAppointments = appointments.filter(appointment => {
-                const canShow = shownStatus.includes(appointment.status)
+                const canShow = !ignoredStatus.includes(appointment.status)
                 const meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
                 const meAsSender = appointment.sender.userId === userId
                 return canShow && (meAsSender || meConfirmed.length)
