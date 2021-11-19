@@ -93,7 +93,7 @@ export default function AppointmentApprovalScreen({ props, route }) {
                 <FontAwesome
                     name="user-circle-o"
                     size={44}
-                    color="grey"
+                    color={colorCode.dark}
                     style={styles.personImage}
                 />
                 <Text style={styles.personName}>{item.firstName}</Text>

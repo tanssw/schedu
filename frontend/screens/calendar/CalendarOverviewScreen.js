@@ -20,20 +20,24 @@ export default function CalendarOverviewScreen({navigation}) {
     useEffect(() => {
 
         const unsubscribe = navigation.addListener('focus', async () => {
-            const { token, userId } = await getAuthAsset()
+            try {
+                const { token, userId } = await getAuthAsset()
 
-            const { myAppointments, requestAppointments } = await loadAppointments(token, userId)
-            const events = await loadEvents()
-            const studies = await loadStudies(token, userId)
+                const { myAppointments, requestAppointments } = await loadAppointments(token, userId)
+                const events = await loadEvents()
+                const studies = await loadStudies(token, userId)
 
-            updateMyAppointmentsState(myAppointments)
-            updateRequestAppointmentsState(requestAppointments)
+                updateMyAppointmentsState(myAppointments)
+                updateRequestAppointmentsState(requestAppointments)
 
-            // Update all appointments for calendar
-            const appointmentDateMarks = buildAppointmentDateMarks(myAppointments)
-            const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
-            const examDateMarks = buildExamDateMarks(studies, eventDateMarks)
-            updateMarkedDatesState(examDateMarks)
+                // Update all appointments for calendar
+                const appointmentDateMarks = buildAppointmentDateMarks(myAppointments)
+                const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
+                const examDateMarks = buildExamDateMarks(studies, eventDateMarks)
+                updateMarkedDatesState(examDateMarks)
+            } catch (error) {
+
+            }
         })
         return unsubscribe
     })
