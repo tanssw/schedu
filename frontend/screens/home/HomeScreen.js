@@ -6,7 +6,6 @@ import { shadow } from '../../styles'
 import NotificationCard from './components/NotificationCard'
 import Overview from './components/Overview'
 import RecentlyList from './components/RecentlyList'
-import SuggestedList from './components/SuggestedList'
 
 export default function HomeScreen({navigation}) {
 
@@ -28,7 +27,6 @@ export default function HomeScreen({navigation}) {
             <NotificationCard onAppointmentPress={gotoMyCalendar} />
             <View style={[styles.mainContainer, shadow.boxTopMedium]}>
                 <Overview ref={overviewRef} />
-                <SuggestedList />
                 <RecentlyList />
             </View>
         </View>
