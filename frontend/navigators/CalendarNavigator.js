@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from 'react-native'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
@@ -11,7 +12,7 @@ import AppointmentScreen from '../screens/appointment/AppointmentScreen'
 import AppointmentApprovalScreen from '../screens/appointment/AppointmentApprovalScreen'
 const CalendarStack = createNativeStackNavigator()
 
-export default function CalendarNavigator() {
+export default function CalendarNavigator({navigation}) {
     return (
         <CalendarStack.Navigator
             initialRouteName="CalendarOverview"
@@ -31,7 +32,12 @@ export default function CalendarNavigator() {
                     headerTitle: route.params.title
                 })}
             />
-            <CalendarStack.Screen name="Appointment" component={AppointmentScreen} />
+            <CalendarStack.Screen name="Appointment" component={AppointmentScreen}
+            options={{
+                headerRight: () => (
+                    <Button onPress={() => {navigation.navigate('SignIn')}} title="Edit" color="white" />
+                )
+            }} />
             <CalendarStack.Screen
                 name="AppointmentApproval"
                 component={AppointmentApprovalScreen}
