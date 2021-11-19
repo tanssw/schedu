@@ -34,12 +34,6 @@ function TimeSelector(props, ref) {
         setEndHourItems(filterHour(start[0], end[0]))
     })
 
-    // const filterHour = () => {
-    //     var tempStart = hourItems
-    // setHour(hourItems.filter((item) => item.label >= start[0] && item.label <= end[0]))
-    //     return tempStart.filter(item => item.label >= start[0] && item.label <= end[0])
-    // }
-
     useImperativeHandle(
         ref,
         () => ({
@@ -209,7 +203,4 @@ const styles = StyleSheet.create({
     picker: {
         flex: 1
     }
-    // disablePicker: {
-    //     color: colorCode.lightGrey
-    // }
 })
