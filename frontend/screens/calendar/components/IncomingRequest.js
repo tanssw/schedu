@@ -1,26 +1,25 @@
 import React, { useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 import dayjs from 'dayjs'
 
 import { text, colorCode } from '../../../styles'
 
 export default function IncomingRequest(props) {
 
-    const [requests, updateRequests] = useState([
-        {id: 1, from: 'Tasanai Srisawat', date: '2021-10-08', start: '01:00 PM', end: '01:45 PM'},
-        {id: 2, from: 'Tasanai Srisawat', date: '2021-10-08', start: '01:00 PM', end: '01:45 PM'},
-        {id: 3, from: 'Tasanai Srisawat', date: '2021-10-08', start: '01:00 PM', end: '01:45 PM'},
-        {id: 4, from: 'Tasanai Srisawat', date: '2021-10-08', start: '01:00 PM', end: '01:45 PM'},
-    ])
+    const navigation = useNavigation()
 
     const renderRequest = (request) => {
         return (
-            <TouchableOpacity key={request._id} style={styles.requestItem}>
+            <TouchableOpacity key={request._id} style={styles.requestItem} onPress={() => {
+                navigation.navigate('AppointmentApproval', {data : request})
+            }}
+             >
                 <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} />
                 <View style={styles.requestBody}>
                     <View style={styles.requestTitle}>
-                        <Text>Appointment Request</Text>
+                        <Text numberOfLines={1} style={styles.requestTitleText}>{request.subject}</Text>
                         <Text style={text.bold}>{dayjs(request.startAt).format('DD MMM YYYY')}</Text>
                     </View>
                     <View style={styles.requestDesc}>
@@ -91,6 +90,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginVertical: 4
+    },
+    requestTitleText: {
+        flex: 1,
+        marginRight: 8
     },
     requestDesc: {
         display: 'flex',

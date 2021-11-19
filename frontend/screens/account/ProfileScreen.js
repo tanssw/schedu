@@ -1,38 +1,27 @@
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, Image } from 'react-native'
 
-// style by tanssw.com
-import { shadow } from '../../styles'
+import { colorCode, shadow } from '../../styles'
 
-// import components
-import UserData from './components/UserData'
+import Information from './components/Information'
 
-export default function ProfileScreen({ route }) {
-    const [userData, setUserData] = useState(route.params)
-
+export default function ProfileScreen({ route, navigation, userData }) {
     return (
         <View style={styles.container}>
-            <Image
-                style={styles.profileImage}
-                source={{
-                    url: userData.image
-                }}
-            ></Image>
+            <View style={styles.imageContainer}>
+                <Image style={styles.profileImage} source={{ url: userData.image }} />
+            </View>
             <View style={[styles.userProfileContainer, shadow.boxTopMedium]}>
                 <View style={styles.dataBlock}>
                     <Text style={styles.userProfileMenu}>General</Text>
-                    <UserData
-                        topicData={'Name'}
-                        data={userData.firstName + ' ' + userData.lastName}
-                        edit={false}
-                    />
-                    <UserData topicData={'Role'} data={userData.role} edit={false} />
+                    <Information topicData="Fullname" data={`${userData.firstName} ${userData.lastName}`} edit={false} style={styles.topSection}/>
+                    <Information topicData="Role" data={userData.role} edit={false} />
                 </View>
 
                 <View style={styles.dataBlock}>
                     <Text style={styles.userProfileMenu}>Contact</Text>
-                    <UserData topicData={'Email'} data={userData.contact.email} edit={false} />
-                    <UserData topicData={'Phone number'} data={userData.contact.tel} edit={false} />
+                    <Information topicData="Email" data={userData.contact.email} edit={false} style={styles.topSection} />
+                    <Information topicData="Phone Number" data={userData.contact.tel} edit={false} />
                 </View>
             </View>
         </View>
@@ -40,16 +29,18 @@ export default function ProfileScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
-    // container styles
     container: {
         flex: 1,
-        paddingTop: 32,
+        alignItems: 'center'
+    },
+    imageContainer: {
+        padding: 16,
+        marginVertical: 24,
         alignItems: 'center'
     },
     userProfileContainer: {
         flex: 1,
         width: '100%',
-        padding: 32,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
         backgroundColor: 'white'
@@ -57,15 +48,21 @@ const styles = StyleSheet.create({
     dataBlock: {
         marginBottom: 20
     },
-    // image profile style
     profileImage: {
         width: 100,
         height: 100,
-        borderRadius: 360,
-        marginBottom: 32
+        borderRadius: 512
     },
     userProfileMenu: {
+        color: colorCode.blue,
         fontWeight: 'bold',
-        color: '#000'
+        fontSize: 16,
+        paddingHorizontal: 24,
+        marginTop: 32,
+        marginBottom: 12
+    },
+    topSection: {
+        borderTopWidth: 0.75,
+        borderTopColor: colorCode.lighterGrey
     }
 })

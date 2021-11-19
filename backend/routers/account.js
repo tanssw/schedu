@@ -27,6 +27,29 @@ router.get('/all', authMiddleware, async (req, res) => {
     }
 })
 
+// Get user information from User ID
+router.get('/:userId', authMiddleware, async (req, res) => {
+    const userId = req.params.userId
+    try {
+        const user = await accountModel.findOne({ _id: userId })
+        res.json({user: user})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Pleases try again.'})
+    }
+})
+
+// Update user information
+router.put('/', authMiddleware, async (req, res) => {
+    try {
+        const id = req.body.id
+        const payload = req.body.newData
+        const updatedUser = await accountModel.findByIdAndUpdate(id, { $set: payload }, {new: true})
+        res.json({user: updatedUser})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
+})
+
 router.get('/search/:word', async (req, res) => {
     const { word } = req.params
     const user = await accountModel.find({ firstName: { $regex: '.*' + word + '.*' } }).limit(5)
@@ -39,15 +62,6 @@ router.post('/addUser', async (req, res) => {
     const user = new accountModel(payload)
     await user.save()
     res.json({ Message: 'Success' })
-})
-
-// Update user in mongoDB
-router.put('/updateUser', authMiddleware, async (req, res) => {
-    const id = req.body.id
-    const payload = req.body.newData
-    const user = await accountModel.findByIdAndUpdate(id, { $set: payload })
-    res.json(user)
-
 })
 
 // Delete user in mongoDB
@@ -72,17 +86,6 @@ router.get('/favorite/:id', authMiddleware, async (req, res) =>{
     const favoriteList = await accountModel.findOne({_id : id}).select({favorite: {$elemMatch: {_id: id}}})
     res.json(favoriteList)
 
-})
-
-// Get user information from User ID
-router.get('/:userId', authMiddleware, async (req, res) => {
-    const userId = req.params.userId
-    try {
-        const user = await accountModel.findOne({ _id: userId })
-        res.json({user: user})
-    } catch (error) {
-        res.status(500).send({message: 'Something went wrong. Pleases try again.'})
-    }
 })
 
 

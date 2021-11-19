@@ -2,10 +2,14 @@ import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'rea
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
 import dayjs from 'dayjs'
+import { useNavigation } from '@react-navigation/native'
 
 import { colorCode, text } from '../../../styles'
 
 export default function MyAppointment(props) {
+
+    const navigation = useNavigation()
+
 
     const getParticipant = (participants) => {
         const receiver = participants.filter(participant => participant.main === true)
@@ -18,7 +22,9 @@ export default function MyAppointment(props) {
 
     const renderAppointment = (appointment) => {
         return (
-            <View key={appointment._id} style={styles.appointmentItem}>
+            <TouchableOpacity key={appointment._id} style={styles.appointmentItem} onPress={() =>{
+                navigation.navigate('Appointment', { data: appointment })
+            }}>
                 <View>
                     <View style={styles.appointmentDesc}>
                         <Text style={styles.appointmentDate}>
@@ -35,14 +41,14 @@ export default function MyAppointment(props) {
                 <View style={styles.status}>
                     <Text style={styles.statusText}>{appointment.status}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
     const appointmentList = (
-        <TouchableOpacity>
+        <View>
             {props.appointments.map(appointment => renderAppointment(appointment))}
-        </TouchableOpacity>
+        </View>
     )
 
     const emptyRequest = (

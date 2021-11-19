@@ -1,41 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
-import * as SecureStore from 'expo-secure-store'
 import axios from 'axios'
 
-import { getAuthAsset } from '../../modules/auth'
+import { clearAuthAsset, getAuthAsset } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import { text, shadow, colorCode } from '../../styles'
 
-export default function AccountMenuScreen({ navigation }) {
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            getUser()
-        })
-        return unsubscribe
-    })
-
-    const getUser = async () => {
-        const { token, userId } = await getAuthAsset()
-
-        const payload = {
-            headers: { 'Schedu-Token': token }
-        }
-
-        try {
-            const user = await axios.get(`${API_SERVER_DOMAIN}/account/${userId}`, payload)
-            setUserData(user.data.user)
-        } catch (error) {
-            // Clear stored token in Secure Store
-            await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY, {})
-        }
-    }
-
-    const [userData, setUserData] = useState({})
+export default function AccountMenuScreen({ navigation, userData }) {
 
     const signOut = async () => {
-        const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
+        const { token, userId } = await getAuthAsset()
         try {
             const payload = {
                 headers: {
@@ -43,41 +18,30 @@ export default function AccountMenuScreen({ navigation }) {
                 }
             }
             const result = axios.delete(`${API_SERVER_DOMAIN}/auth`, payload)
+        } finally {
             await clearAuthAsset()
-            navigation.navigate('SignIn')
-        } catch (error) {
-            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            return navigation.navigate('SignIn')
         }
     }
 
     return (
         <View style={styles.container}>
-            {/* user profile image */}
-            <Image
-                style={styles.profileImage}
-                source={{
-                    url: userData.image
-                }}
-            ></Image>
-
-            {/* user fullname */}
-            <Text style={[styles.userFullname, text.blue]}>
-                {userData.firstName + ' ' + userData.lastName}
-            </Text>
-
-            {/* user role */}
-            <Text style={styles.userRole}>{userData.role}</Text>
-            <View style={[styles.userAccountNav, shadow.boxTopMedium]}>
-                {/* profile navigation */}
+            <View style={styles.profileContainer}>
+                <Image style={styles.profileImage} source={{ url: userData.image }} />
+                <Text style={[styles.userFullname, text.blue]}>
+                    {userData.firstName + ' ' + userData.lastName}
+                </Text>
+                <Text style={styles.userRole}>{userData.role}</Text>
+            </View>
+            <View style={[styles.menuContainer, shadow.boxTopMedium]}>
                 <View>
+                    <Text style={styles.menuHeader}>My Account</Text>
                     <TouchableOpacity
-                        style={styles.menuBtn}
+                        style={[styles.menuBtn, {borderTopWidth: 0.75}]}
                         onPress={() => navigation.navigate('Profile', userData)}
                     >
                         <Text style={styles.menuText}>Profile</Text>
                     </TouchableOpacity>
-
-                    {/* setting navigation */}
                     <TouchableOpacity
                         style={styles.menuBtn}
                         onPress={() => navigation.navigate('Setting', userData.setting)}
@@ -85,55 +49,70 @@ export default function AccountMenuScreen({ navigation }) {
                         <Text style={styles.menuText}>Settings</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={[styles.signOutBtn]} onPress={signOut}>
-                    <Text style={styles.signOutBtnText}>Sign Out</Text>
-                </TouchableOpacity>
+                <View style={styles.signOutBtnContainer}>
+                    <TouchableOpacity style={[styles.signOutBtn]} onPress={signOut}>
+                        <Text style={styles.signOutBtnText}>Sign Out</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    // container styles
     container: {
         flex: 1,
-        paddingTop: 32,
         alignItems: 'center'
     },
-    userAccountNav: {
+    profileContainer: {
+        padding: 16,
+        marginVertical: 24,
+        alignItems: 'center'
+    },
+    menuContainer: {
         flex: 1,
         width: '100%',
-        padding: 32,
+        paddingTop: 32,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
         backgroundColor: 'white',
         justifyContent: 'space-between'
     },
-    // image profile style
     profileImage: {
         width: 100,
         height: 100,
-        borderRadius: 360,
-        margin: 16
+        borderRadius: 512,
     },
-    // user data styles
     userFullname: {
-        fontWeight: 'bold'
+        fontWeight: '300',
+        fontSize: 16,
+        marginTop: 16
     },
     userRole: {
-        marginTop: 5,
-        marginBottom: 40,
-        color: '#AAA'
+        marginTop: 4,
+        color: colorCode.grey,
+        fontWeight: '300'
     },
-    // menus styles
+    menuHeader: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: colorCode.blue,
+        marginBottom: 12,
+        paddingHorizontal: 24
+    },
     menuBtn: {
-        borderBottomWidth: 1,
-        borderColor: '#cccccc',
-        paddingTop: 20,
-        paddingBottom: 20
+        borderBottomWidth: 0.75,
+        borderColor: colorCode.lighterGrey,
+        paddingVertical: 16,
+        paddingHorizontal: 24
     },
     menuText: {
-        fontWeight: 'bold'
+        fontWeight: '300',
+        fontSize: 14,
+        color: colorCode.dark
+    },
+    signOutBtnContainer: {
+        padding: 24
     },
     signOutBtnText: {
         fontWeight: '300',

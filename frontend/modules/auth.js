@@ -21,9 +21,13 @@ const clearAuthAsset = async () => {
 }
 
 const checkExpiredToken = (error) => {
-    const status = error.response.status
-    if (status !== 403) return false
-    return true
+    try {
+        const status = error.response.status
+        if (status !== 403) return false
+        return true
+    } catch (innerError) {
+        return false
+    }
 }
 
 export {

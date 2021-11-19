@@ -2,7 +2,12 @@ import React, { useState } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { Picker } from 'react-native-woodpicker'
 
+<<<<<<< HEAD
 import { hourItems, minuteItems } from '../../../assets/data/timeItems'
+=======
+import { hourItems, minuteItems } from '../data/timeItems'
+
+>>>>>>> dev
 export default function TimePicker(props) {
     const splitTime = props.data.split(':')
 
@@ -23,7 +28,7 @@ export default function TimePicker(props) {
         props.update({ hour: hour, topic: props.topic, time: `${hour}:${minute}` })
     }
     return (
-        <View style={[styles.settingData, styles.bottomLine]}>
+        <View style={[styles.settingData, styles.bottomLine, props.style]}>
             <Text style={[styles.textComponentStyle]}>{props.topic} of Active time</Text>
             <View style={styles.calendarData}>
                 <Picker
@@ -52,9 +57,8 @@ export default function TimePicker(props) {
 
 const styles = StyleSheet.create({
     settingData: {
-        padding: 20,
-        marginTop: 10,
-
+        paddingVertical: 16,
+        paddingHorizontal: 24,
         flexDirection: 'row',
         justifyContent: 'space-between'
     },

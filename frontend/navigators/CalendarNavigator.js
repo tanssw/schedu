@@ -2,12 +2,13 @@ import React from 'react'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
+
 import { headerDefaultOptions } from '../styles'
 
 import CalendarOverviewScreen from '../screens/calendar/CalendarOverviewScreen'
 import CalendarDetailScreen from '../screens/calendar/CalendarDetailScreen'
 import AppointmentScreen from '../screens/appointment/AppointmentScreen'
-
+import AppointmentApprovalScreen from '../screens/appointment/AppointmentApprovalScreen'
 const CalendarStack = createNativeStackNavigator()
 
 export default function CalendarNavigator() {
@@ -31,6 +32,11 @@ export default function CalendarNavigator() {
                 })}
             />
             <CalendarStack.Screen name="Appointment" component={AppointmentScreen} />
+            <CalendarStack.Screen
+                name="AppointmentApproval"
+                component={AppointmentApprovalScreen}
+                options={{headerTitle: 'Approval'}}
+            />
         </CalendarStack.Navigator>
     )
 }

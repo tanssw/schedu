@@ -7,13 +7,13 @@ export default function SettingData(props) {
     const toggleSwitch = () => {
         setIsEnabled(previousState => !previousState)
         var settingTopic = props.topic
-        if (props.topic === 'Receive weekend appointment') settingTopic = 'weekend'
-        else if (props.topic === 'Display phone number') settingTopic = 'phone'
+        if (props.topic === 'Receive Weekend Appointment') settingTopic = 'weekend'
+        else if (props.topic === 'Display Phone Number') settingTopic = 'phone'
 
         props.update({ topic: settingTopic, data: !isEnabled })
     }
     return (
-        <View style={[styles.bottomLine, styles.settingData]}>
+        <View style={[styles.bottomLine, styles.settingData, props.style]}>
             <Text style={[styles.textComponentStyle]}>{props.topic}</Text>
             <Switch onValueChange={toggleSwitch} value={isEnabled} />
         </View>
@@ -22,11 +22,11 @@ export default function SettingData(props) {
 
 const styles = StyleSheet.create({
     settingData: {
-        padding: 20,
-        marginTop: 10,
-
+        paddingHorizontal: 24,
+        paddingVertical: 12,
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     calendarData: {
         flexDirection: 'row'

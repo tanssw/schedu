@@ -8,7 +8,9 @@ import { headerDefaultOptions } from '../styles'
 import ContactListScreen from '../screens/contact/ContactListScreen'
 import ContactHistoryScreen from '../screens/contact/ContactHistoryScreen'
 import AppointmentEditorScreen from '../screens/appointment/AppointmentEditorScreen'
+
 import ContactProfileScreen from '../screens/contactProfile/ContactProfileScreen'
+
 
 const ContactStack = createNativeStackNavigator()
 
@@ -26,6 +28,7 @@ const options = {
 }
 export default function ContactNavigator() {
     return (
+
         <ContactStack.Navigator initialRouteName="ContactList" screenOptions={headerDefaultOptions}>
             <ContactStack.Screen name="ContactList" component={ContactListScreen} options={options.contactList}/>
             <ContactStack.Screen name="ContactHistory" component={ContactHistoryScreen} />

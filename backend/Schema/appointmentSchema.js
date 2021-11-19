@@ -8,13 +8,14 @@ const appointmentSchema = new Schema({
     participants: [{
         userId: String,
         main: Boolean,
-        confirmed: Boolean
+        confirmed: Boolean,
+        join: Boolean,
     }],
     startAt: Date,
     endAt: Date,
     commMethod: String,
     commUrl: String,
-    note: String
+    note: String,
 })
 
 module.exports = appointmentSchema

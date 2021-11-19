@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import { MaterialIcons, Ionicons } from '@expo/vector-icons'
 import axios from 'axios'
 
-import { getAuthAsset, checkExpiredToken } from '../../../modules/auth'
+import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../../modules/apis'
 
 import { colorCode } from '../../../styles'
@@ -34,7 +34,10 @@ function Overview(props, ref) {
             updateAppointmentCount(counts.ongoing)
             updateRequestCount(counts.request)
         } catch (error) {
-            if (checkExpiredToken(error)) navigation.navigate('SignIn')
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
         }
     }
 

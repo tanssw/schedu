@@ -19,6 +19,7 @@ function AppointmentDetail(props, ref) {
     const [commMethod, setCommMethod] = useState()
     const [commUrl, setCommUrl] = useState()
     const [note, setNote] = useState()
+    const [join, setJoin] = useState(false)
 
     // validate state
     const [isEmptySubject, setIsEmptySubject] = useState(true)
@@ -30,7 +31,12 @@ function AppointmentDetail(props, ref) {
             _id: '618b4d47a996fac981059a6f',
             business_id: '62070184',
             firstname: 'Loukhin',
+<<<<<<< HEAD
             lastname: 'Dotcom'
+=======
+            lastname: 'Dotcom',
+            join: true
+>>>>>>> dev
         }
     ])
 
