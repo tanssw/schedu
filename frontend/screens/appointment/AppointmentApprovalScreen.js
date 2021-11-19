@@ -9,7 +9,7 @@ import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../modules/a
 
 import TimeDisplay from '../appointment/components/TimeDisplay'
 
-function AppointmentApprovalScreen({ props, route }) {
+export default function AppointmentApprovalScreen({ props, route }) {
 
     const { data } = route.params
     const navigation = useNavigation()
@@ -102,13 +102,12 @@ function AppointmentApprovalScreen({ props, route }) {
     }
 
     return (
-        <ScrollView syyle={styles.scrollContainer}>
-            <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.innerContainer}>
                 <TimeDisplay startAt={data.startAt} endAt={data.endAt} />
                 <View style={[styles.detailContainer, shadow.boxTopMedium]}>
                     {/* Subject Input */}
                     <View style={styles.spaceBetweenInput}>
-                        <Text style={styles.header}>Subject</Text>
                         <Text style={styles.topic}>{data.subject}</Text>
                     </View>
                     {/* Participant Input */}
@@ -126,7 +125,10 @@ function AppointmentApprovalScreen({ props, route }) {
                     {/* Communication Method Dropdown & Input */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Communication Method</Text>
-                        <Text>{commMethod}</Text>
+                        <View style={styles.commMethodBox}>
+                            <Text style={styles.commMethodHeader}>{commMethod}</Text>
+                            <Text style={styles.commMethodURL}>URL: {commUrl ? commUrl : '[Not provided]'}</Text>
+                        </View>
                     </View>
                     {/* Note to participant Textbox */}
                     <View style={styles.spaceBetweenInput}>
@@ -134,22 +136,12 @@ function AppointmentApprovalScreen({ props, route }) {
                         <Text>{data.note}</Text>
                     </View>
                     {/* Button */}
-                    <View style={styles.acceptationTab}>
-                        <TouchableOpacity
-                            style={[styles.mainButton, styles.decline]}
-                            onPress={() => {
-                                decline()
-                            }}
-                        >
-                            <Text style={text.red}>Decline</Text>
+                    <View style={styles.decisionContainer}>
+                        <TouchableOpacity style={[styles.mainButton, styles.declineButton]} onPress={() => { decline() }}>
+                            <Text style={styles.declineText}>Decline</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.mainButton, background.blue]}
-                            onPress={() => {
-                                approval()
-                            }}
-                        >
-                            <Text style={text.white}>Approval</Text>
+                        <TouchableOpacity style={[styles.mainButton, styles.acceptButton]} onPress={() => { approval() }}>
+                            <Text style={styles.acceptText}>Accept</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -158,13 +150,11 @@ function AppointmentApprovalScreen({ props, route }) {
     )
 }
 
-export default AppointmentApprovalScreen
-
 const styles = StyleSheet.create({
     scrollContainer: {
         flexGrow: 1
     },
-    container: {
+    innerContainer: {
         flex: 1,
         backgroundColor: 'white'
     },
@@ -179,15 +169,12 @@ const styles = StyleSheet.create({
     header: {
         fontWeight: 'bold',
         marginBottom: 12,
-        fontSize: 18
-    },
-    topic: {
         fontSize: 16
     },
-    inputUnderline: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#cccccc',
-        paddingBottom: 8
+    topic: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: colorCode.blue
     },
     participantContainer: {
         flexDirection: 'row',
@@ -202,46 +189,58 @@ const styles = StyleSheet.create({
         marginVertical: 3,
         marginHorizontal: 12
     },
-    picker: {
-        flex: 1,
-        padding: 16,
-        borderWidth: 1,
-        borderColor: '#cccccc',
-        borderRadius: 16,
-        marginBottom: 24
+    spaceBetweenInput: {
+        marginVertical: 12
     },
-    inputBoxBorder: {
-        height: 128,
-        borderWidth: 1,
-        borderColor: '#cccccc',
+    commMethodBox: {
+        borderWidth: 0.75,
+        borderColor: colorCode.lighterGrey,
         borderRadius: 16,
         padding: 16
     },
-    spaceBetweenInput: {
-        marginTop: 10,
-        marginBottom: 10
+    commMethodHeader: {
+        fontWeight: 'bold',
+        fontSize: 18,
+        color: colorCode.lightBlue
     },
-    mainButton: {
-        width: '50%',
-        height: 50,
-        padding: 16,
-        borderRadius: 16,
-        alignItems: 'center',
-        marginRight: 10
+    commMethodURL: {
+        fontSize: 14,
+        color: colorCode.grey,
+        marginTop: 8
     },
-    decline: {
-        backgroundColor: 'white',
-        borderWidth: 2,
-        borderColor: 'red',
-        color: 'black'
-    },
-    acceptationTab: {
-        padding: 20,
+    decisionContainer: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'flex-end'
+    },
+    mainButton: {
+        width: '47.5%',
+        padding: 16,
+        borderRadius: 16,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    declineButton: {
+        borderWidth: 1,
+        borderColor: colorCode.red
+    },
+    declineText: {
+        color: colorCode.red,
+        fontWeight: '300',
+        fontSize: 16
+    },
+    acceptButton: {
+        borderWidth: 1,
+        borderColor: colorCode.blue,
+        backgroundColor: colorCode.blue
+    },
+    acceptText: {
+        color: 'white',
+        fontWeight: '300',
+        fontSize: 16
     },
     profile: {
-        padding: 7
+        justifyContent: 'space-between'
     }
 })

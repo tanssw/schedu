@@ -18,7 +18,7 @@ export default function CalendarOverviewScreen({navigation}) {
     const [myAppointmentsState, updateMyAppointmentsState] = useState([])
 
     useEffect(() => {
-        
+
         const unsubscribe = navigation.addListener('focus', async () => {
             const { token, userId } = await getAuthAsset()
 
@@ -40,14 +40,15 @@ export default function CalendarOverviewScreen({navigation}) {
 
     const loadAppointments = async (token, userId) => {
 
-        // Request my appointments from server
-        const payload = {
-            headers: {
-                'Schedu-Token': token,
-                'Schedu-UID': userId
-            }
-        }
         try {
+            // Request my appointments from server
+            const payload = {
+                headers: {
+                    'Schedu-Token': token,
+                    'Schedu-UID': userId
+                }
+            }
+
             const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
             const appointments = appointmentResult.data.appointments
 
@@ -103,6 +104,10 @@ export default function CalendarOverviewScreen({navigation}) {
             const timetable = timetableResult.data.timetable
             return timetable
         } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
             return []
         }
     }
