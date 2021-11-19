@@ -174,7 +174,7 @@ router.post('/', authMiddleware, async (req, res) => {
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
     }
 })
-router.put('/update',authMiddleware,async(req,res) =>{
+router.put('/update', authMiddleware, async (req,res) => {
     const payload = req.body
 
      // Mapping business_id of participants to an Object with some logic keys
@@ -185,7 +185,7 @@ router.put('/update',authMiddleware,async(req,res) =>{
          else{
             return participant
          }
-        
+
     })
 
     // Structuring payload data before saving into the database

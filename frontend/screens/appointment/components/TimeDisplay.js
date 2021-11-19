@@ -1,7 +1,6 @@
 import React, { useImperativeHandle, forwardRef, useState } from 'react'
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { Feather }  from '@expo/vector-icons'
-import { Picker } from 'react-native-woodpicker'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'

@@ -1,102 +1,24 @@
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react'
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    ScrollView,
-    StyleSheet,
-    FlatList
-} from 'react-native'
-import { Picker } from 'react-native-woodpicker'
-import { EvilIcons, FontAwesome } from '@expo/vector-icons'
-import {
-    getAuthAsset,
-    checkExpiredToken
-} from '../../modules/auth'
-import Time from '../appointment/components/TimeDisplay'
-
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native'
+import { FontAwesome } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 
 import { background, text, shadow, colorCode } from '../../styles'
-import { useNavigation } from '@react-navigation/native'
+import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
+
+import TimeDisplay from '../appointment/components/TimeDisplay'
 
 function AppointmentApprovalScreen({ props, route }) {
+
     const { data } = route.params
     const navigation = useNavigation()
 
-    // Component's States
     const [subject, setSubject] = useState()
     const [commMethod, setCommMethod] = useState()
     const [commUrl, setCommUrl] = useState()
     const [note, setNote] = useState()
-
     const [participants, setParticipants] = useState([])
-
-    //FUNCTION: Get details user for display they name
-    const getDetailsParticipants = async uid => {
-        const { token } = await getAuthAsset()
-        const payload = {
-            headers: {
-                'schedu-token': token
-            }
-        }
-        const peoples = await axios.get(
-            `http://localhost:3000/account/${uid.userId}`, payload
-        )
-        setParticipants(peoples)
-    }
-    //FUNCTION: return commMethods for details
-    const getCommMethod = () => {
-        const commMethod = data.commMethod
-        if (commMethod == 'face') {
-            setCommMethod('Face to Face')
-        } else if (commMethod == 'msteam') {
-            setCommMethod('Microsoft Teams')
-        } else if (commMethod == 'meet') {
-            setCommMethod('Google meet')
-        } else if (commMethod == 'zoom') {
-            setCommMethod('Zoom Application')
-        }
-    }
-    // FUNCTION: update confirm state participant in appointment
-    const submit = async (status, objectId) => {
-        const { token, userId } = await getAuthAsset()
-        const payload = {
-            uid: userId,
-            join: status,
-            appointmentId: objectId,
-            data: data
-        }
-        const config = { headers: { 'Schedu-Token': "test" } }
-        try {
-            navigation.navigate('CalendarOverview')
-            const result = await axios.put(
-                `http://localhost:3000/appointment/update/`,
-                payload,
-                config
-            )
-        } catch (error) {
-            // console.log(error)
-            // if(error.state.code == 403){
-                alert("Please confirm your token isn't expired.")
-                navigation.navigate('SignIn')
-            // }
-            
-            // if (checkExpiredToken(error)) navigation.navigate('SignIn')
-        }
-    }
-
-    // FUNCTION : user decline this appointment
-    const decline = () => {
-        const join = false
-        submit(join, data._id)
-    }
-    //FUNCTION : user approval this appointment
-    const approval = () => {
-        const join = true
-        submit(join, data._id)
-    }
 
     useEffect(async () => {
         try {
@@ -109,6 +31,60 @@ function AppointmentApprovalScreen({ props, route }) {
             console.log(error)
         }
     }, [])
+
+    //FUNCTION: Get details user for display there name
+    const getDetailsParticipants = async uid => {
+        try {
+            const { token } = await getAuthAsset()
+            const payload = {
+                headers: {
+                    'schedu-token': token
+                }
+            }
+            const peoples = await axios.get(`http://localhost:3000/account/${uid.userId}`, payload)
+            setParticipants(peoples)
+        } catch (error) {
+
+        }
+    }
+
+    //FUNCTION: return commMethods for details
+    const getCommMethod = () => {
+        const commMethod = data.commMethod
+        switch (commMethod) {
+            case 'face': return setCommMethod('Face to Face')
+            case 'msteam': return setCommMethod('Microsoft Teams')
+            case 'meet': return setCommMethod('Google meet')
+            case 'zoom': return setCommMethod('Zoom Application')
+        }
+    }
+
+    // FUNCTION: update confirm state participant in appointment
+    const submit = async (status, objectId) => {
+        try {
+            const { token, userId } = await getAuthAsset()
+            const payload = {
+                uid: userId,
+                join: status,
+                appointmentId: objectId,
+                data: data
+            }
+            const config = {
+                headers: { 'Schedu-Token': token }
+            }
+            await axios.put(`http://localhost:3000/appointment/update/`, payload, config)
+            navigation.navigate('CalendarOverview')
+        } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                navigation.navigate('SignIn')
+            }
+        }
+    }
+
+    // FUNCTION : User can decline or approve to join the appointment
+    const decline = () => { submit(false, data._id) }
+    const approval = () => { submit(true, data._id) }
 
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item }) => {
@@ -124,11 +100,11 @@ function AppointmentApprovalScreen({ props, route }) {
             </View>
         )
     }
-    //TODO: time display startAt and endAt from appointment
+
     return (
-        <ScrollView>
+        <ScrollView syyle={styles.scrollContainer}>
             <View style={styles.container}>
-                <Time startAt={data.startAt} endAt={data.endAt} />
+                <TimeDisplay startAt={data.startAt} endAt={data.endAt} />
                 <View style={[styles.detailContainer, shadow.boxTopMedium]}>
                     {/* Subject Input */}
                     <View style={styles.spaceBetweenInput}>
@@ -185,16 +161,18 @@ function AppointmentApprovalScreen({ props, route }) {
 export default AppointmentApprovalScreen
 
 const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1
+    },
     container: {
         flex: 1,
-        backgroundColor: 'white',
-        paddingBottom: 5
+        backgroundColor: 'white'
     },
     detailContainer: {
         flex: 1,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
-        padding: 32,
+        padding: 24,
         zIndex: 2,
         backgroundColor: 'white'
     },
