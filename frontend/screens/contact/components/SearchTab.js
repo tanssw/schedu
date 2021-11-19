@@ -5,15 +5,23 @@ import { colorCode } from '../../../styles'
 
 export default function SearchTab(props) {
 
+    let sendSearchText
+
+    const onSearchUpdate = (text) => {
+        clearTimeout(sendSearchText)
+        sendSearchText = setTimeout(() => {
+            props.searchWord(text)
+        }, 250)
+    }
+
     return (
         <View style={styles.container}>
             <TextInput
                 style={styles.searchField}
                 placeholder="Looking for someone ?"
-                onChangeText={props.searchWord}
+                onChangeText={onSearchUpdate}
                 keyboardType={'default'}
                 multiline={false}
-                onSubmitEditing={props.find}
             />
         </View>
     )

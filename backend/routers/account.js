@@ -50,10 +50,14 @@ router.put('/', authMiddleware, async (req, res) => {
     }
 })
 
-router.get('/search/:word', async (req, res) => {
-    const { word } = req.params
-    const user = await accountModel.find({ firstName: { $regex: '.*' + word + '.*' } }).limit(5)
-    res.json(user)
+router.get('/search', authMiddleware, async (req, res) => {
+    try {
+        const { word } = req.query
+        const user = await accountModel.find({ firstName: { $regex: '.*' + word + '.*' } }).limit(5)
+        res.json({result: user})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
 })
 
 // Add New user in mongoDB
