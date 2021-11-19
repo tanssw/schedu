@@ -34,8 +34,9 @@ export default function CalendarNavigator() {
             />
             <CalendarStack.Screen name="Appointment" component={AppointmentScreen} />
             <CalendarStack.Screen
-                name={'AppointmentApproval'}
+                name="AppointmentApproval"
                 component={AppointmentApprovalScreen}
+                options={{headerTitle: 'Approval'}}
             />
 
         </CalendarStack.Navigator>

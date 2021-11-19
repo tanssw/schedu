@@ -18,7 +18,7 @@ export default function MyAppointment(props) {
 
     const renderAppointment = (appointment) => {
         return (
-            <View key={appointment._id} style={styles.appointmentItem}>
+            <TouchableOpacity key={appointment._id} style={styles.appointmentItem}>
                 <View>
                     <View style={styles.appointmentDesc}>
                         <Text style={styles.appointmentDate}>
@@ -35,14 +35,14 @@ export default function MyAppointment(props) {
                 <View style={styles.status}>
                     <Text style={styles.statusText}>{appointment.status}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
     const appointmentList = (
-        <TouchableOpacity>
+        <View>
             {props.appointments.map(appointment => renderAppointment(appointment))}
-        </TouchableOpacity>
+        </View>
     )
 
     const emptyRequest = (
