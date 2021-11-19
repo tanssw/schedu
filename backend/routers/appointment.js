@@ -118,15 +118,23 @@ router.get('/count', authMiddleware, async (req, res) => {
         // Filter appointment that already end
         let endedAppointments = appointments.filter(appointment => ['abandoned', 'done'].includes(appointment.status))
 
+        // Filter appointment that already declined
+        let declinedAppointments = appointments.filter(appointment => {
+            let meDeclined = appointment.participants.filter(participant => participant.userId === userId && !participant.join && participant.confirmed)
+            return !!meDeclined.length
+        })
+
         let overallCount = appointments.length
         let requestCount = requestAppointments.length
         let endedCount = endedAppointments.length
-        let ongoingCount = appointments.length - requestCount
+        let declinedCount = declinedAppointments.length
+        let ongoingCount = appointments.length - requestCount - declinedCount
         let activeCount = ongoingCount - endedCount
 
         res.json({
             overall: overallCount,
             request: requestCount,
+            declined: declinedCount,
             ongoing: ongoingCount,
             end: endedCount,
             active: activeCount

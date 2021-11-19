@@ -14,48 +14,19 @@ export default function AppointmentApprovalScreen({ props, route }) {
     const { data } = route.params
     const navigation = useNavigation()
 
-    const [subject, setSubject] = useState()
-    const [commMethod, setCommMethod] = useState()
-    const [commUrl, setCommUrl] = useState()
-    const [note, setNote] = useState()
-    const [participants, setParticipants] = useState([])
+    const [displayCommMethod, setDisplayCommMethod] = useState()
 
-    useEffect(async () => {
-        try {
-            for (let index = 0; index < data.participants.length; index++) {
-                const uid = data.participants[index]
-                await getDetailsParticipants(uid)
-            }
-            getCommMethod()
-        } catch (error) {
-            console.log(error)
-        }
+    useEffect(() => {
+        getCommMethod()
     }, [])
-
-    //FUNCTION: Get details user for display there name
-    const getDetailsParticipants = async uid => {
-        try {
-            const { token } = await getAuthAsset()
-            const payload = {
-                headers: {
-                    'schedu-token': token
-                }
-            }
-            const peoples = await axios.get(`http://localhost:3000/account/${uid.userId}`, payload)
-            setParticipants(peoples)
-        } catch (error) {
-
-        }
-    }
 
     //FUNCTION: return commMethods for details
     const getCommMethod = () => {
-        const commMethod = data.commMethod
-        switch (commMethod) {
-            case 'face': return setCommMethod('Face to Face')
-            case 'msteam': return setCommMethod('Microsoft Teams')
-            case 'meet': return setCommMethod('Google meet')
-            case 'zoom': return setCommMethod('Zoom Application')
+        switch (data.commMethod) {
+            case 'face': return setDisplayCommMethod('Face to Face')
+            case 'msteam': return setDisplayCommMethod('Microsoft Teams')
+            case 'meet': return setDisplayCommMethod('Google meet')
+            case 'zoom': return setDisplayCommMethod('Zoom Application')
         }
     }
 
@@ -87,9 +58,9 @@ export default function AppointmentApprovalScreen({ props, route }) {
     const approval = () => { submit(true, data._id) }
 
     // FUNCTION: to render the participant into a Flatlist
-    const renderParticipant = ({ item }) => {
+    const renderParticipant = ({ item, index }) => {
         return (
-            <View style={styles.profile}>
+            <View style={[styles.profile, index ? {marginLeft: 16} : null]}>
                 <FontAwesome
                     name="user-circle-o"
                     size={44}
@@ -126,14 +97,14 @@ export default function AppointmentApprovalScreen({ props, route }) {
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Communication Method</Text>
                         <View style={styles.commMethodBox}>
-                            <Text style={styles.commMethodHeader}>{commMethod}</Text>
-                            <Text style={styles.commMethodURL}>URL: {commUrl ? commUrl : '[Not provided]'}</Text>
+                            <Text style={styles.commMethodHeader}>{displayCommMethod}</Text>
+                            <Text style={styles.commMethodURL}>URL: {data.commUrl ? data.commUrl : '[Not provided]'}</Text>
                         </View>
                     </View>
                     {/* Note to participant Textbox */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Note to participant</Text>
-                        <Text>{data.note}</Text>
+                        <Text style={styles.textBox}>{data.note}</Text>
                     </View>
                     {/* Button */}
                     <View style={styles.decisionContainer}>
@@ -182,12 +153,11 @@ const styles = StyleSheet.create({
     },
     personName: {
         textAlign: 'center',
-        marginTop: 4
+        fontWeight: '300'
     },
     personImage: {
         textAlign: 'center',
-        marginVertical: 3,
-        marginHorizontal: 12
+        marginVertical: 6
     },
     spaceBetweenInput: {
         marginVertical: 12
@@ -207,6 +177,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: colorCode.grey,
         marginTop: 8
+    },
+    textBox: {
+        fontWeight: '300'
     },
     decisionContainer: {
         flex: 1,
