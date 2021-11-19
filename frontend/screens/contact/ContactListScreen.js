@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
 import axios from 'axios'
 
-import SuggestBar from './components/SuggestBar'
+import RecentlyContact from './components/RecentlyContact'
 import SearchBar from './components/SearchTab'
 
 import QueryBar from './components/QueryBar'
@@ -76,7 +76,7 @@ export default function ContactListScreen({ navigation }) {
     // toggle display suggest and query bar
     const suggestDisplay = () => {
         if (toggleSuggest == 0) {
-            return <SuggestBar />
+            return <RecentlyContact />
         }
     }
 

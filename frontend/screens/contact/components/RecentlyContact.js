@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import { colorCode } from '../../../styles'
 
-export default function SuggestBar() {
+export default function RecentlyContact() {
     const navigation = useNavigation()
     const [participants, updateParticipants] = useState([
         {
@@ -74,7 +74,7 @@ export default function SuggestBar() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Suggested</Text>
+            <Text style={styles.header}>Recently Contact</Text>
             <View style={styles.suggestionContainer}>
                 <FlatList
                     horizontal
