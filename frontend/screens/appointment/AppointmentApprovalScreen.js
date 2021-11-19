@@ -68,7 +68,7 @@ function AppointmentApprovalScreen({ props, route }) {
             appointmentId: objectId,
             data: data
         }
-        const config = { headers: { 'Schedu-Token': "test" } }
+        const config = { headers: { 'Schedu-Token': token } }
         try {
             navigation.navigate('CalendarOverview')
             const result = await axios.put(
