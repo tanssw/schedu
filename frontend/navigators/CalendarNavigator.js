@@ -9,7 +9,6 @@ import CalendarOverviewScreen from '../screens/calendar/CalendarOverviewScreen'
 import CalendarDetailScreen from '../screens/calendar/CalendarDetailScreen'
 import AppointmentScreen from '../screens/appointment/AppointmentScreen'
 import AppointmentApprovalScreen from '../screens/appointment/AppointmentApprovalScreen'
-
 const CalendarStack = createNativeStackNavigator()
 
 export default function CalendarNavigator() {
@@ -38,7 +37,6 @@ export default function CalendarNavigator() {
                 component={AppointmentApprovalScreen}
                 options={{headerTitle: 'Approval'}}
             />
-
         </CalendarStack.Navigator>
     )
 }
