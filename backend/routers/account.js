@@ -80,13 +80,5 @@ router.get('/user/:objectId', async (req, res) => {
     res.json(user)
 })
 
-//Get all favorite users for they userId
-router.get('/favorite/:id', authMiddleware, async (req, res) =>{
-    const id = req.params.id
-    const favoriteList = await accountModel.findOne({_id : id}).select({favorite: {$elemMatch: {_id: id}}})
-    res.json(favoriteList)
-
-})
-
 
 module.exports = router

@@ -15,9 +15,6 @@ export default function ContactHeader(props) {
                         <Text style={styles.profileRole}>{props.profile.role}</Text>
                     </View>
                 </View>
-                <TouchableOpacity style={styles.favoriteBtn}>
-                    <Text style={styles.favoriteText}>Favorite</Text>
-                </TouchableOpacity>
             </View>
         </View>
     )
@@ -47,16 +44,5 @@ const styles = StyleSheet.create({
         color: colorCode.grey,
         fontSize: 12,
         fontWeight: '300'
-    },
-    favoriteBtn: {
-        paddingVertical: 6,
-        paddingHorizontal: 14,
-        borderRadius: 256,
-        borderColor: colorCode.grey,
-        borderWidth: 1
-    },
-    favoriteText: {
-        color: colorCode.grey,
-        fontSize: 12,
     }
 })

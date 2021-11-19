@@ -26,15 +26,7 @@ function AppointmentDetail(props, ref) {
     const [isEmptyCommMethod, setIsEmptyCommMethod] = useState(true)
     const [isEmptyCommUrl, setIsEmptyCommUrl] = useState(true)
 
-    const [participants, setParticipants] = useState([
-        {
-            _id: '618b4d47a996fac981059a6f',
-            business_id: '62070184',
-            firstname: 'Loukhin',
-            lastname: 'Dotcom',
-            join: true
-        }
-    ])
+    const [participants, setParticipants] = useState([])
 
     useImperativeHandle(
         ref,
@@ -53,14 +45,6 @@ function AppointmentDetail(props, ref) {
         setCommUrl()
         setNote()
     }
-
-    // const validate = () => {
-    //     console.log(subject, commMethod)
-    //     if (subject !== null) setIsEmptySubject(false)
-    //     if (commMethod !== null) setIsEmptyCommMethod(false)
-    //     console.log(!isEmptySubject && !isEmptyCommMethod)
-    //     return (!isEmptySubject && !isEmptyCommMethod)
-    // }
 
     // FUNCTION: to structure appointment data
     const createAppointment = () => {
