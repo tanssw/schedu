@@ -20,33 +20,8 @@ export default function AppointmentScreen({props, route}) {
     const [participants, setParticipants] = useState([])
 
     useEffect(async () => {
-        try {
-            for (let index = 0; index < data.participants.length; index++) {
-                const uid = data.participants[index]
-                await getDetailsParticipants(uid)
-            }
             getCommMethod()
-        } catch (error) {
-            console.log(error)
-        }
     }, [])
-
-    //FUNCTION: Get details user for display there name
-    const getDetailsParticipants = async uid => {
-        try {
-            const { token } = await getAuthAsset()
-            const payload = {
-                headers: {
-                    'schedu-token': token
-                }
-            }
-            const peoples = await axios.get(`http://localhost:3000/account/${uid.userId}`, payload)
-            setParticipants(peoples)
-        } catch (error) {
-
-        }
-    }
-
     //FUNCTION: return commMethods for details
     const getCommMethod = () => {
         const commMethod = data.commMethod
@@ -57,34 +32,6 @@ export default function AppointmentScreen({props, route}) {
             case 'zoom': return setCommMethod('Zoom Application')
         }
     }
-
-    // FUNCTION: update confirm state participant in appointment
-    const submit = async (status, objectId) => {
-        try {
-            const { token, userId } = await getAuthAsset()
-            const payload = {
-                userId: userId,
-                join: status,
-                appointmentId: objectId,
-                appointmentData: data
-            }
-            const config = {
-                headers: { 'Schedu-Token': token }
-            }
-            await axios.put(`http://localhost:3000/appointment/`, payload, config)
-            navigation.navigate('CalendarOverview')
-        } catch (error) {
-            if (checkExpiredToken(error)) {
-                await clearAuthAsset()
-                navigation.navigate('SignIn')
-            }
-        }
-    }
-
-    // FUNCTION : User can decline or approve to join the appointment
-    const decline = () => { submit(false, data._id) }
-    const approval = () => { submit(true, data._id) }
-
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item }) => {
         return (
@@ -134,16 +81,7 @@ export default function AppointmentScreen({props, route}) {
                         <Text style={styles.header}>Note to participant</Text>
                         <Text>{data.note}</Text>
                     </View>
-                    {/* Button */}
-                    {/* <View style={styles.decisionContainer}>
-                        <TouchableOpacity style={[styles.mainButton, styles.declineButton]} onPress={() => { decline() }}>
-                            <Text style={styles.declineText}>Decline</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.mainButton, styles.acceptButton]} onPress={() => { approval() }}>
-                            <Text style={styles.acceptText}>Accept</Text>
-                        </TouchableOpacity>
-                    </View> */}
-                </View>
+                    </View>
             </View>
         </ScrollView>
     )
@@ -219,25 +157,6 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    declineButton: {
-        borderWidth: 1,
-        borderColor: colorCode.red
-    },
-    declineText: {
-        color: colorCode.red,
-        fontWeight: '300',
-        fontSize: 16
-    },
-    acceptButton: {
-        borderWidth: 1,
-        borderColor: colorCode.blue,
-        backgroundColor: colorCode.blue
-    },
-    acceptText: {
-        color: 'white',
-        fontWeight: '300',
-        fontSize: 16
     },
     profile: {
         justifyContent: 'space-between'
