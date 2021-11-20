@@ -197,6 +197,7 @@ router.get('/recently', authMiddleware, async (req, res) => {
             }
         })
 
+        // Sorting by time from newest to oldest
         receivers.sort((a, b) => {
             let atime = dayjs(a.time)
             let btime = dayjs(b.time)
@@ -205,7 +206,21 @@ router.get('/recently', authMiddleware, async (req, res) => {
             return 0
         })
 
-        res.json({result: receivers})
+        let recentlyContacts = []
+        for (let receiver of receivers) {
+            // Check if receiver not already assigned in recently contact
+            let alreadyAssigned = recentlyContacts.map(contact => contact.userId)
+            if (!alreadyAssigned.includes(receiver.userId)) {
+                // Get user data and push it in the array
+                let userData = await getUserByObjectId(receiver.userId)
+                receiver.firstName = userData.firstName
+                receiver.lastName = userData.lastName
+                receiver.image = userData.image
+                recentlyContacts.push(receiver)
+            }
+        }
+
+        res.json({result: recentlyContacts})
 
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
