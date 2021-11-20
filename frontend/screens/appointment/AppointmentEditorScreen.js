@@ -43,8 +43,9 @@ export default function AppointmentEditorScreen({ route, navigation }) {
                 timeSelectorComponent.current.resetChildState()
                 detailComponent.current.resetChildState()
                 navigation.navigate('ContactProfile', { contactId: contactId })
-            } else alert('Please select appointment time!')
-            console.log(payload)
+            } else {
+                alert('Start / End Time is required')
+            }
         } catch (error) {
             if (checkExpiredToken(error)) {
                 await clearAuthAsset()
