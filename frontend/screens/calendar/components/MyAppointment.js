@@ -22,7 +22,7 @@ export default function MyAppointment(props) {
     const renderAppointment = (appointment) => {
         return (
             <TouchableOpacity key={appointment._id} style={styles.appointmentItem} onPress={() =>{
-                navigation.navigate('Appointment', { data: appointment ,test123: appointment._id})
+                navigation.navigate('Appointment', { data: appointment}, props.test(appointment._id))
             }}>
                 <View>
                     <View style={styles.appointmentDesc}>

@@ -16,8 +16,8 @@ const CalendarStack = createNativeStackNavigator()
 export default function CalendarNavigator({ navigation }) {
     const [data, setData] = useState("Test for Calendar page")
     const [appointmentId, setAppointmentId] = useState("")
-    const getAppointmentId = () =>{
-        alert("Test function 2")
+    const getAppointmentId = (test) =>{
+        return setAppointmentId(test)
     }
     return (
         <CalendarStack.Navigator
@@ -26,11 +26,14 @@ export default function CalendarNavigator({ navigation }) {
         >
             <CalendarStack.Screen
                 name="CalendarOverview"
-                component={CalendarOverviewScreen}
+                // component={CalendarOverviewScreen}
                 options={{
                     headerTitle: 'Calendar'
                 }}
-            />
+            >
+            {props => <CalendarOverviewScreen {...props} test={getAppointmentId}/>}
+
+                </CalendarStack.Screen>
             <CalendarStack.Screen
                 name="CalendarDetail"
                 component={CalendarDetailScreen}
@@ -45,7 +48,7 @@ export default function CalendarNavigator({ navigation }) {
                     headerRight: () => (
                         <Button
                             onPress={() => {
-                                navigation.navigate('EditAppointmentScreen', {data: navigation.test1234},)}}
+                                navigation.navigate('EditAppointmentScreen', {data: appointmentId},)}}
                             title="Edit"
                             color="white"
                         />

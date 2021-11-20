@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Button } from 'react-native'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
@@ -11,7 +11,7 @@ import IncomingRequest from './components/IncomingRequest'
 import MyAppointment from './components/MyAppointment'
 import { colorCode } from '../../styles'
 
-export default function CalendarOverviewScreen({navigation}) {
+export default function CalendarOverviewScreen({props, navigation, test}) {
 
     const [markedDatesState, updateMarkedDatesState] = useState({})
     const [requestAppointmentsState, updateRequestAppointmentsState] = useState([])
@@ -170,7 +170,7 @@ export default function CalendarOverviewScreen({navigation}) {
             <View style={styles.innerContainer}>
                 <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDatesState} />
                 <IncomingRequest appointments={requestAppointmentsState} />
-                <MyAppointment appointments={myAppointmentsState}/>
+                <MyAppointment appointments={myAppointmentsState} test={test}/>
             </View>
         </ScrollView>
     )
