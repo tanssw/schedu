@@ -196,6 +196,7 @@ router.get('/recently', authMiddleware, async (req, res) => {
 
         // Get only 1 per user ID
         const receivers = Array.from(new Set(receiverArray))
+        // TODO: Mapping to get firstname, lastname and profile image.
 
         res.json({result: receivers})
 
