@@ -45,9 +45,9 @@ function RecentlyContact(props, ref) {
 
     const renderContacts = ({ item, index }) => {
         return (
-            <TouchableOpacity onPress={() => {navigateContactProfile(item.userId)}} style={index ? styles.marginLeftDefault : ''}>
+            <TouchableOpacity onPress={() => {navigateContactProfile(item.userId)}} style={[styles.personBox, index ? styles.marginLeftDefault : '']}>
                 <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} style={styles.personImage} />
-                <Text style={styles.personName}>{item.firstName} {item.lastName[0]}.</Text>
+                <Text numberOfLines={1} style={styles.personName}>{item.firstName} {item.lastName[0]}.</Text>
             </TouchableOpacity>
         )
     }
@@ -83,10 +83,14 @@ const styles = StyleSheet.create({
     suggestionContainer: {
         flexDirection: 'row'
     },
+    personBox: {
+        alignSelf: 'flex-end'
+    },
     personName: {
         textAlign: 'center',
+        fontWeight: '300',
         marginTop: 6,
-        fontWeight: '300'
+        width: 64,
     },
     personImage: {
         textAlign: 'center'
