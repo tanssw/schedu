@@ -1,19 +1,29 @@
 import React from 'react'
 import { StyleSheet, View, TextInput} from 'react-native'
-import { colorCode } from '../../../styles'
+import { FontAwesome } from '@expo/vector-icons'
 
+import { colorCode } from '../../../styles'
 
 export default function SearchTab(props) {
 
+    let sendSearchText
+
+    const onSearchUpdate = (text) => {
+        clearTimeout(sendSearchText)
+        sendSearchText = setTimeout(() => {
+            props.searchWord(text)
+        }, 250)
+    }
+
     return (
         <View style={styles.container}>
+            <FontAwesome name="search" size={20} color="white" />
             <TextInput
                 style={styles.searchField}
                 placeholder="Looking for someone ?"
-                onChangeText={props.searchWord}
+                onChangeText={onSearchUpdate}
                 keyboardType={'default'}
                 multiline={false}
-                onSubmitEditing={props.find}
             />
         </View>
     )
@@ -31,7 +41,8 @@ const styles = StyleSheet.create({
         height: 35,
         backgroundColor: 'white',
         paddingHorizontal: 8,
-        borderRadius: 4,
+        marginLeft: 16,
+        borderRadius: 4
     },
     history: {
         marginLeft: 16

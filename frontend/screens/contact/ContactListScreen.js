@@ -9,51 +9,64 @@ import QueryBar from './components/QueryBar'
 import ContactTab from './components/ContactTab'
 
 import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 export default function ContactListScreen({ navigation }) {
 
     const [contacts, updateContacts] = useState([])
 
-    const [headerText, updateHeaderText] = useState('Contact')
     const [search, updateSearch] = useState('')
     const [toggleSuggest, updateToggleSuggest] = useState(0)
     const [toggleQuery, updateToggleQuery] = useState(0)
 
     useEffect(() => {
-        getContactUsers()
-    }, [])
-
-    useEffect(() => {
-        if (search == '') {
-            getContactUsers()
-            updateToggleSuggest(0)
-            updateToggleQuery(0)
-        } else {
+        if (search) {
             getSearch(search)
             updateToggleSuggest(1)
             updateToggleQuery(1)
+        } else {
+            getContactUsers()
+            updateToggleSuggest(0)
+            updateToggleQuery(0)
         }
     }, [search])
 
     const getSearch = async () => {
-        const user = await axios.get(`http://localhost:3000/account/search/${search}`)
-        updateContacts(user.data)
+        try {
+            const { token, userId } = await getAuthAsset()
+            const payload = {
+                headers: {
+                    'Schedu-Token': token,
+                    'Schedu-UID': userId
+                },
+                params: {
+                    word: search
+                }
+            }
+            const user = await axios.get(`${API_SERVER_DOMAIN}/account/search`, payload)
+            updateContacts(user.data)
+        } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                navigation.navigate('SignIn')
+            }
+        }
     }
 
     // Query all users in the system
     const getContactUsers = async (role=null) => {
-        const { token, userId } = await getAuthAsset()
-        const payload = {
-            headers: {
-                'Schedu-Token': token,
-                'Schedu-UID': userId
-            },
-            params: {
-                role: role
-            }
-        }
         try {
-            const userResult = await axios.get(`http://localhost:3000/account/all`, payload)
+            const { token, userId } = await getAuthAsset()
+            const payload = {
+                headers: {
+                    'Schedu-Token': token,
+                    'Schedu-UID': userId
+                },
+                params: {
+                    role: role
+                }
+            }
+            const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/all`, payload)
             const contactUsers = userResult.data.users
             updateContacts(contactUsers)
         } catch (error) {
@@ -62,15 +75,6 @@ export default function ContactListScreen({ navigation }) {
                 return navigation.navigate('SignIn')
             }
         }
-    }
-
-    const historyQuery = () => {
-        updateHeaderText('History')
-        closeUpper()
-    }
-
-    const StarQuery = () => {
-        alert('Star')
     }
 
     // toggle display suggest and query bar
@@ -84,15 +88,13 @@ export default function ContactListScreen({ navigation }) {
         <View style={styles.container}>
             <SearchBar
                 searchWord={updateSearch}
-                historyQuery={historyQuery}
-                StarQuery={StarQuery}
                 find={getSearch}
             />
             <ScrollView style={styles.scrollContainer}>
                 <View style={styles.innerContainer}>
                     {suggestDisplay()}
                     {toggleQuery ? null : <QueryBar onSelect={getContactUsers} />}
-                    <ContactTab contacts={contacts} headerText={headerText} />
+                    <ContactTab contacts={contacts} headerText="Contact" />
                 </View>
             </ScrollView>
         </View>

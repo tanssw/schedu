@@ -50,35 +50,20 @@ router.put('/', authMiddleware, async (req, res) => {
     }
 })
 
-router.get('/search/:word', async (req, res) => {
-    const { word } = req.params
-    const user = await accountModel.find({ firstName: { $regex: '.*' + word + '.*' } }).limit(5)
-    res.json(user)
+// To search with firstname or lastname
+router.get('/search', authMiddleware, async (req, res) => {
+    try {
+        const { word } = req.query
+        const user = await accountModel.find({
+            $or: {
+                firstName: { $regex: '.*' + word + '.*' },
+                lastName: { $regex: '.*' + word + '.*' }
+            }
+        })
+        res.json({result: user})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
 })
-
-// Add New user in mongoDB
-router.post('/addUser', async (req, res) => {
-    const payload = req.body
-    const user = new accountModel(payload)
-    await user.save()
-    res.json({ Message: 'Success' })
-})
-
-// Delete user in mongoDB
-router.delete('/delUser/:id', async (req, res) => {
-    const { id } = req.params
-    await accountModel.findByIdAndDelete(id)
-    res.json({ message: 'Delete user' })
-
-    res.status(200).end()
-})
-
-// Get user by user object id
-router.get('/user/:objectId', async (req, res) => {
-    const { objectId } = req.params
-    const user = await accountModel.find({ _id: objectId }).exec()
-    res.json(user)
-})
-
 
 module.exports = router
