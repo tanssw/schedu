@@ -15,10 +15,10 @@ function RecentlyContact(props, ref) {
     const navigation = useNavigation()
 
     useImperativeHandle(ref, () => ({
-        getRecentlyContacts() { getContacts() }
+        loadRecentlyContacts() { loadContacts() }
     }), [])
 
-    const getContacts = async () => {
+    const loadContacts = async () => {
         try {
             const { token, userId } = await getAuthAsset()
             const payload = {

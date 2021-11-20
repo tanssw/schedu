@@ -27,6 +27,22 @@ router.get('/all', authMiddleware, async (req, res) => {
     }
 })
 
+// To search with firstname or lastname
+router.get('/search', authMiddleware, async (req, res) => {
+    try {
+        const { word } = req.query
+        const user = await accountModel.find({
+            $or: [
+                {firstName: { $regex: word }},
+                {lastName: { $regex: word }}
+            ]
+        })
+        res.json({result: user})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
+})
+
 // Get user information from User ID
 router.get('/:userId', authMiddleware, async (req, res) => {
     const userId = req.params.userId
@@ -45,22 +61,6 @@ router.put('/', authMiddleware, async (req, res) => {
         const payload = req.body.newData
         const updatedUser = await accountModel.findByIdAndUpdate(id, { $set: payload }, {new: true})
         res.json({user: updatedUser})
-    } catch (error) {
-        res.status(500).send({message: 'Something went wrong. Please try again later.'})
-    }
-})
-
-// To search with firstname or lastname
-router.get('/search', authMiddleware, async (req, res) => {
-    try {
-        const { word } = req.query
-        const user = await accountModel.find({
-            $or: {
-                firstName: { $regex: '.*' + word + '.*' },
-                lastName: { $regex: '.*' + word + '.*' }
-            }
-        })
-        res.json({result: user})
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
