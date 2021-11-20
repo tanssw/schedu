@@ -27,7 +27,6 @@ export default function NotificationCenterScreen({navigation}) {
             }
             const notificationResult = await axios.get(`${API_SERVER_DOMAIN}/notification/all`, payload)
             const notifications = notificationResult.data.notifications
-            console.log(notifications)
             updateMyNotifications(notifications)
         } catch (error) {
             if (checkExpiredToken(error)) {
