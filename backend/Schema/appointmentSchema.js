@@ -16,6 +16,8 @@ const appointmentSchema = new Schema({
     commMethod: String,
     commUrl: String,
     note: String,
+}, {
+    timestamps: true
 })
 
 module.exports = appointmentSchema

@@ -189,14 +189,21 @@ router.get('/recently', authMiddleware, async (req, res) => {
         const appointments = await appointmentModel.find({sender: userId})
 
         // Get array of contacted receivers
-        const receiverArray = appointments.map(appointment => {
+        let receivers = appointments.map(appointment => {
             const receiver = appointment.participants.find(participant => participant.main)
-            return receiver.userId
+            return {
+                userId: receiver.userId,
+                time: appointment.createdAt
+            }
         })
 
-        // Get only 1 per user ID
-        const receivers = Array.from(new Set(receiverArray))
-        // TODO: Mapping to get firstname, lastname and profile image.
+        receivers.sort((a, b) => {
+            let atime = dayjs(a.time)
+            let btime = dayjs(b.time)
+            if (atime > btime) return -1
+            if (atime < btime) return 1
+            return 0
+        })
 
         res.json({result: receivers})
 
