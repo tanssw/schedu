@@ -5,6 +5,7 @@ const notificationModel = conn.model('notifications', notificationSchema, proces
 
 // Create appointment request notification
 const createRequestNotification = async (targets, appointmentId, appointmentDatetime) => {
+    targets = targets.map(target => ({userId: target, response: false}))
     const data = {
         type: 'request',
         targets: targets,

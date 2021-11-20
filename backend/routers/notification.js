@@ -15,7 +15,11 @@ const { formatNotification } = require('../helpers/notification')
 router.get('/all', authMiddleware, async (req, res) => {
     try {
         const userId = req.headers['schedu-uid']
-        const notifications = await notificationModel.find({targets: userId})
+        const notifications = await notificationModel.find({
+            targets: {
+                $elemMatch: {userId: userId}
+            }
+        })
         res.json({notifications: notifications})
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
@@ -26,7 +30,13 @@ router.get('/all', authMiddleware, async (req, res) => {
 router.get('/active', authMiddleware, async (req, res) => {
     try {
         const userId = req.headers['schedu-uid']
-        const notifications = await notificationModel.find({targets: userId, expireAt: {$gte: new Date()}})
+        // Get notification which not expire and sorting them from newest one
+        const notifications = await notificationModel.find({
+            targets: {
+                $elemMatch: {userId: userId}
+            },
+            expireAt: {$gte: new Date()}
+        }).sort([['createdAt', -1]])
 
         let formattedNotifications = []
         for (let notification of notifications) {

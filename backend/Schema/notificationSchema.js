@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const notificationSchema = new Schema({
     type: String,
-    targets: [String],
+    targets: [{userId: String, response: Boolean}],
     appointmentId: String,
     expireAt: Date
 }, {
