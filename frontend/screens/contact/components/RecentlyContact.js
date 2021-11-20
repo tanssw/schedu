@@ -1,73 +1,52 @@
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 
+import { checkExpiredToken, clearAuthAsset } from '../../../modules/auth'
+
 import { colorCode } from '../../../styles'
+import axios from 'axios'
 
-export default function RecentlyContact() {
+function RecentlyContact(props, ref) {
+
+    const [recentlyContacts, updateRecentlyContacts] = useState([])
+
     const navigation = useNavigation()
-    const [participants, updateParticipants] = useState([
-        {
-            id: 1,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 2,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 3,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 4,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 5,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 6,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        },
-        {
-            id: 7,
-            business_id: '62070074',
-            firstname: 'Tasanai',
-            lastname: 'Srisawat',
-            role: 'Student'
-        }
-    ])
 
-    const navigateContactProfile = () => {
-        navigation.navigate('ContactProfile', { contactId: '617fb3f0396613a9e99b86a8' })
+    useImperativeHandle(ref, () => ({
+        getRecentlyContacts() { getContacts() }
+    }), [])
+
+    const getContacts = async () => {
+        try {
+            const { token, userId } = await getAuthAsset()
+            const payload = {
+                headers: {
+                    'Schedu-Token': token,
+                    'Schedu-UID': userId
+                }
+            }
+            const contactResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/recently`, payload)
+            const contacts = contactResult.data.result
+            updateRecentlyContacts(contacts)
+        } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                navigation.navigate('SignIn')
+            }
+        }
     }
 
-    const renderParticipant = ({ item, index }) => {
+    const navigateContactProfile = (userId) => {
+        navigation.navigate('ContactProfile', { contactId: userId })
+    }
+
+    const renderContacts = ({ item, index }) => {
         return (
-            <TouchableOpacity onPress={() => {navigateContactProfile()}} style={index ? styles.marginLeftDefault : ''}>
+            <TouchableOpacity onPress={() => {navigateContactProfile(item.userId)}} style={index ? styles.marginLeftDefault : ''}>
                 <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} style={styles.personImage} />
-                <Text style={styles.personName}>{item.firstname} {item.lastname[0]}.</Text>
+                <Text style={styles.personName}>{item.firstName} {item.lastName[0]}.</Text>
             </TouchableOpacity>
         )
     }
@@ -78,14 +57,17 @@ export default function RecentlyContact() {
             <View style={styles.suggestionContainer}>
                 <FlatList
                     horizontal
-                    data={participants}
-                    renderItem={renderParticipant}
-                    keyExtractor={person => person.id}
+                    data={recentlyContacts}
+                    renderItem={renderContacts}
+                    keyExtractor={(contact, index) => index}
                 />
             </View>
         </View>
     )
 }
+
+export default forwardRef(RecentlyContact)
+
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
