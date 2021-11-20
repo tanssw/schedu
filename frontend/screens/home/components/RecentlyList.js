@@ -37,9 +37,18 @@ function RecentlyList(props, ref) {
         }
     }
 
+    const navigateToProfile = (userId) => {
+        navigation
+        navigation.navigate('Contact', {
+            screen: 'ContactProfile',
+            params: {contactId: userId},
+            initial: false
+        })
+    }
+
     const renderContact = ({item, index}) => {
         return (
-            <TouchableOpacity style={index ? styles.contactBoxMargin: ''}>
+            <TouchableOpacity onPress={() => {navigateToProfile(item.userId)}} style={index ? styles.contactBoxMargin: ''}>
                 <FontAwesome name="user-circle-o" size={48} color="grey" style={styles.personImage} />
                 <Text style={styles.personName}>{item.firstName} {item.lastName[0]}.</Text>
             </TouchableOpacity>
