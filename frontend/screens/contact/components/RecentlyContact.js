@@ -1,13 +1,15 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/core'
+import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 
-import { API_SERVER_DOMAIN } from '../../../modules/apis'
 import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../../modules/apis'
 
-function RecentlyList(props, ref) {
+import { colorCode } from '../../../styles'
+
+function RecentlyContact(props, ref) {
 
     const [recentlyContacts, updateRecentlyContacts] = useState([])
 
@@ -37,18 +39,14 @@ function RecentlyList(props, ref) {
         }
     }
 
-    const navigateToProfile = (userId) => {
-        navigation.navigate('Contact', {
-            screen: 'ContactProfile',
-            params: {contactId: userId},
-            initial: false
-        })
+    const navigateContactProfile = (userId) => {
+        navigation.navigate('ContactProfile', { contactId: userId })
     }
 
-    const renderContact = ({item, index}) => {
+    const renderContacts = ({ item, index }) => {
         return (
-            <TouchableOpacity onPress={() => {navigateToProfile(item.userId)}} style={index ? styles.contactBoxMargin: ''}>
-                <FontAwesome name="user-circle-o" size={48} color="grey" style={styles.personImage} />
+            <TouchableOpacity onPress={() => {navigateContactProfile(item.userId)}} style={index ? styles.marginLeftDefault : ''}>
+                <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} style={styles.personImage} />
                 <Text style={styles.personName}>{item.firstName} {item.lastName[0]}.</Text>
             </TouchableOpacity>
         )
@@ -57,32 +55,43 @@ function RecentlyList(props, ref) {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Recently Contact</Text>
-            <FlatList horizontal data={recentlyContacts} renderItem={renderContact} keyExtractor={(item, index) => index}/>
+            <View style={styles.suggestionContainer}>
+                <FlatList
+                    horizontal
+                    data={recentlyContacts}
+                    renderItem={renderContacts}
+                    keyExtractor={(contact, index) => index}
+                />
+            </View>
         </View>
     )
 }
 
-export default forwardRef(RecentlyList)
+export default forwardRef(RecentlyContact)
 
 const styles = StyleSheet.create({
+    container: {
+        backgroundColor: 'white',
+        padding: 16,
+        marginBottom: 8
+    },
     header: {
+        fontSize: 18,
         fontWeight: 'bold',
-        fontSize: 16,
-        marginBottom: 18
+        marginBottom: 16
     },
-    footer: {
-        marginBottom: 32
-    },
-    contactBoxMargin: {
-        marginLeft: 12
-    },
-    personImage: {
-        textAlign: 'center',
-        marginBottom: 8,
-        marginHorizontal: 12
+    suggestionContainer: {
+        flexDirection: 'row'
     },
     personName: {
         textAlign: 'center',
+        marginTop: 6,
         fontWeight: '300'
+    },
+    personImage: {
+        textAlign: 'center'
+    },
+    marginLeftDefault: {
+        marginLeft: 12
     }
 })

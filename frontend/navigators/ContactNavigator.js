@@ -22,7 +22,8 @@ const options = {
     }),
     contactProfile: {
         title: '',
-        headerBackTitle: 'Contact'
+        headerBackTitle: 'Contact',
+
     }
 }
 export default function ContactNavigator() {
