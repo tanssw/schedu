@@ -23,10 +23,12 @@ export default function ContactListScreen({ navigation }) {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getContactUsers()
-            if (shownRecently) recentlyRef.current.loadRecentlyContacts()
+            if (shownRecently) {
+                recentlyRef.current.loadRecentlyContacts()
+            }
         })
         return unsubscribe
-    })
+    }, [])
 
     const getSearch = async (text) => {
         try {

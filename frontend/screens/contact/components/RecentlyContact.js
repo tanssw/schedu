@@ -2,11 +2,12 @@ import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'rea
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import axios from 'axios'
 
-import { checkExpiredToken, clearAuthAsset } from '../../../modules/auth'
+import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../../modules/apis'
 
 import { colorCode } from '../../../styles'
-import axios from 'axios'
 
 function RecentlyContact(props, ref) {
 
