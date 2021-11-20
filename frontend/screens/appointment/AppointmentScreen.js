@@ -11,8 +11,7 @@ import TimeDisplay from '../appointment/components/TimeDisplay'
 
 export default function AppointmentScreen({props, route}) {
 
-    const { data } = route.params
-    const navigation = useNavigation()
+    const { data} = route.params
 
     const [displayCommMethod, setDisplayCommMethod] = useState()
 

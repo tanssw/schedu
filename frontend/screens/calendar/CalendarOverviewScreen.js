@@ -170,7 +170,7 @@ export default function CalendarOverviewScreen({navigation}) {
             <View style={styles.innerContainer}>
                 <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDatesState} />
                 <IncomingRequest appointments={requestAppointmentsState} />
-                <MyAppointment appointments={myAppointmentsState} />
+                <MyAppointment appointments={myAppointmentsState}/>
             </View>
         </ScrollView>
     )

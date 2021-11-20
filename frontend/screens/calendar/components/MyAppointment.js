@@ -10,7 +10,6 @@ export default function MyAppointment(props) {
 
     const navigation = useNavigation()
 
-
     const getParticipant = (participants) => {
         const receiver = participants.filter(participant => participant.main === true)
         const receiverText = receiver.map((participant, index) => `${participant.firstName} ${participant.lastName[0]}.`)
@@ -23,7 +22,7 @@ export default function MyAppointment(props) {
     const renderAppointment = (appointment) => {
         return (
             <TouchableOpacity key={appointment._id} style={styles.appointmentItem} onPress={() =>{
-                navigation.navigate('Appointment', { data: appointment })
+                navigation.navigate('Appointment', { data: appointment ,test123: appointment._id})
             }}>
                 <View>
                     <View style={styles.appointmentDesc}>
