@@ -20,7 +20,14 @@ router.get('/all', authMiddleware, async (req, res) => {
                 $elemMatch: {userId: userId}
             }
         })
-        res.json({notifications: notifications})
+
+        let formattedNotifications = []
+        for (let notification of notifications) {
+            const formattedNotification = await formatNotification(notification)
+            formattedNotifications.push(formattedNotification)
+        }
+
+        res.json({notifications: formattedNotifications})
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
