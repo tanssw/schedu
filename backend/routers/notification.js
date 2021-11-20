@@ -1,45 +1,43 @@
-const express = require('express')
-
 const notificationSchema = require('../schema/notificationSchema')
 var conn = require('../config/connectionMongoDB/ScheduConnect')
+const notificationModel = conn.model('notifications', notificationSchema, process.env.NOTIFICATIONS_COLLECTION)
+
+const express = require('express')
 
 const router = express()
 
-const notiModel = conn.model('notifications', notificationSchema, process.env.NOTIFICATIONS_COLLECTION)
+const { authMiddleware } = require('../middlewares/auth')
+const { getAppointmentFromId } = require('../helpers/appointment')
+const { formatNotification } = require('../helpers/notification')
 
-//Get all noti in mongoDB
-router.get('/all', async(req, res) =>{
-    const noti = await notiModel.find({})
-    res.json(noti)
-})
-//Get noti by noti object id
-router.get('/:id', async(req, res) =>{
-    const { id } = req.params
-    const noti = await notiModel.findById(id)
-    res.json(noti)
-})
-//Add New noti in mongoDB
-router.post('/addNoti', async(req, res) =>{
-    const payload = req.body
-    const noti = new notiModel(payload)
-    await noti.save()
-    res.json({Message: "Success"})
-})
-//Update noti in mongoDB
-router.put('/updateNoti/:id', async(req, res) =>{
-    const payload = req.body
-    const { id } = req.params
-    const noti = await notiModel.findByIdAndUpdate(id, {$set: payload})
-    res.json(noti)
 
+// Get all notification of request client
+router.get('/all', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.headers['schedu-uid']
+        const notifications = await notificationModel.find({targets: userId})
+        res.json({notifications: notifications})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
 })
-//Delete noti in mongoDB
-router.delete('/delNoti/:id', async(req, res) => {
-    const { id } = req.params
-    await notiModel.findByIdAndDelete(id)
-    res.json({message: "Delete noti"})
 
-    res.status(200).end()
+// Get active notification of request client
+router.get('/active', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.headers['schedu-uid']
+        const notifications = await notificationModel.find({targets: userId, expireAt: {$gte: new Date()}})
+
+        let formattedNotifications = []
+        for (let notification of notifications) {
+            const formattedNotification = await formatNotification(notification)
+            formattedNotifications.push(formattedNotification)
+        }
+
+        res.json({notifications: formattedNotifications})
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
 })
 
 

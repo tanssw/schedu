@@ -178,7 +178,7 @@ router.post('/', authMiddleware, async (req, res) => {
         // Create notification to all participants
         let participantToNotify = appointmentRequest.participants
         participantToNotify.push(appointmentRequest.receiver)
-        await createRequestNotification(participantToNotify, result._id)
+        await createRequestNotification(participantToNotify, result._id, appointmentRequest.startAt)
 
         res.json({message: `Successfully create new appointment (ID: ${result._id})`})
     } catch (error) {
