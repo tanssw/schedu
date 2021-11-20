@@ -38,7 +38,6 @@ function RecentlyList(props, ref) {
     }
 
     const navigateToProfile = (userId) => {
-        navigation
         navigation.navigate('Contact', {
             screen: 'ContactProfile',
             params: {contactId: userId},
