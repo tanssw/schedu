@@ -22,7 +22,10 @@ export default function CalendarOverviewScreen({props, navigation, test}) {
             try {
                 const { token, userId } = await getAuthAsset()
 
-                const { myAppointments, requestAppointments } = await loadAppointments(token, userId)
+                const { myAppointments, requestAppointments } = await loadAppointments(
+                    token,
+                    userId
+                )
                 const events = await loadEvents()
                 const studies = await loadStudies(token, userId)
 
@@ -34,15 +37,12 @@ export default function CalendarOverviewScreen({props, navigation, test}) {
                 const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
                 const examDateMarks = buildExamDateMarks(studies, eventDateMarks)
                 updateMarkedDatesState(examDateMarks)
-            } catch (error) {
-
-            }
+            } catch (error) {}
         })
         return unsubscribe
     })
 
     const loadAppointments = async (token, userId) => {
-
         try {
             // Request my appointments from server
             const payload = {
@@ -59,14 +59,19 @@ export default function CalendarOverviewScreen({props, navigation, test}) {
             const ignoredStatus = ['abandoned', 'done']
             let myAppointments = appointments.filter(appointment => {
                 const canShow = !ignoredStatus.includes(appointment.status)
-                const meConfirmedAndJoin = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed && participant.join)
+                const meConfirmedAndJoin = appointment.participants.filter(
+                    participant =>
+                        participant.userId == userId && participant.confirmed && participant.join
+                )
                 const meAsSender = appointment.sender.userId === userId
-                return canShow && (meAsSender || (meConfirmedAndJoin.length))
+                return canShow && (meAsSender || meConfirmedAndJoin.length)
             })
 
             // Update incoming request appointments
             let requestAppointments = appointments.filter(appointment => {
-                const myself = appointment.participants.find(participant => participant.userId === userId)
+                const myself = appointment.participants.find(
+                    participant => participant.userId === userId
+                )
                 if (!myself) return false
                 const meNotConfirm = !myself.confirmed
                 const meAsSender = appointment.sender.userId === userId
@@ -74,7 +79,6 @@ export default function CalendarOverviewScreen({props, navigation, test}) {
             })
 
             return { myAppointments, requestAppointments }
-
         } catch (error) {
             if (checkExpiredToken(error)) {
                 await clearAuthAsset()
@@ -103,7 +107,10 @@ export default function CalendarOverviewScreen({props, navigation, test}) {
         }
 
         try {
-            const timetableResult = await axios.get(`${API_SERVER_DOMAIN}/registrar/courses`, payload)
+            const timetableResult = await axios.get(
+                `${API_SERVER_DOMAIN}/registrar/courses`,
+                payload
+            )
             const timetable = timetableResult.data.timetable
             return timetable
         } catch (error) {
@@ -116,46 +123,46 @@ export default function CalendarOverviewScreen({props, navigation, test}) {
     }
 
     // To build an appointment object of MarkedDate to show in Calendar
-    const buildAppointmentDateMarks = (appointments, object={}) => {
+    const buildAppointmentDateMarks = (appointments, object = {}) => {
         appointments.forEach(appointment => {
             let date = dayjs(appointment.startAt).format('YYYY-MM-DD')
             let included = Object.keys(object).includes(date)
-            if (!included) object[date] = {marked: true, dotColor: colorCode.lightBlue}
+            if (!included) object[date] = { marked: true, dotColor: colorCode.lightBlue }
         })
         return object
     }
 
     // To build an event object of MarkedDate to show in Calendar
-    const buildEventDateMarks = (events, object={}) => {
+    const buildEventDateMarks = (events, object = {}) => {
         events.forEach(event => {
             if (!event.date) return
             let date = dayjs(event.date).format('YYYY-MM-DD')
             let included = Object.keys(object).includes(date)
-            if (!included) object[date] = {marked: true, dotColor: colorCode.grey}
+            if (!included) object[date] = { marked: true, dotColor: colorCode.grey }
         })
         return object
     }
 
     // To build an study timetable object of MarkedDte to show in Calendar
-    const buildExamDateMarks = (courses, object={}) => {
+    const buildExamDateMarks = (courses, object = {}) => {
         courses.forEach(course => {
             let date, included
             if (course.midterm.date) {
                 date = dayjs(course.midterm.date).format('YYYY-MM-DD')
                 included = Object.keys(object).includes(date)
-                if (!included) object[date] = {marked: true, dotColor: colorCode.orange}
+                if (!included) object[date] = { marked: true, dotColor: colorCode.orange }
             }
             if (course.final.date) {
                 date = dayjs(course.final.date).format('YYYY-MM-DD')
                 included = Object.keys(object).includes(date)
-                if (!included) object[date] = {marked: true, dotColor: colorCode.orange}
+                if (!included) object[date] = { marked: true, dotColor: colorCode.orange }
             }
         })
         return object
     }
 
     // On day clicked, will show monthly agenda
-    const viewMonthly = (day) => {
+    const viewMonthly = day => {
         let date = dayjs(`${day.year}-${day.month}-${day.day}`)
         let formattedDay = date.format('MMMM YYYY')
         let selectedDay = date.format('YYYY-MM-DD')

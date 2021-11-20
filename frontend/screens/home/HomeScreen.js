@@ -6,15 +6,16 @@ import { shadow } from '../../styles'
 import NotificationCard from './components/NotificationCard'
 import Overview from './components/Overview'
 import RecentlyList from './components/RecentlyList'
-import SuggestedList from './components/SuggestedList'
 
 export default function HomeScreen({navigation}) {
 
     const overviewRef = useRef()
+    const recentlyRef = useRef()
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             overviewRef.current.loadOverview()
+            recentlyRef.current.loadRecentlyContacts()
         })
         return unsubscribe
     })
@@ -28,8 +29,7 @@ export default function HomeScreen({navigation}) {
             <NotificationCard onAppointmentPress={gotoMyCalendar} />
             <View style={[styles.mainContainer, shadow.boxTopMedium]}>
                 <Overview ref={overviewRef} />
-                <SuggestedList />
-                <RecentlyList />
+                <RecentlyList ref={recentlyRef} />
             </View>
         </View>
     )

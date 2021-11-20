@@ -1,59 +1,73 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
 import axios from 'axios'
 
-import SuggestBar from './components/SuggestBar'
+import RecentlyContact from './components/RecentlyContact'
 import SearchBar from './components/SearchTab'
 
 import QueryBar from './components/QueryBar'
 import ContactTab from './components/ContactTab'
 
 import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../modules/auth'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 export default function ContactListScreen({ navigation }) {
 
     const [contacts, updateContacts] = useState([])
 
-    const [headerText, updateHeaderText] = useState('Contact')
-    const [search, updateSearch] = useState('')
-    const [toggleSuggest, updateToggleSuggest] = useState(0)
-    const [toggleQuery, updateToggleQuery] = useState(0)
+    const [selectedRole, updateSelectedRole] = useState(null)
+    const [shownRecently, updateShownRecently] = useState(true)
+    const [shownQuery, updateShownQuery] = useState(true)
+
+    const recentlyRef = useRef()
 
     useEffect(() => {
-        getContactUsers()
-    }, [])
+        const unsubscribe = navigation.addListener('focus', async () => {
+            await getContactUsers(selectedRole)
+            if (shownRecently) {
+                recentlyRef.current.loadRecentlyContacts()
+            }
+        })
+        return unsubscribe
+    }, [selectedRole])
 
-    useEffect(() => {
-        if (search == '') {
-            getContactUsers()
-            updateToggleSuggest(0)
-            updateToggleQuery(0)
-        } else {
-            getSearch(search)
-            updateToggleSuggest(1)
-            updateToggleQuery(1)
+    const getSearch = async (text) => {
+        try {
+            const { token, userId } = await getAuthAsset()
+            const payload = {
+                headers: {
+                    'Schedu-Token': token,
+                    'Schedu-UID': userId
+                },
+                params: {
+                    word: text
+                }
+            }
+            const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/search`, payload)
+            const users = userResult.data.result
+            updateContacts(users)
+        } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                navigation.navigate('SignIn')
+            }
         }
-    }, [search])
-
-    const getSearch = async () => {
-        const user = await axios.get(`http://localhost:3000/account/search/${search}`)
-        updateContacts(user.data)
     }
 
     // Query all users in the system
     const getContactUsers = async (role=null) => {
-        const { token, userId } = await getAuthAsset()
-        const payload = {
-            headers: {
-                'Schedu-Token': token,
-                'Schedu-UID': userId
-            },
-            params: {
-                role: role
-            }
-        }
         try {
-            const userResult = await axios.get(`http://localhost:3000/account/all`, payload)
+            const { token, userId } = await getAuthAsset()
+            const payload = {
+                headers: {
+                    'Schedu-Token': token,
+                    'Schedu-UID': userId
+                },
+                params: {
+                    role: role
+                }
+            }
+            const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/all`, payload)
             const contactUsers = userResult.data.users
             updateContacts(contactUsers)
         } catch (error) {
@@ -64,35 +78,26 @@ export default function ContactListScreen({ navigation }) {
         }
     }
 
-    const historyQuery = () => {
-        updateHeaderText('History')
-        closeUpper()
+    const searchHandler = (text) => {
+        if (text) getSearch(text)
+        else getContactUsers(selectedRole)
+        updateShownRecently(!text)
+        updateShownQuery(!text)
     }
 
-    const StarQuery = () => {
-        alert('Star')
-    }
-
-    // toggle display suggest and query bar
-    const suggestDisplay = () => {
-        if (toggleSuggest == 0) {
-            return <SuggestBar />
-        }
+    const roleChangeHandler = (role) => {
+        updateSelectedRole(role)
+        getContactUsers(role)
     }
 
     return (
         <View style={styles.container}>
-            <SearchBar
-                searchWord={updateSearch}
-                historyQuery={historyQuery}
-                StarQuery={StarQuery}
-                find={getSearch}
-            />
+            <SearchBar searchWord={searchHandler} />
             <ScrollView style={styles.scrollContainer}>
                 <View style={styles.innerContainer}>
-                    {suggestDisplay()}
-                    {toggleQuery ? null : <QueryBar onSelect={getContactUsers} />}
-                    <ContactTab contacts={contacts} headerText={headerText} />
+                    {shownRecently ? <RecentlyContact ref={recentlyRef} /> : null}
+                    {shownQuery ? <QueryBar savedRole={selectedRole} onSelect={roleChangeHandler} /> : null}
+                    <ContactTab contacts={contacts} headerText="Contact" />
                 </View>
             </ScrollView>
         </View>

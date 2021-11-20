@@ -1,17 +1,12 @@
-const { getUserByObjectId } = require("./account")
+const { getUserByObjectId } = require('./account')
 
-const STATUS = [
-    'pending',
-    'ongoing',
-    'abandoned',
-    'done'
-]
+const STATUS = ['pending', 'ongoing', 'abandoned', 'done']
 
 const initAppointmentStatus = () => {
     return STATUS[0]
 }
 
-const formatAppointmentsBasic = async (appointments) => {
+const formatAppointmentsBasic = async appointments => {
     let formattedAppointments = []
     for (let appointment of appointments) {
         const sender = await getUserByObjectId(appointment.sender)

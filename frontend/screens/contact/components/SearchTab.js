@@ -1,38 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView } from 'react-native'
-import { background, colorCode } from '../../../styles'
-import { useNavigation } from '@react-navigation/native'
+import React from 'react'
+import { StyleSheet, View, TextInput} from 'react-native'
+import { FontAwesome } from '@expo/vector-icons'
 
-import { AntDesign, MaterialIcons } from '@expo/vector-icons'
+import { colorCode } from '../../../styles'
 
 export default function SearchTab(props) {
 
-    const navigation = useNavigation()
+    let sendSearchText
 
-    const navigateToHistory = () => {
-        navigation.navigate('ContactHistory')
-    }
-
-    const navigateToFavorite = () => {
-        navigation.navigate('ContactFavorite')
+    const onSearchUpdate = (text) => {
+        clearTimeout(sendSearchText)
+        sendSearchText = setTimeout(() => {
+            props.searchWord(text)
+        }, 250)
     }
 
     return (
         <View style={styles.container}>
+            <FontAwesome name="search" size={20} color="white" />
             <TextInput
                 style={styles.searchField}
                 placeholder="Looking for someone ?"
-                onChangeText={props.searchWord}
+                onChangeText={onSearchUpdate}
                 keyboardType={'default'}
                 multiline={false}
-                onSubmitEditing={props.find}
             />
-            <TouchableOpacity onPress={() => {navigateToHistory()}}>
-                <MaterialIcons name="history" size={28} color="white" style={styles.history} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {navigateToFavorite()}}>
-                <AntDesign name="staro" size={24} color="white" style={styles.favorite} />
-            </TouchableOpacity>
         </View>
     )
 }
@@ -49,12 +41,10 @@ const styles = StyleSheet.create({
         height: 35,
         backgroundColor: 'white',
         paddingHorizontal: 8,
-        borderRadius: 4,
-        marginRight: 24
+        marginLeft: 16,
+        borderRadius: 4
     },
     history: {
-        marginRight: 24
-    },
-    favorite: {
+        marginLeft: 16
     }
 })
