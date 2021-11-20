@@ -10,10 +10,12 @@ import RecentlyList from './components/RecentlyList'
 export default function HomeScreen({navigation}) {
 
     const overviewRef = useRef()
+    const recentlyRef = useRef()
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             overviewRef.current.loadOverview()
+            recentlyRef.current.loadRecentlyContacts()
         })
         return unsubscribe
     })
@@ -27,7 +29,7 @@ export default function HomeScreen({navigation}) {
             <NotificationCard onAppointmentPress={gotoMyCalendar} />
             <View style={[styles.mainContainer, shadow.boxTopMedium]}>
                 <Overview ref={overviewRef} />
-                <RecentlyList />
+                <RecentlyList ref={recentlyRef} />
             </View>
         </View>
     )
