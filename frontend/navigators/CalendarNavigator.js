@@ -48,7 +48,7 @@ export default function CalendarNavigator({ navigation }) {
                     headerRight: () => (
                         <Button
                             onPress={() => {
-                                navigation.navigate('EditAppointmentScreen', {data: appointment},)}}
+                                navigation.navigate('EditAppointmentScreen', {data: appointment})}}
                             title="Edit"
                             color="white"
                         />
