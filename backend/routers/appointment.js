@@ -10,10 +10,10 @@ const appointmentSchema = require('../schema/appointmentSchema')
 const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
 
 const { getUserByObjectId } = require('../helpers/account')
-const { initAppointmentStatus, formatAppointmentsBasic, getAppointmentFromId, isParticipate } = require('../helpers/appointment')
+const { initAppointmentStatus, formatAppointmentsBasic, getAppointmentFromId, isParticipate, updateAppointmentStatus } = require('../helpers/appointment')
 const { authMiddleware } = require('../middlewares/auth')
 const { getDateRange } = require('../helpers/date')
-const { createRequestNotification, updateRequestNotification } = require('../helpers/notification')
+const { createRequestNotification, acknowledgeRequestNotification } = require('../helpers/notification')
 
 const router = express()
 
@@ -273,10 +273,13 @@ router.put('/', authMiddleware, async (req,res) => {
             commUrl: appointmentData.commUrl,
             note: appointmentData.note
         }
-        const updatedAppointment = await appointmentModel.findByIdAndUpdate(appointmentId, {$set: data})
+        const updatedAppointment = await appointmentModel.findByIdAndUpdate(appointmentId, {$set: data}, {new: true})
 
         // Update notification
-        await updateRequestNotification(userId, appointmentId)
+        await acknowledgeRequestNotification(userId, appointmentId)
+
+        // Update appointment's status
+        await updateAppointmentStatus(updatedAppointment)
 
         res.json({message: `Successfully updated appointment with id: ${updatedAppointment._id}`})
 
