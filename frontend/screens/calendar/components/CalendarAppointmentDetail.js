@@ -12,6 +12,7 @@ import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 
 import { background, text, shadow, colorCode } from '../../../styles'
+import { getAuthAsset } from '../../../modules/auth'
 
 function AppointmentDetail(props, ref) {
     // Component's States
@@ -38,8 +39,11 @@ function AppointmentDetail(props, ref) {
         []
     )
     useEffect(() => {
-        loadAppointment(props.appointment)
-        console.log(props.appointment)
+        //TODO Change appointment to appointmentId
+        console.log(props.appointmentId)
+        getAppointment(props.appointmentId)
+        loadAppointment()
+        
     }, [])
     const loadAppointment = (appointment) =>{
         setSubject(appointment.subject)
@@ -48,6 +52,21 @@ function AppointmentDetail(props, ref) {
         setCommUrl(appointment.commUrl)
         setNote(appointment.note)
     }
+    const getAppointment = async() =>{
+        const {token, userId} = getAuthAsset()
+        const payload = {
+            headers: {
+                'Schedu-Token': token,
+                'Schedu-UID': userId
+            }
+        }
+        try {
+            const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/`, payload)
+    }
+    catch(error){
+        console.error(error)
+    }
+}
     // FUNCTION: to reset all form state
     const resetState = () => {
         setSubject()
