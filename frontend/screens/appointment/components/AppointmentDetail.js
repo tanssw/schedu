@@ -58,7 +58,7 @@ function AppointmentDetail(props, ref) {
             }
             props.onCreateAppointment(data)
         } else {
-            if (isEmptySubject) alert('Please enter Subject!')
+            if (isEmptySubject) alert("Please enter an appointment's subject")
         }
     }
 

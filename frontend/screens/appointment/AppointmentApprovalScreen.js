@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList, Alert } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
@@ -8,6 +8,7 @@ import { background, text, shadow, colorCode } from '../../styles'
 import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
 
 import TimeDisplay from '../appointment/components/TimeDisplay'
+import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 export default function AppointmentApprovalScreen({ props, route }) {
 
@@ -43,7 +44,7 @@ export default function AppointmentApprovalScreen({ props, route }) {
             const config = {
                 headers: { 'Schedu-Token': token }
             }
-            await axios.put(`http://localhost:3000/appointment/`, payload, config)
+            await axios.put(`${API_SERVER_DOMAIN}/appointment/`, payload, config)
             navigation.navigate('CalendarOverview')
         } catch (error) {
             if (checkExpiredToken(error)) {
@@ -54,8 +55,16 @@ export default function AppointmentApprovalScreen({ props, route }) {
     }
 
     // FUNCTION : User can decline or approve to join the appointment
-    const decline = () => { submit(false, data._id) }
-    const approval = () => { submit(true, data._id) }
+    const responseRequest = (join) => (
+        Alert.alert(
+            join ? 'Accept an appointment' : 'Decline an appointment',
+            join ? 'This appointment will move into your list.' : 'Are you sure? This action cannot be undo.',
+            [
+                {text: 'Cancel', style: 'cancel'},
+                {text: 'Confirm', style: join ? 'default' : 'destructive', onPress: () => {submit(join, data._id)}}
+            ]
+        )
+    )
 
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item, index }) => {
@@ -97,7 +106,9 @@ export default function AppointmentApprovalScreen({ props, route }) {
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Communication Method</Text>
                         <View style={styles.commMethodBox}>
-                            <Text style={styles.commMethodHeader}>{displayCommMethod}</Text>
+                            <Text style={[styles.commMethodHeader, data.commMethod ? '' : {color: colorCode.grey}]}>
+                                {data.commMethod ? displayCommMethod : 'Not Provided'}
+                            </Text>
                             <Text style={styles.commMethodURL}>URL: {data.commUrl ? data.commUrl : '[Not provided]'}</Text>
                         </View>
                     </View>
@@ -108,10 +119,10 @@ export default function AppointmentApprovalScreen({ props, route }) {
                     </View>
                     {/* Button */}
                     <View style={styles.decisionContainer}>
-                        <TouchableOpacity style={[styles.mainButton, styles.declineButton]} onPress={() => { decline() }}>
+                        <TouchableOpacity style={[styles.mainButton, styles.declineButton]} onPress={() => { responseRequest(false) }}>
                             <Text style={styles.declineText}>Decline</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.mainButton, styles.acceptButton]} onPress={() => { approval() }}>
+                        <TouchableOpacity style={[styles.mainButton, styles.acceptButton]} onPress={() => { responseRequest(true) }}>
                             <Text style={styles.acceptText}>Accept</Text>
                         </TouchableOpacity>
                     </View>

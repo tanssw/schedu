@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Image, Text, View, TouchableOpacity, Alert } from 'react-native'
 import axios from 'axios'
 
 import { clearAuthAsset, getAuthAsset } from '../../modules/auth'
@@ -10,8 +10,8 @@ import { text, shadow, colorCode } from '../../styles'
 export default function AccountMenuScreen({ navigation, userData }) {
 
     const signOut = async () => {
-        const { token, userId } = await getAuthAsset()
         try {
+            const { token, userId } = await getAuthAsset()
             const payload = {
                 headers: {
                     'Schedu-Token': token
@@ -23,6 +23,17 @@ export default function AccountMenuScreen({ navigation, userData }) {
             return navigation.navigate('SignIn')
         }
     }
+
+    const signOutRequest = () => (
+        Alert.alert(
+            'Are you sure?',
+            'You can always signing back in with your ITKMITL account.',
+            [
+                {text: 'Cancel', style: 'cancel'},
+                {text: 'Sign Out', style: 'destructive', onPress: () => {signOut()}}
+            ]
+        )
+    )
 
     return (
         <View style={styles.container}>
@@ -50,7 +61,7 @@ export default function AccountMenuScreen({ navigation, userData }) {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.signOutBtnContainer}>
-                    <TouchableOpacity style={[styles.signOutBtn]} onPress={signOut}>
+                    <TouchableOpacity style={[styles.signOutBtn]} onPress={signOutRequest}>
                         <Text style={styles.signOutBtnText}>Sign Out</Text>
                     </TouchableOpacity>
                 </View>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { Text, View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'
 
 import { getAuthAsset, clearAuthAsset, checkExpiredToken } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
@@ -49,15 +49,26 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
             const userResult = await axios.put(`${API_SERVER_DOMAIN}/account/`, body, headers)
             const updatedProfile = userResult.data.user
             onProfileUpdated(updatedProfile)
-            alert('Your profile has been updated')
+            alert('Your profile has been updated.')
             return navigation.navigate('Profile')
         } catch (error) {
             if (checkExpiredToken(error)) {
                 await clearAuthAsset()
                 return navigation.navigate('SignIn')
             }
-            alert('Error occured during update')
+            alert('Error occured during update.')
         }
+    }
+
+    const updateRequest = () => {
+        Alert.alert(
+            'Confirm your update',
+            'Your profile will be changed after this update',
+            [
+                {text: 'Cancel', style: 'cancel'},
+                {text: 'Update', style: 'default', onPress: () => {update()}}
+            ]
+        )
     }
 
     const [newFirstName, setNewFirstName] = useState(userData.firstName)
@@ -99,7 +110,7 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
                     </View>
                 </View>
                 <View style={styles.updateBtnContainer}>
-                    <TouchableOpacity style={[styles.updateBtn]} onPress={update}>
+                    <TouchableOpacity style={[styles.updateBtn]} onPress={updateRequest}>
                         <Text style={(text.blue, styles.updateBtnText)}>Update Profile</Text>
                     </TouchableOpacity>
                 </View>

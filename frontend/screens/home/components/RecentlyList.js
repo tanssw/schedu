@@ -6,6 +6,7 @@ import axios from 'axios'
 
 import { API_SERVER_DOMAIN } from '../../../modules/apis'
 import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../../modules/auth'
+import { colorCode } from '../../../styles'
 
 function RecentlyList(props, ref) {
 
@@ -47,18 +48,24 @@ function RecentlyList(props, ref) {
 
     const renderContact = ({item, index}) => {
         return (
-            <TouchableOpacity onPress={() => {navigateToProfile(item.userId)}} style={index ? styles.contactBoxMargin: ''}>
-                <FontAwesome name="user-circle-o" size={48} color="grey" style={styles.personImage} />
-                <Text style={styles.personName}>{item.firstName} {item.lastName[0]}.</Text>
+            <TouchableOpacity onPress={() => {navigateToProfile(item.userId)}} style={[styles.personBox, index ? styles.contactBoxMargin: '']}>
+                <FontAwesome name="user-circle-o" size={48} color={colorCode.blue} style={styles.personImage} />
+                <Text numberOfLines={1} style={styles.personName}>{item.firstName} {item.lastName[0]}.</Text>
             </TouchableOpacity>
         )
     }
 
+    const renderFlatList = () => {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.header}>Recently Contact</Text>
+                <FlatList horizontal data={recentlyContacts} renderItem={renderContact} keyExtractor={(item, index) => index}/>
+            </View>
+        )
+    }
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Recently Contact</Text>
-            <FlatList horizontal data={recentlyContacts} renderItem={renderContact} keyExtractor={(item, index) => index}/>
-        </View>
+        <View>{recentlyContacts.length ? renderFlatList() : null}</View>
     )
 }
 
@@ -76,6 +83,9 @@ const styles = StyleSheet.create({
     contactBoxMargin: {
         marginLeft: 12
     },
+    personBox: {
+        alignSelf: 'flex-end'
+    },
     personImage: {
         textAlign: 'center',
         marginBottom: 8,
@@ -83,6 +93,8 @@ const styles = StyleSheet.create({
     },
     personName: {
         textAlign: 'center',
-        fontWeight: '300'
+        fontWeight: '300',
+        width: 64,
+        alignSelf: 'center'
     }
 })
