@@ -10,7 +10,6 @@ export default function MyAppointment(props) {
 
     const navigation = useNavigation()
 
-
     const getParticipant = (participants) => {
         const receiver = participants.filter(participant => participant.main === true)
         const receiverText = receiver.map((participant, index) => `${participant.firstName} ${participant.lastName[0]}.`)

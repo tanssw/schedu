@@ -10,7 +10,7 @@ const appointmentSchema = require('../schema/appointmentSchema')
 const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
 
 const { getUserByObjectId } = require('../helpers/account')
-const { initAppointmentStatus, formatAppointmentsBasic } = require('../helpers/appointment')
+const { initAppointmentStatus, formatAppointmentsBasic, getAppointmentFromId, isParticipate } = require('../helpers/appointment')
 const { authMiddleware } = require('../middlewares/auth')
 const { getDateRange } = require('../helpers/date')
 const { createRequestNotification, updateRequestNotification } = require('../helpers/notification')
@@ -44,45 +44,6 @@ router.get('/', authMiddleware, async (req, res) => {
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 
-})
-
-// Get confirmed appointments by month and year
-router.get('/:year/:month', authMiddleware, async(req, res) => {
-    try {
-        // Get User ID from Auth Token
-        const userId = req.headers['schedu-uid']
-
-        const { year, month } = req.params
-        const { minDate, maxDate } = getDateRange(year, month)
-
-        // Find all appointments that user associated to.
-        let appointments = await appointmentModel.find({
-            $and: [
-                {
-                    startAt: {'$gte': minDate, '$lt': maxDate}
-                },
-                {
-                    $or: [
-                        {
-                            sender: userId
-                        },
-                        {
-                            participants: {
-                                $elemMatch: {userId: userId, confirmed: true}
-                            }
-                        }
-                    ]
-                }
-            ]
-        })
-
-        // Get name of each user associate with an appointment
-        const formattedAppointments = await formatAppointmentsBasic(appointments)
-        res.json({appointments: formattedAppointments})
-
-    } catch (error) {
-        res.status(500).send({message: 'Something went wrong. Please try aagain later.'})
-    }
 })
 
 // Get appointment counter
@@ -185,6 +146,59 @@ router.get('/recently', authMiddleware, async (req, res) => {
 
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
+})
+
+// Get appointment detail by it's ID
+router.get('/:appointmentId', authMiddleware, async (req, res) => {
+    try {
+        const { appointmentId } = req.params
+        const userId = req.headers['schedu-uid']
+        if (!isParticipate(appointmentId, userId)) return res.status(400).send({message: 'You are not partipating in this appointment.'})
+        const appointment = await getAppointmentFromId(appointmentId)
+        res.json({result: appointment})
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
+})
+
+// Get confirmed appointments by month and year
+router.get('/:year/:month', authMiddleware, async(req, res) => {
+    try {
+        // Get User ID from Auth Token
+        const userId = req.headers['schedu-uid']
+
+        const { year, month } = req.params
+        const { minDate, maxDate } = getDateRange(year, month)
+
+        // Find all appointments that user associated to.
+        let appointments = await appointmentModel.find({
+            $and: [
+                {
+                    startAt: {'$gte': minDate, '$lt': maxDate}
+                },
+                {
+                    $or: [
+                        {
+                            sender: userId
+                        },
+                        {
+                            participants: {
+                                $elemMatch: {userId: userId, confirmed: true}
+                            }
+                        }
+                    ]
+                }
+            ]
+        })
+
+        // Get name of each user associate with an appointment
+        const formattedAppointments = await formatAppointmentsBasic(appointments)
+        res.json({appointments: formattedAppointments})
+
+    } catch (error) {
+        res.status(500).send({message: 'Something went wrong. Please try aagain later.'})
     }
 })
 

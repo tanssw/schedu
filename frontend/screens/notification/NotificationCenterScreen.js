@@ -39,13 +39,14 @@ export default function NotificationCenterScreen({navigation}) {
         }
     }
 
+    // Render notification for appointment request
     const renderRequestNotification = (item, index) => {
         const sender = `${item.detail.sender.firstName} ${item.detail.sender.lastName}`
         const notifyTime = dayjs(item.createdAt).format('HH:mm')
         return (
-            <TouchableOpacity style={styles.notificationCard}>
+            <TouchableOpacity onPress={() => {navigation.navigate('Calendar')}} style={styles.notificationCard}>
                 <View>
-                    <Ionicons name="mail-outline" size={42} color={colorCode.green} />
+                    <Ionicons name={item.response ? 'mail-open-outline' : 'mail-outline'} size={42} color={item.response ? colorCode.grey: colorCode.green} />
                 </View>
                 <View style={styles.textContainer}>
                     <View style={styles.headerBox}>
@@ -67,12 +68,14 @@ export default function NotificationCenterScreen({navigation}) {
         }
     }
 
+    // Render flat list if notification is available
     const renderFlatList = () => {
         return (
             <FlatList data={myNotifications} renderItem={decisionRendering} keyExtractor={item => item._id} />
         )
     }
 
+    // Render empty text if no notifcation
     const renderEmpty = () => {
         return (
             <View style={styles.emptyContainer}>

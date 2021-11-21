@@ -40,13 +40,37 @@ function NotificationCard(props, ref) {
         }
     }
 
+    const navigateToApproval = async (appointmentId) => {
+        const { token, userId } = await getAuthAsset()
+        const payload = {
+            headers: {
+                'Schedu-Token': token,
+                'Schedu-UID': userId
+            }
+        }
+        try {
+            const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${appointmentId}`, payload)
+            const appointment = appointmentResult.data.result
+            navigation.navigate('Calendar', {
+                screen: 'AppointmentApproval',
+                params: {data: appointment},
+                initial: false
+            })
+        } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                navigation.navigate('SignIn')
+            }
+        }
+    }
+
     const renderRequestNotification = () => {
         const sender = `${notification.detail.sender.firstName} ${notification.detail.sender.lastName}`
         const date = dayjs(notification.detail.startAt).format('DD MMMM YYYY')
         const startAt = dayjs(notification.detail.startAt).format('HH:mm')
         const endAt = dayjs(notification.detail.endAt).format('HH:mm')
         return (
-            <TouchableOpacity style={[styles.notificationCard, shadow.boxBottomSmall]}>
+            <TouchableOpacity onPress={() => {navigateToApproval(notification.appointmentId)}} style={[styles.notificationCard, shadow.boxBottomSmall]}>
                 <View>
                     <Text style={[styles.notificationHeader, text.green]}>New Request</Text>
                     <View>

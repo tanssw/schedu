@@ -18,16 +18,16 @@ const createRequestNotification = async (targets, appointmentId, appointmentDate
 }
 
 // Format notification depend on its type
-const formatNotification = async (notification) => {
+const formatNotification = async (notification, userId) => {
     switch (notification.type) {
-        case 'request': return await formatRequestNotification(notification)
+        case 'request': return await formatRequestNotification(notification, userId)
     }
 }
 
-const formatRequestNotification = async (notification) => {
+const formatRequestNotification = async (notification, userId) => {
     const appointment = await getAppointmentFromId(notification.appointmentId)
     const sender = await getUserByObjectId(appointment.sender)
-    return {
+    let result = {
         ...notification._doc,
         detail: {
             sender: {
@@ -38,6 +38,9 @@ const formatRequestNotification = async (notification) => {
             endAt: appointment.endAt
         }
     }
+    result.response = (notification._doc.targets.find(target => target.userId === userId)).response
+    delete result.targets
+    return result
 }
 
 // Update user's notification state
