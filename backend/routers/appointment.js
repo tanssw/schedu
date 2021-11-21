@@ -156,7 +156,7 @@ router.put('/', authMiddleware, async (req,res) => {
 
         const  payload  = req.body
         console.log(payload)
-        
+
         // Mapping business_id of participants to an Object with some logic keys
         // let participants = payload.participants.map(participant => {
         //     return {firstName: "test", userId: "", main: participant.main, confirmed: true, join: participant.join}
@@ -283,7 +283,7 @@ router.post('/', authMiddleware, async (req, res) => {
 })
 
 // Update Accept/Decline Appointment Approval
-router.put('/approval/', authMiddleware, async (req,res) => {
+router.put('/approval', authMiddleware, async (req,res) => {
 
     try {
 

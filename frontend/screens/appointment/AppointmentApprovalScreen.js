@@ -44,7 +44,7 @@ export default function AppointmentApprovalScreen({ props, route }) {
             const config = {
                 headers: { 'Schedu-Token': token }
             }
-            await axios.put(`${API_SERVER_DOMAIN}/appointment/`, payload, config)
+            await axios.put(`${API_SERVER_DOMAIN}/appointment/approval`, payload, config)
             navigation.navigate('CalendarOverview')
         } catch (error) {
             if (checkExpiredToken(error)) {

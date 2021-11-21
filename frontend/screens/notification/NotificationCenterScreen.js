@@ -39,15 +39,16 @@ export default function NotificationCenterScreen({navigation}) {
         }
     }
 
-    const navigateToApproval = async (appointmentId) => {
-        const { token, userId } = await getAuthAsset()
-        const payload = {
-            headers: {
-                'Schedu-Token': token,
-                'Schedu-UID': userId
-            }
-        }
+    const navigateToApproval = async (appointmentId, response) => {
         try {
+            if (response) return
+            const { token, userId } = await getAuthAsset()
+            const payload = {
+                headers: {
+                    'Schedu-Token': token,
+                    'Schedu-UID': userId
+                }
+            }
             const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${appointmentId}`, payload)
             const appointment = appointmentResult.data.result
             navigation.navigate('Calendar', {
@@ -69,7 +70,7 @@ export default function NotificationCenterScreen({navigation}) {
         const differenceDay = dayjs(item.createdAt).day() !== dayjs().day()
         const notifyTime = dayjs(item.createdAt).format(differenceDay ? 'DD MMM' : 'HH:mm')
         return (
-            <TouchableOpacity onPress={() => {navigateToApproval(item.appointmentId)}} style={styles.notificationCard}>
+            <TouchableOpacity onPress={() => {navigateToApproval(item.appointmentId, item.response)}} style={styles.notificationCard}>
                 <View>
                     <Ionicons name={item.response ? 'mail-open-outline' : 'mail-outline'} size={42} color={item.response ? colorCode.grey: colorCode.green} />
                 </View>
