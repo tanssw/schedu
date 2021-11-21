@@ -75,10 +75,12 @@ router.get('/count', authMiddleware, async (req, res) => {
         })
 
         // Filter appointment that already end
-        let endedAppointments = appointments.filter(appointment => ['abandoned', 'done'].includes(appointment.status))
+        const endStates = ['abandoned', 'done']
+        let endedAppointments = appointments.filter(appointment => endStates.includes(appointment.status))
 
         // Filter appointment that already declined
         let declinedAppointments = appointments.filter(appointment => {
+            if (endStates.includes(appointment.status)) return false
             let meDeclined = appointment.participants.filter(participant => participant.userId === userId && !participant.join && participant.confirmed)
             return !!meDeclined.length
         })
