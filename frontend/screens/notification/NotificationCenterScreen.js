@@ -66,7 +66,8 @@ export default function NotificationCenterScreen({navigation}) {
     // Render notification for appointment request
     const renderRequestNotification = (item, index) => {
         const sender = `${item.detail.sender.firstName} ${item.detail.sender.lastName}`
-        const notifyTime = dayjs(item.createdAt).format('HH:mm')
+        const differenceDay = dayjs(item.createdAt).day() !== dayjs().day()
+        const notifyTime = dayjs(item.createdAt).format(differenceDay ? 'DD MMM' : 'HH:mm')
         return (
             <TouchableOpacity onPress={() => {navigateToApproval(item.appointmentId)}} style={styles.notificationCard}>
                 <View>
