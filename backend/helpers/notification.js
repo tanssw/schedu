@@ -24,7 +24,8 @@ const createAbandonedNotification = async (targets, appointmentId) => {
     const data = {
         type: 'abandoned',
         targets: targets,
-        appointmentId: appointmentId
+        appointmentId: appointmentId,
+        expireAt: new Date()
     }
     const notification = new notificationModel(data)
     const result = await notification.save()
@@ -34,6 +35,8 @@ const createAbandonedNotification = async (targets, appointmentId) => {
 const formatNotification = async (notification, userId) => {
     switch (notification.type) {
         case 'request': return await formatRequestNotification(notification, userId)
+        case 'abandoned': return await formatAbandonedNotification(notification, userId)
+        default: return notification
     }
 }
 
@@ -49,6 +52,19 @@ const formatRequestNotification = async (notification, userId) => {
             },
             startAt: appointment.startAt,
             endAt: appointment.endAt
+        }
+    }
+    result.response = (notification._doc.targets.find(target => target.userId === userId)).response
+    delete result.targets
+    return result
+}
+
+const formatAbandonedNotification = async (notification, userId) => {
+    const appointment = await getAppointmentFromId(notification.appointmentId)
+    let result = {
+        ...notification._doc,
+        detail: {
+            subject: appointment.subject
         }
     }
     result.response = (notification._doc.targets.find(target => target.userId === userId)).response
