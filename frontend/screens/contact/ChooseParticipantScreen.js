@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import axios from 'axios'
 
 import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
@@ -55,9 +55,9 @@ export default function ChooseParticipantScreen(props) {
             )
     }
     return (
-        <View style={styles.contactContainer}>
+        <ScrollView style={styles.contactContainer}>
             {contacts.map(contact => renderContact(contact))}
-        </View>
+        </ScrollView>
     )
 }
 
