@@ -59,8 +59,9 @@ export default function CalendarOverviewScreen({ navigation }) {
             const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
             const appointments = appointmentResult.data.appointments
 
-            // Update my appointments
             const ignoredStatus = ['abandoned', 'done']
+
+            // Update my appointments
             let myAppointments = appointments.filter(appointment => {
                 const canShow = !ignoredStatus.includes(appointment.status)
                 const meConfirmedAndJoin = appointment.participants.filter(
@@ -73,6 +74,7 @@ export default function CalendarOverviewScreen({ navigation }) {
 
             // Update incoming request appointments
             let requestAppointments = appointments.filter(appointment => {
+                if (ignoredStatus.includes(appointment.status)) return false
                 const myself = appointment.participants.find(
                     participant => participant.userId === userId
                 )

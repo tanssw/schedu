@@ -14,6 +14,7 @@ const { initAppointmentStatus, formatAppointmentsBasic, getAppointmentFromId, is
 const { authMiddleware } = require('../middlewares/auth')
 const { getDateRange } = require('../helpers/date')
 const { createRequestNotification, acknowledgeRequestNotification, createAbandonedNotification } = require('../helpers/notification')
+const { scheduleAppointmentUpdate } = require('../helpers/schedule')
 
 const router = express()
 
@@ -66,8 +67,11 @@ router.get('/count', authMiddleware, async (req, res) => {
             ]
         })
 
+        const END_STATES = ['abandoned', 'done']
+
         // Filter appointment that this account is not a sender and not confirmed
         let requestAppointments = appointments.filter(appointment => {
+            if (END_STATES.includes(appointment.status)) return false
             if (appointment.sender === userId) return false
             let meConfirmed = appointment.participants.filter(participant => participant.userId == userId && participant.confirmed)
             if (meConfirmed.length) return false
@@ -75,12 +79,11 @@ router.get('/count', authMiddleware, async (req, res) => {
         })
 
         // Filter appointment that already end
-        const endStates = ['abandoned', 'done']
-        let endedAppointments = appointments.filter(appointment => endStates.includes(appointment.status))
+        let endedAppointments = appointments.filter(appointment => END_STATES.includes(appointment.status))
 
         // Filter appointment that already declined
         let declinedAppointments = appointments.filter(appointment => {
-            if (endStates.includes(appointment.status)) return false
+            if (END_STATES.includes(appointment.status)) return false
             let meDeclined = appointment.participants.filter(participant => participant.userId === userId && !participant.join && participant.confirmed)
             return !!meDeclined.length
         })
@@ -235,6 +238,9 @@ router.post('/', authMiddleware, async (req, res) => {
         let participantToNotify = appointmentRequest.participants
         participantToNotify.push(appointmentRequest.receiver)
         await createRequestNotification(participantToNotify, result._id, appointmentRequest.startAt)
+
+        // Schedule the appointment status handler
+        scheduleAppointmentUpdate(appointment)
 
         res.json({message: `Successfully create new appointment (ID: ${result._id})`})
     } catch (error) {

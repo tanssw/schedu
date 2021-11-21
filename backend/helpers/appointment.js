@@ -1,10 +1,17 @@
+const dayjs = require('dayjs')
+
 const { getUserByObjectId } = require('./account')
 
 const conn = require('../config/connectionMongoDB/ScheduConnect')
 const appointmentSchema = require('../schema/appointmentSchema')
 const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
 
-const STATUS = ['pending', 'ongoing', 'abandoned', 'done']
+const STATUS = {
+    0: 'pending',
+    1: 'ongoing',
+    2: 'abandoned',
+    3: 'done'
+}
 
 const initAppointmentStatus = () => {
     return STATUS[0]
@@ -55,12 +62,9 @@ const isParticipate = async (appointmentId, userId) => {
 }
 
 const updateAppointmentStatus = async (appointment) => {
-
-    const appointmentId = appointment._id
-
     let newStatus
     switch (appointment.status) {
-        // For 'pending' status, will change to 'ongoing' if all participant is confirmed
+        // For 'pending' status, will change to 'ongoing' if main participant is confirmed
         case STATUS[0]:
             const receiver = appointment.participants.find(participant => participant.main && participant.confirmed)
             // If receiver not confirmed yet. Do nothing
@@ -70,7 +74,10 @@ const updateAppointmentStatus = async (appointment) => {
             const result = await appointmentModel.updateOne({_id: appointment._id}, {status: newStatus})
             return newStatus
     }
+}
 
+const forceUpdateAppointmentStatus = async (appointmentId, newStatus) => {
+    const result = await appointmentModel.updateOne({_id: appointmentId}, {status: newStatus})
 }
 
 module.exports = {
@@ -78,5 +85,6 @@ module.exports = {
     formatAppointmentsBasic,
     getAppointmentFromId,
     isParticipate,
-    updateAppointmentStatus
+    updateAppointmentStatus,
+    forceUpdateAppointmentStatus
 }
