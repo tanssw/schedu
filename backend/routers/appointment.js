@@ -149,6 +149,39 @@ router.get('/recently', authMiddleware, async (req, res) => {
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 })
+// Update Appointment
+router.put('/', authMiddleware, async (req,res) => {
+
+    try {
+
+        const  payload  = req.body
+        console.log(payload)
+        
+        // Mapping business_id of participants to an Object with some logic keys
+        // let participants = payload.participants.map(participant => {
+        //     return {firstName: "test", userId: "", main: participant.main, confirmed: true, join: participant.join}
+        // })
+
+        // Structuring payload data before saving into the database
+        const data = {
+            subject: payload.subject,
+            status: 'pending',
+            sender: payload.sender,
+            participants: payload.participants,
+            startAt: payload.startAt,
+            endAt: payload.endAt,
+            commMethod: payload.commMethod,
+            commUrl: payload.commUrl,
+            note: payload.note
+        }
+        const updatedAppointment = await appointmentModel.findByIdAndUpdate(payload._id, {$set: data})
+        res.json({message: `Successfully updated appointment`})
+
+    } catch(error){
+        console.error(error)
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
+})
 
 // Get appointment detail by it's ID
 router.get('/:appointmentId', authMiddleware, async (req, res) => {
@@ -157,7 +190,8 @@ router.get('/:appointmentId', authMiddleware, async (req, res) => {
         const userId = req.headers['schedu-uid']
         if (!isParticipate(appointmentId, userId)) return res.status(400).send({message: 'You are not partipating in this appointment.'})
         const appointment = await getAppointmentFromId(appointmentId)
-        res.json({result: appointment})
+        const formattedAppointments = await formatAppointmentsBasic([appointment])
+        res.json({result: formattedAppointments[0]})
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
@@ -249,7 +283,7 @@ router.post('/', authMiddleware, async (req, res) => {
 })
 
 // Update Accept/Decline Appointment Approval
-router.put('/', authMiddleware, async (req,res) => {
+router.put('/approval/', authMiddleware, async (req,res) => {
 
     try {
 
@@ -300,5 +334,7 @@ router.put('/', authMiddleware, async (req,res) => {
     }
 
 })
+
+
 
 module.exports = router
