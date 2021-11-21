@@ -5,6 +5,7 @@ const conn = require('../config/connectionMongoDB/ScheduConnect')
 
 const { authMiddleware } = require('../middlewares/auth')
 const { isValidObjectId } = require('mongoose')
+const { formatAccountInformation } = require('../helpers/account')
 
 const accountModel = conn.model('accounts', accountSchema, process.env.ACCOUNTS_COLLECTION)
 
@@ -48,7 +49,8 @@ router.get('/:userId', authMiddleware, async (req, res) => {
     const userId = req.params.userId
     try {
         const user = await accountModel.findOne({ _id: userId })
-        res.json({user: user})
+        const formattedUser = formatAccountInformation(user)
+        res.json({user: formattedUser})
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Pleases try again.'})
     }
