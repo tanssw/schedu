@@ -40,7 +40,19 @@ const formatRequestNotification = async (notification) => {
     }
 }
 
+// Update user's notification state
+const updateRequestNotification = async (userId, appointmentId) => {
+    const result = await notificationModel.findOneAndUpdate({
+        type: 'request',
+        appointmentId: appointmentId,
+        targets: {
+            $elemMatch: {userId: userId}
+        }
+    }, {'targets.$.response': true})
+}
+
 module.exports = {
     createRequestNotification,
-    formatNotification
+    formatNotification,
+    updateRequestNotification
 }

@@ -13,7 +13,7 @@ const { getUserByObjectId } = require('../helpers/account')
 const { initAppointmentStatus, formatAppointmentsBasic } = require('../helpers/appointment')
 const { authMiddleware } = require('../middlewares/auth')
 const { getDateRange } = require('../helpers/date')
-const { createRequestNotification } = require('../helpers/notification')
+const { createRequestNotification, updateRequestNotification } = require('../helpers/notification')
 
 const router = express()
 
@@ -143,49 +143,6 @@ router.get('/count', authMiddleware, async (req, res) => {
     }
 })
 
-// Create new Appointment
-router.post('/', authMiddleware, async (req, res) => {
-    try {
-        const appointmentRequest = req.body
-
-        // Mapping business_id of participants to an Object with some logic keys
-        let participants = appointmentRequest.participants.map(participant => {
-            return {userId: participant, main: false, confirmed: false}
-        })
-
-        // Structuring appointmentRequest data before saving into the database
-        const data = {
-            subject: appointmentRequest.subject,
-            status: initAppointmentStatus(),
-            sender: appointmentRequest.sender,
-            participants: [
-                {userId: appointmentRequest.receiver, main: true, confirmed: false},
-                ...participants
-            ],
-            startAt: appointmentRequest.startAt,
-            endAt: appointmentRequest.endAt,
-            commMethod: appointmentRequest.commMethod,
-            commUrl: appointmentRequest.commUrl,
-            note: appointmentRequest.note
-        }
-
-        // TODO: Do the validation before saving into the database
-
-        // Save into the database
-        const appointment = new appointmentModel(data)
-        const result = await appointment.save()
-
-        // Create notification to all participants
-        let participantToNotify = appointmentRequest.participants
-        participantToNotify.push(appointmentRequest.receiver)
-        await createRequestNotification(participantToNotify, result._id, appointmentRequest.startAt)
-
-        res.json({message: `Successfully create new appointment (ID: ${result._id})`})
-    } catch (error) {
-        res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
-    }
-})
-
 // Get users that client recently contacted with
 router.get('/recently', authMiddleware, async (req, res) => {
     try {
@@ -231,6 +188,48 @@ router.get('/recently', authMiddleware, async (req, res) => {
     }
 })
 
+// Create new Appointment
+router.post('/', authMiddleware, async (req, res) => {
+    try {
+        const appointmentRequest = req.body
+
+        // Mapping business_id of participants to an Object with some logic keys
+        let participants = appointmentRequest.participants.map(participant => {
+            return {userId: participant, main: false, confirmed: false}
+        })
+
+        // Structuring appointmentRequest data before saving into the database
+        const data = {
+            subject: appointmentRequest.subject,
+            status: initAppointmentStatus(),
+            sender: appointmentRequest.sender,
+            participants: [
+                {userId: appointmentRequest.receiver, main: true, confirmed: false},
+                ...participants
+            ],
+            startAt: appointmentRequest.startAt,
+            endAt: appointmentRequest.endAt,
+            commMethod: appointmentRequest.commMethod,
+            commUrl: appointmentRequest.commUrl,
+            note: appointmentRequest.note
+        }
+
+        // TODO: Do the validation before saving into the database
+
+        // Save into the database
+        const appointment = new appointmentModel(data)
+        const result = await appointment.save()
+
+        // Create notification to all participants
+        let participantToNotify = appointmentRequest.participants
+        participantToNotify.push(appointmentRequest.receiver)
+        await createRequestNotification(participantToNotify, result._id, appointmentRequest.startAt)
+
+        res.json({message: `Successfully create new appointment (ID: ${result._id})`})
+    } catch (error) {
+        res.status(400).send({message: "Cannot create new appointment. Something went wrong."})
+    }
+})
 
 // Update Accept/Decline Appointment Approval
 router.put('/', authMiddleware, async (req,res) => {
@@ -248,7 +247,7 @@ router.put('/', authMiddleware, async (req,res) => {
             }
         })
 
-        // Structuring payload data before saving into the database
+        // Structuring payload data and update the database
         const data = {
             subject: appointmentData.subject,
             status: appointmentData.status,
@@ -260,11 +259,15 @@ router.put('/', authMiddleware, async (req,res) => {
             commUrl: appointmentData.commUrl,
             note: appointmentData.note
         }
-
         const updatedAppointment = await appointmentModel.findByIdAndUpdate(appointmentId, {$set: data})
+
+        // Update notification
+        await updateRequestNotification(userId, appointmentId)
+
         res.json({message: `Successfully updated appointment with id: ${updatedAppointment._id}`})
 
     } catch(error){
+        console.log(error)
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 
