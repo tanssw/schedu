@@ -31,14 +31,14 @@ export default function EditAppointmentScreen({ route, navigation }) {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.innerContainer}>
-            <TimeSelector
+            {/* <TimeSelector
                     ref={timeSelectorComponent}
                     date={date}
                     onStartChange={setFormattedStart}
                     onEndChange={setFormattedEnd}
                     activeTime={route.params.activeTime}
-                />
-                {/* <AppointmentDetail onCreateAppointment={createAppointmentHandler} />  */}
+                /> */}
+                <AppointmentDetail onCreateAppointment={data} /> 
             </View>
         </ScrollView>
     )
