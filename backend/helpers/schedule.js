@@ -21,9 +21,9 @@ const scheduleAppointmentUpdate = (appointment) => {
                 let targets = currentData.participants.map(participant => participant.userId)
                 for (let target of targets) {
                     await acknowledgeRequestNotification(target, appointment._id)
-                    await createAbandonedNotification(target, appointment._id)
                 }
-                await createAbandonedNotification(currentData.sender, appointment._id)
+                targets.push(currentData.sender)
+                await createAbandonedNotification(targets, appointment._id)
             }
         } catch (error) {
 
