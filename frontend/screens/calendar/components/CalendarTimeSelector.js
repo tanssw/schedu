@@ -36,14 +36,11 @@ function TimeSelector(props, ref) {
         setEndHourItems(filterHour(start[0], end[0]))
     })
     useEffect(() => {
-        console.log(props.loadStart, props.loadEnd)
         if(startNew){
-            console.log("Loubk")
             setStartHour({ label: startNew.format('HH'), value: startNew.format('HH') })
             setStartMinute({ label: startNew.format('mm'), value: startNew.format('mm')})
         }
         if(endNew){
-            console.log("Loubk")
             setEndHour({ label: endNew.format('HH'), value: endNew.format('HH') })
             setEndMinute({ label: endNew.format('mm'), value: endNew.format('mm') })
         }

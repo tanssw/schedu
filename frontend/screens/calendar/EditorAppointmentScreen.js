@@ -22,15 +22,17 @@ import CalendarTimeSelector from './components/CalendarTimeSelector'
 
 export default function EditAppointmentScreen({ route, navigation }) {
     const { data } = route.params
-    const [date, setDate] = useState()
+    const [receiverId, setReceiverId] = useState()
     const [formattedStart, setFormattedStart] = useState()
     const [formattedEnd, setFormattedEnd] = useState()
 
-    const [activeTimeState, updateActiveTimeState] = useState({ startAt: null, endAt: null })
+    // const [activeTimeState, updateActiveTimeState] = useState({ startAt: "08:30", endAt: "16:30" })
+    // const [activeTimeState, updateActiveTimeState] = useState({ startAt: null, endAt: "16:30" })
+    const [activeTimeState, updateActiveTimeState] = useState(null)
     useEffect(() => {
         getAppointment(data)
-        getActiveTime()
     }, [])
+    
     const getAppointment = async appointId => {
         try {
         const { token, userId } = await getAuthAsset()
@@ -46,8 +48,14 @@ export default function EditAppointmentScreen({ route, navigation }) {
                 payload
             )
             const appointment = appointmentResult.data.result
+            const receiver = appointment.participants.filter(participant => participant.main === true)
+            // console.log("This Active time form user")
+            getActiveTime(receiver)
             setFormattedStart(appointment.startAt)
             setFormattedEnd(appointment.endAt)
+            
+            
+
             
         } catch (error) {
             if (checkExpiredToken(error)) {
@@ -56,17 +64,25 @@ export default function EditAppointmentScreen({ route, navigation }) {
             }
         }
     }
-    const getActiveTime = async () => {
+    const getActiveTime = async (receiver) => {
+        
         try {
-            const {userId, token } = await getAuthAsset()
+            const {token} = await getAuthAsset()
             const payload = {
                 headers: {
                     'Schedu-Token': token
                 }
             }
-            const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/${userId}`, payload)
+            const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/${receiver[0].userId}`, payload)
             const user = userResult.data.user
+            console.log("test uesr")
+            console.log(user.setting.activeTime)
             updateActiveTimeState(user.setting.activeTime)
+            // useEffect(() => {
+            //     updateActiveTimeState(user.setting.activeTime)
+            // }, [user])
+        
+            
         } catch (error) {
             if (checkExpiredToken(error)) {
                 await clearAuthAsset()
@@ -112,7 +128,7 @@ export default function EditAppointmentScreen({ route, navigation }) {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.innerContainer}>
-               { formattedStart && formattedEnd ? <CalendarTimeSelector
+               { formattedStart && formattedEnd  && activeTimeState ? <CalendarTimeSelector
                     onStartChange={setFormattedStart}
                     onEndChange={setFormattedEnd}
                     loadStart={formattedStart}

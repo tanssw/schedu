@@ -41,7 +41,6 @@ function AppointmentDetail(props, ref) {
         []
     )
     useEffect(() => {
-        console.log(props.appointment)
         getAppointment(props.appointment)
     }, [])
     const loadAppointment = appointment => {
@@ -74,14 +73,6 @@ function AppointmentDetail(props, ref) {
             }
         }
     }
-    // const getParticipant = (participantsList) => {
-    //     alert("enter")
-    //     const participants = participantsList.participants.map(participant => {
-    //         return {firstName: participant.firstName}
-    //     })
-    //     console.log(participants)
-    //     return participants
-    // }
     // FUNCTION: to reset all form state
     const resetState = () => {
         setSubject()
