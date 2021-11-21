@@ -39,8 +39,24 @@ const getAppointmentFromId = async (appointmentId) => {
     return appointment
 }
 
+const isParticipate = async (appointmentId, userId) => {
+    const appointment = await appointmentModel.findOne({
+        _id: appointmentId,
+        $or: [
+            { sender: userId },
+            {
+                particiapants: {
+                    $elemMatch: {userId: userId}
+                }
+            }
+        ]
+    })
+    return !!appointment
+}
+
 module.exports = {
     initAppointmentStatus,
     formatAppointmentsBasic,
-    getAppointmentFromId
+    getAppointmentFromId,
+    isParticipate
 }

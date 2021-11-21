@@ -23,12 +23,13 @@ router.get('/all', authMiddleware, async (req, res) => {
 
         let formattedNotifications = []
         for (let notification of notifications) {
-            const formattedNotification = await formatNotification(notification)
+            const formattedNotification = await formatNotification(notification, userId)
             formattedNotifications.push(formattedNotification)
         }
 
         res.json({notifications: formattedNotifications})
     } catch (error) {
+        console.log(error)
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 })
@@ -47,7 +48,7 @@ router.get('/active', authMiddleware, async (req, res) => {
 
         let formattedNotifications = []
         for (let notification of notifications) {
-            const formattedNotification = await formatNotification(notification)
+            const formattedNotification = await formatNotification(notification, userId)
             formattedNotifications.push(formattedNotification)
         }
 
@@ -68,9 +69,10 @@ router.get('/newest', authMiddleware, async (req, res) => {
             expireAt: {$gte: new Date()}
         }).sort([['createdAt', -1]])
 
-        const formattedNotification = await formatNotification(notifications[0])
-        res.json({notification: formattedNotification})
+        let result = notifications.length ? await formatNotification(notifications[0], userId) : {}
+        res.json({notification: result})
     } catch (error) {
+        console.log(error)
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 })
