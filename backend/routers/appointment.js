@@ -186,6 +186,7 @@ router.put('/', authMiddleware, async (req,res) => {
         console.error(error)
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
+})
 
 // Get appointment detail by it's ID
 router.get('/:appointmentId', authMiddleware, async (req, res) => {
@@ -324,6 +325,7 @@ router.put('/approval/', authMiddleware, async (req,res) => {
     }
 
 })
+
 
 
 module.exports = router

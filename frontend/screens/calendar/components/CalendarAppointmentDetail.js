@@ -10,9 +10,11 @@ import {
 } from 'react-native'
 import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
+import axios from 'axios'
+
 
 import { background, text, shadow, colorCode } from '../../../styles'
-import { getAuthAsset } from '../../../modules/auth'
+import { getAuthAsset, checkExpiredToken } from '../../../modules/auth'
 
 function AppointmentDetail(props, ref) {
     // Component's States
@@ -39,10 +41,9 @@ function AppointmentDetail(props, ref) {
         []
     )
     useEffect(() => {
-        //TODO Change appointment to appointmentId
-        console.log(props.appointmentId)
-        getAppointment(props.appointmentId)
-        loadAppointment()
+        console.log(props.appointment)
+        getAppointment(props.appointment)
+        
         
     }, [])
     const loadAppointment = (appointment) =>{
@@ -52,19 +53,25 @@ function AppointmentDetail(props, ref) {
         setCommUrl(appointment.commUrl)
         setNote(appointment.note)
     }
-    const getAppointment = async() =>{
-        const {token, userId} = getAuthAsset()
+    const getAppointment = async(appointId) => {
+        const {token, userId} = await getAuthAsset()
         const payload = {
             headers: {
-                'Schedu-Token': token,
-                'Schedu-UID': userId
+                'schedu-token': token,
+                'schedu-uid': userId
             }
         }
         try {
-            const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/`, payload)
+            const appointmentResult = await axios.get(`http://localhost:3000/appointment/${appointId}`, payload)
+            console.log("This for get appointment")
+            console.log(appointmentResult.data.result)
+            loadAppointment(appointmentResult.data.result)
     }
     catch(error){
-        console.error(error)
+        if (checkExpiredToken(error)) {
+            await clearAuthAsset()
+            return navigation.navigate('SignIn')
+        }
     }
 }
     // FUNCTION: to reset all form state
