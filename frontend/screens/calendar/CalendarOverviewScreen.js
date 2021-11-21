@@ -12,6 +12,8 @@ import MyAppointment from './components/MyAppointment'
 import { colorCode } from '../../styles'
 
 export default function CalendarOverviewScreen({ navigation }) {
+
+    const [userIdState, setUserIdState] = useState(null)
     const [markedDatesState, updateMarkedDatesState] = useState({})
     const [requestAppointmentsState, updateRequestAppointmentsState] = useState([])
     const [myAppointmentsState, updateMyAppointmentsState] = useState([])
@@ -36,6 +38,9 @@ export default function CalendarOverviewScreen({ navigation }) {
                 const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
                 const examDateMarks = buildExamDateMarks(studies, eventDateMarks)
                 updateMarkedDatesState(examDateMarks)
+
+                setUserIdState(userId)
+
             } catch (error) {}
         })
         return unsubscribe
@@ -167,7 +172,8 @@ export default function CalendarOverviewScreen({ navigation }) {
         let selectedDay = date.format('YYYY-MM-DD')
         navigation.navigate('CalendarDetail', {
             title: `${formattedDay}`,
-            selectedDay: selectedDay
+            selectedDay: selectedDay,
+            userId: userIdState
         })
     }
 
