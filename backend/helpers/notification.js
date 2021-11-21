@@ -18,6 +18,18 @@ const createRequestNotification = async (targets, appointmentId, appointmentDate
     const result = await notification.save()
 }
 
+// Create abandoned appointment notification
+const createAbandonedNotification = async (targets, appointmentId) => {
+    targetes = targets.map(target => ({userId: target, response: true}))
+    const data = {
+        type: 'abandoned',
+        targets: targets,
+        appointmentId: appointmentId
+    }
+    const notification = new notificationModel(data)
+    const result = await notification.save()
+}
+
 // Format notification depend on its type
 const formatNotification = async (notification, userId) => {
     switch (notification.type) {
@@ -57,6 +69,7 @@ const acknowledgeRequestNotification = async (userId, appointmentId) => {
 
 module.exports = {
     createRequestNotification,
+    createAbandonedNotification,
     formatNotification,
     acknowledgeRequestNotification
 }
