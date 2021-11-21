@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { Ionicons, Entypo } from '@expo/vector-icons'
+import { Ionicons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import axios from 'axios'
 
 import { API_SERVER_DOMAIN } from '../../modules/apis'
@@ -85,10 +85,32 @@ export default function NotificationCenterScreen({navigation}) {
         )
     }
 
+    // Render notification for appointment request
+    const renderAbandonedNotification = (item, index) => {
+        const notifyTime = dayjs(item.createdAt).format('HH:mm')
+        return (
+            <TouchableOpacity style={styles.notificationCard}>
+                <View>
+                    <MaterialCommunityIcons name="marker-cancel" size={42} color={colorCode.red} />
+                </View>
+                <View style={styles.textContainer}>
+                    <View style={styles.headerBox}>
+                        <Text style={styles.headerText}>Abandoned</Text>
+                        <Text style={styles.time}>{notifyTime}</Text>
+                    </View>
+                    <Text numberOfLines={2} style={styles.description}>
+                        "{item.detail.subject}" was abandoned by primary contact.
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
     // To make an decision on rendering notification card depends on type of notification
     const decisionRendering = ({item, index}) => {
         switch (item.type) {
             case 'request': return renderRequestNotification(item, index)
+            case 'abandoned': return renderAbandonedNotification(item, index)
         }
     }
 
