@@ -4,6 +4,7 @@ import { SafeAreaView, StyleSheet, View } from 'react-native'
 import { shadow } from '../../styles'
 
 import NotificationCard from './components/NotificationCard'
+import General from './components/General'
 import Overview from './components/Overview'
 import RecentlyList from './components/RecentlyList'
 
@@ -30,6 +31,7 @@ export default function HomeScreen({navigation}) {
         <View style={styles.container}>
             <NotificationCard ref={notificationRef} onAppointmentPress={gotoMyCalendar} />
             <View style={[styles.mainContainer, shadow.boxTopMedium]}>
+                <General />
                 <Overview ref={overviewRef} />
                 <RecentlyList ref={recentlyRef} />
             </View>
