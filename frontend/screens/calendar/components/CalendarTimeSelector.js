@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef, useState } from 'react'
+import React, { useImperativeHandle, forwardRef, useState, useEffect} from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { Picker } from 'react-native-woodpicker'
@@ -13,7 +13,7 @@ dayjs.extend(utc)
 
 function TimeSelector(props, ref) {
     // Component's States
-    const [startHour, setStartHour] = useState(null)
+    const [startHour, setStartHour] = useState({ label: '08', value: '08' })
     const [startMinute, setStartMinute] = useState(null)
 
     const [endHour, setEndHour] = useState(null)
@@ -29,10 +29,22 @@ function TimeSelector(props, ref) {
 
     const start = props.activeTime.startAt.split(':')
     const end = props.activeTime.endAt.split(':')
+    const startNew = props.loadStart?.split(':')
+    const endNew = props.loadEnd?.split(':')
     useState(() => {
         setStartHourItems(filterHour(start[0], end[0]))
         setEndHourItems(filterHour(start[0], end[0]))
     })
+    // useEffect(() => {
+    //     if(start){
+    //         console.log("Loubk")
+    //         setStartHourItems({ label: start[0], value: start[0] })
+    //     }
+    //     if(end){
+    //         console.log("Loubk")
+    //         setEndHourItems({ label: end[0], value: end[0] })
+    //     }
+    // }, [])
 
     useImperativeHandle(
         ref,
