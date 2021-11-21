@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef, useState, useEffect} from 'react'
+import React, { useImperativeHandle, forwardRef, useState, useEffect } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { Picker } from 'react-native-woodpicker'
@@ -36,11 +36,11 @@ function TimeSelector(props, ref) {
         setEndHourItems(filterHour(start[0], end[0]))
     })
     useEffect(() => {
-        if(startNew){
+        if (startNew) {
             setStartHour({ label: startNew.format('HH'), value: startNew.format('HH') })
-            setStartMinute({ label: startNew.format('mm'), value: startNew.format('mm')})
+            setStartMinute({ label: startNew.format('mm'), value: startNew.format('mm') })
         }
-        if(endNew){
+        if (endNew) {
             setEndHour({ label: endNew.format('HH'), value: endNew.format('HH') })
             setEndMinute({ label: endNew.format('mm'), value: endNew.format('mm') })
         }

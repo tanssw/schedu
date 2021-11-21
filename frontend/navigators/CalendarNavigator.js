@@ -26,12 +26,11 @@ export default function CalendarNavigator({ navigation }) {
         >
             <CalendarStack.Screen
                 name="CalendarOverview"
-                // component={CalendarOverviewScreen}
                 options={{
                     headerTitle: 'Calendar'
                 }}
             >
-            {props => <CalendarOverviewScreen {...props} test={getAppointmentId}/>}
+            {props => <CalendarOverviewScreen {...props} getAppointmentId={getAppointmentId}/>}
 
                 </CalendarStack.Screen>
             <CalendarStack.Screen

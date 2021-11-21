@@ -26,8 +26,6 @@ export default function EditAppointmentScreen({ route, navigation }) {
     const [formattedStart, setFormattedStart] = useState()
     const [formattedEnd, setFormattedEnd] = useState()
 
-    // const [activeTimeState, updateActiveTimeState] = useState({ startAt: "08:30", endAt: "16:30" })
-    // const [activeTimeState, updateActiveTimeState] = useState({ startAt: null, endAt: "16:30" })
     const [activeTimeState, updateActiveTimeState] = useState(null)
     useEffect(() => {
         getAppointment(data)
@@ -49,14 +47,9 @@ export default function EditAppointmentScreen({ route, navigation }) {
             )
             const appointment = appointmentResult.data.result
             const receiver = appointment.participants.filter(participant => participant.main === true)
-            // console.log("This Active time form user")
             getActiveTime(receiver)
             setFormattedStart(appointment.startAt)
             setFormattedEnd(appointment.endAt)
-            
-            
-
-            
         } catch (error) {
             if (checkExpiredToken(error)) {
                 await clearAuthAsset()
@@ -78,10 +71,6 @@ export default function EditAppointmentScreen({ route, navigation }) {
             console.log("test uesr")
             console.log(user.setting.activeTime)
             updateActiveTimeState(user.setting.activeTime)
-            // useEffect(() => {
-            //     updateActiveTimeState(user.setting.activeTime)
-            // }, [user])
-        
             
         } catch (error) {
             if (checkExpiredToken(error)) {
@@ -93,7 +82,6 @@ export default function EditAppointmentScreen({ route, navigation }) {
 
     const updateAppointment = async appointmentData => {
         try {
-            // if (formattedStart && formattedEnd)
             const { token } = await getAuthAsset()
             const header = {
                 headers: {

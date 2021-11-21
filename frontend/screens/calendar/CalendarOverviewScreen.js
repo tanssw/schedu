@@ -11,7 +11,7 @@ import IncomingRequest from './components/IncomingRequest'
 import MyAppointment from './components/MyAppointment'
 import { colorCode } from '../../styles'
 
-export default function CalendarOverviewScreen({props, navigation, test}) {
+export default function CalendarOverviewScreen({props, navigation, getAppointmentId}) {
 
     const [markedDatesState, updateMarkedDatesState] = useState({})
     const [requestAppointmentsState, updateRequestAppointmentsState] = useState([])
@@ -177,7 +177,7 @@ export default function CalendarOverviewScreen({props, navigation, test}) {
             <View style={styles.innerContainer}>
                 <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDatesState} />
                 <IncomingRequest appointments={requestAppointmentsState} />
-                <MyAppointment appointments={myAppointmentsState} test={test}/>
+                <MyAppointment appointments={myAppointmentsState} getAppointmentId={getAppointmentId}/>
             </View>
         </ScrollView>
     )
