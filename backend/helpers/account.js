@@ -70,7 +70,6 @@ const getUserByObjectId = async (objectId) => {
 const formatAccountInformation = (account) => {
     const { displayTel } = account.setting
     if (!displayTel) account.contact.tel = null
-    console.log(account)
     return account
 }
 

@@ -8,7 +8,6 @@ import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../modules/a
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import { colorCode, shadow } from '../../styles'
-import { color } from 'react-native-elements/dist/helpers'
 
 export default function CalendarDetailScreen({route, navigation}) {
 
