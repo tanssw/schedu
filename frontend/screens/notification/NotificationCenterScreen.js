@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, Entypo } from '@expo/vector-icons'
 import axios from 'axios'
 
 import { API_SERVER_DOMAIN } from '../../modules/apis'
@@ -67,13 +67,24 @@ export default function NotificationCenterScreen({navigation}) {
         }
     }
 
+    const renderFlatList = () => {
+        return (
+            <FlatList data={myNotifications} renderItem={decisionRendering} keyExtractor={item => item._id} />
+        )
+    }
+
+    const renderEmpty = () => {
+        return (
+            <View style={styles.emptyContainer}>
+                <Entypo name="notifications-off" size={96} color={colorCode.lightGrey} />
+                <Text style={styles.emptyText}>You have no notifcation</Text>
+            </View>
+        )
+    }
+
     return (
         <View style={styles.container}>
-            <FlatList
-                data={myNotifications}
-                renderItem={decisionRendering}
-                keyExtractor={item => item._id}
-            />
+            {myNotifications.length ? renderFlatList() : renderEmpty()}
         </View>
     )
 }
@@ -82,6 +93,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white'
+    },
+    emptyContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    emptyText: {
+        fontSize: 16,
+        fontWeight: '300',
+        marginTop: 8,
+        color: colorCode.lightGrey
     },
     borderTop: {
         borderTopWidth: 0.75,

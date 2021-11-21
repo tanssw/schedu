@@ -60,6 +60,7 @@ function NotificationCard(props, ref) {
     }
 
     const decisionRendering = (notification) => {
+        if (!Object.keys(notification).length) return null
         switch (notification.type) {
             case 'request': return renderRequestNotification()
         }
