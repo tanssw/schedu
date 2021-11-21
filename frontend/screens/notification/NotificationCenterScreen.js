@@ -39,12 +39,36 @@ export default function NotificationCenterScreen({navigation}) {
         }
     }
 
+    const navigateToApproval = async (appointmentId) => {
+        const { token, userId } = await getAuthAsset()
+        const payload = {
+            headers: {
+                'Schedu-Token': token,
+                'Schedu-UID': userId
+            }
+        }
+        try {
+            const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${appointmentId}`, payload)
+            const appointment = appointmentResult.data.result
+            navigation.navigate('Calendar', {
+                screen: 'AppointmentApproval',
+                params: {data: appointment},
+                initial: false
+            })
+        } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                navigation.navigate('SignIn')
+            }
+        }
+    }
+
     // Render notification for appointment request
     const renderRequestNotification = (item, index) => {
         const sender = `${item.detail.sender.firstName} ${item.detail.sender.lastName}`
         const notifyTime = dayjs(item.createdAt).format('HH:mm')
         return (
-            <TouchableOpacity onPress={() => {navigation.navigate('Calendar')}} style={styles.notificationCard}>
+            <TouchableOpacity onPress={() => {navigateToApproval(item.appointmentId)}} style={styles.notificationCard}>
                 <View>
                     <Ionicons name={item.response ? 'mail-open-outline' : 'mail-outline'} size={42} color={item.response ? colorCode.grey: colorCode.green} />
                 </View>
@@ -54,7 +78,7 @@ export default function NotificationCenterScreen({navigation}) {
                         <Text style={styles.time}>{notifyTime}</Text>
                     </View>
                     <Text numberOfLines={2} style={styles.description}>
-                        {sender} sent an appointment request to you. Check out your calendar!
+                        {sender} sent an appointment request to you. Check it out for more detail!
                     </Text>
                 </View>
             </TouchableOpacity>
