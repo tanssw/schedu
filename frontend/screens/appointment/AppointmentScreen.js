@@ -1,5 +1,5 @@
-import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native'
+import React, { forwardRef, useImperativeHandle, useState, useEffect, useCallback } from 'react'
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList, Linking, Alert } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
@@ -48,6 +48,14 @@ export default function AppointmentScreen({props, route, navigation}) {
         )
     }
 
+    // Open external URL
+    const linktoExternal = useCallback(async () => {
+        if (!data.commUrl) return
+        const supported = await Linking.canOpenURL(data.commUrl)
+        if (!supported) return Alert.alert(`URL is not supported.`)
+        await Linking.openURL(data.commUrl)
+    }, [data.commUrl])
+
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.innerContainer}>
@@ -72,10 +80,10 @@ export default function AppointmentScreen({props, route, navigation}) {
                     {/* Communication Method Dropdown & Input */}
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Communication Method</Text>
-                        <View style={styles.commMethodBox}>
+                        <TouchableOpacity onPress={linktoExternal} style={styles.commMethodBox}>
                             <Text style={styles.commMethodHeader}>{displayCommMethod}</Text>
-                            <Text style={styles.commMethodURL}>URL: {data.commUrl ? data.commUrl : '[Not provided]'}</Text>
-                        </View>
+                            <Text numberOfLines={1} style={styles.commMethodURL}>URL: {data.commUrl ? data.commUrl : '[Not provided]'}</Text>
+                        </TouchableOpacity>
                     </View>
                     {/* Note to participant Textbox */}
                     <View style={styles.spaceBetweenInput}>

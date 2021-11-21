@@ -10,10 +10,10 @@ const appointmentSchema = require('../schema/appointmentSchema')
 const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
 
 const { getUserByObjectId } = require('../helpers/account')
-const { initAppointmentStatus, formatAppointmentsBasic, getAppointmentFromId, isParticipate } = require('../helpers/appointment')
+const { initAppointmentStatus, formatAppointmentsBasic, getAppointmentFromId, isParticipate, updateAppointmentStatus } = require('../helpers/appointment')
 const { authMiddleware } = require('../middlewares/auth')
 const { getDateRange } = require('../helpers/date')
-const { createRequestNotification, updateRequestNotification } = require('../helpers/notification')
+const { createRequestNotification, acknowledgeRequestNotification, createAbandonedNotification } = require('../helpers/notification')
 
 const router = express()
 
@@ -75,10 +75,12 @@ router.get('/count', authMiddleware, async (req, res) => {
         })
 
         // Filter appointment that already end
-        let endedAppointments = appointments.filter(appointment => ['abandoned', 'done'].includes(appointment.status))
+        const endStates = ['abandoned', 'done']
+        let endedAppointments = appointments.filter(appointment => endStates.includes(appointment.status))
 
         // Filter appointment that already declined
         let declinedAppointments = appointments.filter(appointment => {
+            if (endStates.includes(appointment.status)) return false
             let meDeclined = appointment.participants.filter(participant => participant.userId === userId && !participant.join && participant.confirmed)
             return !!meDeclined.length
         })
@@ -86,17 +88,13 @@ router.get('/count', authMiddleware, async (req, res) => {
         let overallCount = appointments.length
         let requestCount = requestAppointments.length
         let endedCount = endedAppointments.length
-        let declinedCount = declinedAppointments.length
-        let ongoingCount = appointments.length - requestCount - declinedCount
-        let activeCount = ongoingCount - endedCount
+        let ongoingCount = appointments.length - requestCount - endedCount - declinedAppointments.length
 
         res.json({
             overall: overallCount,
             request: requestCount,
-            declined: declinedCount,
             ongoing: ongoingCount,
-            end: endedCount,
-            active: activeCount
+            end: endedCount
         })
 
     } catch (error) {
@@ -218,7 +216,7 @@ router.get('/:year/:month', authMiddleware, async(req, res) => {
                         },
                         {
                             participants: {
-                                $elemMatch: {userId: userId, confirmed: true}
+                                $elemMatch: {userId: userId, confirmed: true, join: true}
                             }
                         }
                     ]
@@ -306,15 +304,26 @@ router.put('/approval/', authMiddleware, async (req,res) => {
             commUrl: appointmentData.commUrl,
             note: appointmentData.note
         }
-        const updatedAppointment = await appointmentModel.findByIdAndUpdate(appointmentId, {$set: data})
+        const updatedAppointment = await appointmentModel.findByIdAndUpdate(appointmentId, {$set: data}, {new: true})
 
-        // Update notification
-        await updateRequestNotification(userId, appointmentId)
+        // Acknowledge the request notification
+        await acknowledgeRequestNotification(userId, appointmentId)
+
+        // Update appointment's status
+        const newStatus = await updateAppointmentStatus(updatedAppointment)
+
+        // Create notification that appointment has been abandoned
+        if (newStatus === 'abandoned') {
+            // Mapping targets to [id1, id2, id3, ...] from [Object, Object, Object, ...] and remove current user from notify target
+            let targets = appointmentData.participants.map(participant => participant.userId)
+            targets.push(appointmentData.sender.userId)
+            targets.splice(targets.indexOf(userId), 1)
+            await createAbandonedNotification(targets, appointmentId)
+        }
 
         res.json({message: `Successfully updated appointment with id: ${updatedAppointment._id}`})
 
     } catch(error){
-        console.log(error)
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 

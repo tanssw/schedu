@@ -16,7 +16,7 @@ import { background, text, shadow, colorCode } from '../../../styles'
 function AppointmentDetail(props, ref) {
     // Component's States
     const [subject, setSubject] = useState()
-    const [commMethod, setCommMethod] = useState()
+    const [commMethod, setCommMethod] = useState('face')
     const [commUrl, setCommUrl] = useState()
     const [note, setNote] = useState()
     const [join, setJoin] = useState(false)
