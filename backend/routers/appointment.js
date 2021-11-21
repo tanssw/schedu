@@ -11,9 +11,9 @@ const appointmentModel = conn.model('appointments', appointmentSchema, process.e
 
 const { getUserByObjectId } = require('../helpers/account')
 const { initAppointmentStatus, formatAppointmentsBasic } = require('../helpers/appointment')
-const { getUserIdFromToken } = require('../helpers/auth')
 const { authMiddleware } = require('../middlewares/auth')
 const { getDateRange } = require('../helpers/date')
+const { createRequestNotification } = require('../helpers/notification')
 
 const router = express()
 
@@ -174,6 +174,12 @@ router.post('/', authMiddleware, async (req, res) => {
         // Save into the database
         const appointment = new appointmentModel(data)
         const result = await appointment.save()
+
+        // Create notification to all participants
+        let participantToNotify = appointmentRequest.participants
+        participantToNotify.push(appointmentRequest.receiver)
+        await createRequestNotification(participantToNotify, result._id, appointmentRequest.startAt)
+
         res.json({message: `Successfully create new appointment (ID: ${result._id})`})
     } catch (error) {
         res.status(400).send({message: "Cannot create new appointment. Something went wrong."})

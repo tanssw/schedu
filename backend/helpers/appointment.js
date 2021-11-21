@@ -1,5 +1,9 @@
 const { getUserByObjectId } = require('./account')
 
+const conn = require('../config/connectionMongoDB/ScheduConnect')
+const appointmentSchema = require('../schema/appointmentSchema')
+const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
+
 const STATUS = ['pending', 'ongoing', 'abandoned', 'done']
 
 const initAppointmentStatus = () => {
@@ -30,7 +34,13 @@ const formatAppointmentsBasic = async appointments => {
     return formattedAppointments
 }
 
+const getAppointmentFromId = async (appointmentId) => {
+    const appointment = await appointmentModel.findOne({_id: appointmentId})
+    return appointment
+}
+
 module.exports = {
     initAppointmentStatus,
-    formatAppointmentsBasic
+    formatAppointmentsBasic,
+    getAppointmentFromId
 }

@@ -1,23 +1,74 @@
-import React from 'react'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { Entypo, Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/core'
+import axios from 'axios'
+
+import { API_SERVER_DOMAIN } from '../../../modules/apis'
+import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../../modules/auth'
 
 import { text, colorCode, shadow } from '../../../styles'
+import dayjs from 'dayjs'
 
-export default function NotificationCard(props) {
+function NotificationCard(props, ref) {
 
-    return (
-        <View style={styles.container}>
+    const [notification, changeNotification] = useState({})
+
+    const navigation = useNavigation()
+
+    useImperativeHandle(ref, () => ({
+        loadNewest() { loadNotification() }
+    }), [])
+
+    const loadNotification = async () => {
+        try {
+            const { token, userId } = await getAuthAsset()
+            const payload = {
+                headers: {
+                    'Schedu-Token': token,
+                    'Schedu-UID': userId
+                }
+            }
+            const notificationResult = await axios.get(`${API_SERVER_DOMAIN}/notification/newest`, payload)
+            const newestNotification = notificationResult.data.notification
+            changeNotification(newestNotification)
+        } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                navigation.navigate('SignIn')
+            }
+        }
+    }
+
+    const renderRequestNotification = () => {
+        const sender = `${notification.detail.sender.firstName} ${notification.detail.sender.lastName}`
+        const date = dayjs(notification.detail.startAt).format('DD MMMM YYYY')
+        const startAt = dayjs(notification.detail.startAt).format('HH:mm')
+        const endAt = dayjs(notification.detail.endAt).format('HH:mm')
+        return (
             <TouchableOpacity style={[styles.notificationCard, shadow.boxBottomSmall]}>
                 <View>
                     <Text style={[styles.notificationHeader, text.green]}>New Request</Text>
                     <View>
-                        <Text style={styles.notificationDetail}>from Tasanai Srisawat</Text>
-                        <Text style={styles.notificationDetail}>07 November 2021 at 15:00 - 15:15</Text>
+                        <Text style={styles.notificationDetail}>from {sender}</Text>
+                        <Text style={styles.notificationDetail}>{date} at {startAt} - {endAt}</Text>
                     </View>
                 </View>
                 <Ionicons name="mail-unread-outline" size={42} color={colorCode.green} />
             </TouchableOpacity>
+        )
+    }
+
+    const decisionRendering = (notification) => {
+        if (!Object.keys(notification).length) return null
+        switch (notification.type) {
+            case 'request': return renderRequestNotification()
+        }
+    }
+
+    return (
+        <View style={styles.container}>
+            {decisionRendering(notification)}
             <TouchableOpacity onPress={props.onAppointmentPress} style={styles.viewAppointment}>
                 <Text style={text.grey}>View All Appointments</Text>
                 <Entypo name="chevron-small-right" size={18} color={colorCode.grey} />
@@ -25,6 +76,8 @@ export default function NotificationCard(props) {
         </View>
     )
 }
+
+export default forwardRef(NotificationCard)
 
 const styles = StyleSheet.create({
     container: {
