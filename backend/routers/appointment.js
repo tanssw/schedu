@@ -86,17 +86,13 @@ router.get('/count', authMiddleware, async (req, res) => {
         let overallCount = appointments.length
         let requestCount = requestAppointments.length
         let endedCount = endedAppointments.length
-        let declinedCount = declinedAppointments.length
-        let ongoingCount = appointments.length - requestCount - declinedCount
-        let activeCount = ongoingCount - endedCount
+        let ongoingCount = appointments.length - requestCount - endedCount - declinedAppointments.length
 
         res.json({
             overall: overallCount,
             request: requestCount,
-            declined: declinedCount,
             ongoing: ongoingCount,
-            end: endedCount,
-            active: activeCount
+            end: endedCount
         })
 
     } catch (error) {
