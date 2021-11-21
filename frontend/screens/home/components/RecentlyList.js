@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     personName: {
         textAlign: 'center',
         fontWeight: '300',
-        width: 64
+        width: 64,
+        alignSelf: 'center'
     }
 })

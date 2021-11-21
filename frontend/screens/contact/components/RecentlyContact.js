@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         marginTop: 6,
         width: 64,
+        alignSelf: 'center'
     },
     personImage: {
         textAlign: 'center'
