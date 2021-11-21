@@ -55,11 +55,17 @@ function RecentlyList(props, ref) {
         )
     }
 
+    const renderFlatList = () => {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.header}>Recently Contact</Text>
+                <FlatList horizontal data={recentlyContacts} renderItem={renderContact} keyExtractor={(item, index) => index}/>
+            </View>
+        )
+    }
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Recently Contact</Text>
-            <FlatList horizontal data={recentlyContacts} renderItem={renderContact} keyExtractor={(item, index) => index}/>
-        </View>
+        <View>{recentlyContacts.length ? renderFlatList() : null}</View>
     )
 }
 

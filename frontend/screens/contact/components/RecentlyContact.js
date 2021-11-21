@@ -52,18 +52,24 @@ function RecentlyContact(props, ref) {
         )
     }
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Recently Contact</Text>
-            <View style={styles.suggestionContainer}>
-                <FlatList
-                    horizontal
-                    data={recentlyContacts}
-                    renderItem={renderContacts}
-                    keyExtractor={(contact, index) => index}
-                />
+    const renderFlatList = () => {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.header}>Recently Contact</Text>
+                <View style={styles.suggestionContainer}>
+                    <FlatList
+                        horizontal
+                        data={recentlyContacts}
+                        renderItem={renderContacts}
+                        keyExtractor={(contact, index) => index}
+                    />
+                </View>
             </View>
-        </View>
+        )
+    }
+
+    return (
+        <View>{recentlyContacts.length ? renderFlatList() : null}</View>
     )
 }
 
