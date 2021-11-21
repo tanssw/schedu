@@ -107,6 +107,7 @@ function AppointmentDetail(props, ref) {
         if (props.participant) {
             if (!participants.find(item => item._id === props.participant._id)) {
                 setParticipants([...participants, props.participant])
+                props.onUpdateParticipant()
             }
         }
     }

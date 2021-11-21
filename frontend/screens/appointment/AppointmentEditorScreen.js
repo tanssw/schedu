@@ -22,6 +22,12 @@ export default function AppointmentEditorScreen({ route, navigation }) {
         navigation.navigate('ChooseParticipants', data)
     }
 
+    const updateHandler = () => {
+        navigation.setParams({participant: null})
+
+    }
+
+
     const createAppointmentHandler = async data => {
         const { token, userId } = await getAuthAsset()
         const header = {
@@ -73,6 +79,7 @@ export default function AppointmentEditorScreen({ route, navigation }) {
                     navigation={navigation}
                     participant={participant}
                     chooseParticipant={goChooseParticipants}
+                    onUpdateParticipant={updateHandler}
                 />
             </View>
         </ScrollView>

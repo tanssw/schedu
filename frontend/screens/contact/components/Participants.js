@@ -9,14 +9,7 @@ export default function Participants(props) {
 
     const { contactId, date, activeTime } = props.data
 
-    // const [participantData, setParticipantsData] = useState()
-
     const chooseHandler = () => {
-        // setParticipantsData({
-        //     _id: contact._id,
-        //     firstName: contact.firstName,
-        //     lastName: contact.lastName
-        // })
         props.choose({
             contactId: contactId,
             date: date,
