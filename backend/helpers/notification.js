@@ -1,6 +1,7 @@
 const notificationSchema = require('../schema/notificationSchema')
 let conn = require('../config/connectionMongoDB/ScheduConnect')
 const { getAppointmentFromId } = require('./appointment')
+const { getUserByObjectId } = require('./account')
 const notificationModel = conn.model('notifications', notificationSchema, process.env.NOTIFICATIONS_COLLECTION)
 
 // Create appointment request notification
@@ -25,10 +26,14 @@ const formatNotification = async (notification) => {
 
 const formatRequestNotification = async (notification) => {
     const appointment = await getAppointmentFromId(notification.appointmentId)
+    const sender = await getUserByObjectId(appointment.sender)
     return {
         ...notification._doc,
         detail: {
-            sender: appointment.sender,
+            sender: {
+                firstName: sender.firstName,
+                lastName: sender.lastName
+            },
             startAt: appointment.startAt,
             endAt: appointment.endAt
         }

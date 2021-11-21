@@ -19,7 +19,7 @@ router.get('/all', authMiddleware, async (req, res) => {
             targets: {
                 $elemMatch: {userId: userId}
             }
-        })
+        }).sort([['createdAt', -1]])
 
         let formattedNotifications = []
         for (let notification of notifications) {

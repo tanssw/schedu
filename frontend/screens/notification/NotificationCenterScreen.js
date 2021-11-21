@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import axios from 'axios'
 
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../modules/auth'
 import { colorCode } from '../../styles'
+import dayjs from 'dayjs'
 
 export default function NotificationCenterScreen({navigation}) {
 
@@ -38,12 +40,20 @@ export default function NotificationCenterScreen({navigation}) {
     }
 
     const renderRequestNotification = (item, index) => {
+        const sender = `${item.detail.sender.firstName} ${item.detail.sender.lastName}`
+        const notifyTime = dayjs(item.createdAt).format('HH:mm')
         return (
             <TouchableOpacity style={styles.notificationCard}>
                 <View>
-                    <Text style={styles.headerText}>Request</Text>
-                    <Text style={styles.description}>
-                        {item.detail.sender}
+                    <Ionicons name="mail-outline" size={42} color={colorCode.green} />
+                </View>
+                <View style={styles.textContainer}>
+                    <View style={styles.headerBox}>
+                        <Text style={styles.headerText}>Request</Text>
+                        <Text style={styles.time}>{notifyTime}</Text>
+                    </View>
+                    <Text numberOfLines={2} style={styles.description}>
+                        {sender} sent an appointment request to you. Check out your calendar!
                     </Text>
                 </View>
             </TouchableOpacity>
@@ -75,19 +85,32 @@ const styles = StyleSheet.create({
     },
     borderTop: {
         borderTopWidth: 0.75,
-        borderTopColor: colorCode.lightGrey
+        borderTopColor: colorCode.lightGrey,
     },
     notificationCard: {
-        padding: 16
+        padding: 16,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    textContainer: {
+        flex: 1,
+        marginLeft: 16
+    },
+    headerBox: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 4
     },
     headerText: {
         fontWeight: 'bold',
         fontSize: 16,
-        marginBottom: 4,
+    },
+    time: {
+        fontSize: 12,
         color: colorCode.dark
     },
     description: {
         fontWeight: '300',
-        color: colorCode.grey
+        color: colorCode.dark
     }
 })
