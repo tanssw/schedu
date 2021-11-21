@@ -185,7 +185,7 @@ router.get('/:year/:month', authMiddleware, async(req, res) => {
                         },
                         {
                             participants: {
-                                $elemMatch: {userId: userId, confirmed: true}
+                                $elemMatch: {userId: userId, confirmed: true, join: true}
                             }
                         }
                     ]
