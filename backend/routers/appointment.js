@@ -14,6 +14,7 @@ const { initAppointmentStatus, formatAppointmentsBasic, getAppointmentFromId, is
 const { authMiddleware } = require('../middlewares/auth')
 const { getDateRange } = require('../helpers/date')
 const { createRequestNotification, acknowledgeRequestNotification, createAbandonedNotification } = require('../helpers/notification')
+const { scheduleAppointmentUpdate } = require('../helpers/schedule')
 
 const router = express()
 
@@ -235,6 +236,9 @@ router.post('/', authMiddleware, async (req, res) => {
         let participantToNotify = appointmentRequest.participants
         participantToNotify.push(appointmentRequest.receiver)
         await createRequestNotification(participantToNotify, result._id, appointmentRequest.startAt)
+
+        // Schedule the appointment status handler
+        scheduleAppointmentUpdate(appointment)
 
         res.json({message: `Successfully create new appointment (ID: ${result._id})`})
     } catch (error) {
