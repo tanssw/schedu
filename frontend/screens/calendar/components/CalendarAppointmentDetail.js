@@ -53,6 +53,7 @@ function AppointmentDetail(props, ref) {
         setParticipants(appointment.participants)
     }
     const getAppointment = async appointId => {
+        try {
         const { token, userId } = await getAuthAsset()
         const payload = {
             headers: {
@@ -60,13 +61,11 @@ function AppointmentDetail(props, ref) {
                 'schedu-uid': userId
             }
         }
-        try {
+        
             const appointmentResult = await axios.get(
                 `http://localhost:3000/appointment/${appointId}`,
                 payload
             )
-            console.log('This for get appointment')
-            console.log(appointmentResult.data.result)
             loadAppointment(appointmentResult.data.result)
         } catch (error) {
             if (checkExpiredToken(error)) {

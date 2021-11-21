@@ -13,39 +13,41 @@ dayjs.extend(utc)
 
 function TimeSelector(props, ref) {
     // Component's States
-    const [startHour, setStartHour] = useState({ label: '08', value: '08' })
+    const [startHour, setStartHour] = useState()
     const [startMinute, setStartMinute] = useState(null)
 
-    const [endHour, setEndHour] = useState(null)
+    const [endHour, setEndHour] = useState()
     const [endMinute, setEndMinute] = useState(null)
 
     const [startHourItems, setStartHourItems] = useState(null)
     const [endHourItems, setEndHourItems] = useState(null)
 
     const [startMinuteItems, setStartMinuteItems] = useState(minuteItems)
-    const [endMinuteItems, setEndMinuteItems] = useState(startMinuteItems)
+    const [endMinuteItems, setEndMinuteItems] = useState(minuteItems)
 
-    const [isDisable, setIsDisable] = useState(true)
+    const [isDisable, setIsDisable] = useState(false)
 
     const start = props.activeTime.startAt.split(':')
     const end = props.activeTime.endAt.split(':')
-    const startNew = props.loadStart?.split(':')
-    const endNew = props.loadEnd?.split(':')
+    const startNew = dayjs(props.loadStart)
+    const endNew = dayjs(props.loadEnd)
     useState(() => {
         setStartHourItems(filterHour(start[0], end[0]))
         setEndHourItems(filterHour(start[0], end[0]))
     })
-    // useEffect(() => {
-    //     if(start){
-    //         console.log("Loubk")
-    //         setStartHourItems({ label: start[0], value: start[0] })
-    //     }
-    //     if(end){
-    //         console.log("Loubk")
-    //         setEndHourItems({ label: end[0], value: end[0] })
-    //     }
-    // }, [])
-
+    useEffect(() => {
+        console.log(props.loadStart, props.loadEnd)
+        if(startNew){
+            console.log("Loubk")
+            setStartHour({ label: startNew.format('HH'), value: startNew.format('HH') })
+            setStartMinute({ label: startNew.format('mm'), value: startNew.format('mm')})
+        }
+        if(endNew){
+            console.log("Loubk")
+            setEndHour({ label: endNew.format('HH'), value: endNew.format('HH') })
+            setEndMinute({ label: endNew.format('mm'), value: endNew.format('mm') })
+        }
+    }, [])
     useImperativeHandle(
         ref,
         () => ({
