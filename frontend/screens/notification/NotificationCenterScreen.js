@@ -91,7 +91,7 @@ export default function NotificationCenterScreen({navigation}) {
         return (
             <TouchableOpacity style={styles.notificationCard}>
                 <View>
-                    <MaterialCommunityIcons name="marker-cancel" size={42} color={colorCode.red} />
+                    <MaterialCommunityIcons name="pause-octagon-outline" size={42} color={colorCode.red} />
                 </View>
                 <View style={styles.textContainer}>
                     <View style={styles.headerBox}>
