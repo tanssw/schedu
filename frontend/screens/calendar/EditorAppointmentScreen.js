@@ -45,12 +45,13 @@ export default function EditAppointmentScreen({ route, navigation }) {
             }
 
             const payload = {
-                _id: data._id,
+                _id: appointmentData._id,
                 subject: appointmentData.subject,
                 sender: appointmentData.sender,
                 receiver: appointmentData.contactId,
                 status: appointmentData.status,
                 participants: appointmentData.participants,
+                
                 startAt: '2021-11-17T02:15:00.000+00:00',
                 endAt: '2021-11-17T03:00:00.000+00:00',
                 commMethod: appointmentData.commMethod,
@@ -59,7 +60,6 @@ export default function EditAppointmentScreen({ route, navigation }) {
             }
             
             await axios.put(`http://localhost:3000/appointment/`, payload, header)
-            alert('Update appointment')
             navigation.navigate('Appointment', { data: payload })
         } catch (error) {
             if (checkExpiredToken(error)) {

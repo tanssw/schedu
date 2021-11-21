@@ -157,12 +157,8 @@ router.put('/', authMiddleware, async (req,res) => {
         console.log(payload)
         
         // Mapping business_id of participants to an Object with some logic keys
-        // let participants = appointmentData.participants.map(participant => {
-        //     if (userId === participant.userId){
-        //        return {userId: userId, main: participant.main, confirmed: true, join: join}
-        //     } else {
-        //        return participant
-        //     }
+        // let participants = payload.participants.map(participant => {
+        //     return {firstName: "test", userId: "", main: participant.main, confirmed: true, join: participant.join}
         // })
 
         // Structuring payload data before saving into the database
@@ -177,8 +173,8 @@ router.put('/', authMiddleware, async (req,res) => {
             commUrl: payload.commUrl,
             note: payload.note
         }
-        console.log("this is a appointId")
-        console.log(payload._id)
+        console.log("this is a data payload")
+        console.log(data)
         const updatedAppointment = await appointmentModel.findByIdAndUpdate(payload._id, {$set: data})
         res.json({message: `Successfully updated appointment`})
 
@@ -195,7 +191,12 @@ router.get('/:appointmentId', authMiddleware, async (req, res) => {
         const userId = req.headers['schedu-uid']
         if (!isParticipate(appointmentId, userId)) return res.status(400).send({message: 'You are not partipating in this appointment.'})
         const appointment = await getAppointmentFromId(appointmentId)
-        res.json({result: appointment})
+        // console.log("this load from get appointment by id")
+        // console.log(appointment)
+        const formattedAppointments = await formatAppointmentsBasic([appointment])
+        console.log("This new format")
+        console.log(formattedAppointments[0])
+        res.json({result: formattedAppointments[0]})
     } catch (error) {
         console.log(error)
         res.status(500).send({message: 'Something went wrong. Please try again later.'})

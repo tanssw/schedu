@@ -9,18 +9,25 @@ import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../modules/a
 
 import TimeDisplay from '../appointment/components/TimeDisplay'
 
-export default function AppointmentScreen({props, route}) {
+export default function AppointmentScreen({props, route, navigation}) {
 
     const { data} = route.params
 
     const [displayCommMethod, setDisplayCommMethod] = useState()
 
     useEffect(() => {
-        getCommMethod()
-    }, [])
+        // getCommMethod()
+        const unsubscribe = navigation.addListener('focus', async () => {
+            try {
+                getCommMethod()
+            } catch (error) {}
+        })
+    })
 
     //FUNCTION: return commMethods for details
     const getCommMethod = () => {
+        console.log("This comMethod for appointmentScreen")
+        console.log(data.commMethod)
         switch (data.commMethod) {
             case 'face': return setDisplayCommMethod('Face to Face')
             case 'msteam': return setDisplayCommMethod('Microsoft Teams')

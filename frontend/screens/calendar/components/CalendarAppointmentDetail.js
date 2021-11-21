@@ -12,7 +12,6 @@ import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 import axios from 'axios'
 
-
 import { background, text, shadow, colorCode } from '../../../styles'
 import { getAuthAsset, checkExpiredToken } from '../../../modules/auth'
 
@@ -23,6 +22,7 @@ function AppointmentDetail(props, ref) {
     const [commUrl, setCommUrl] = useState()
     const [note, setNote] = useState()
     const [join, setJoin] = useState(false)
+    const [appointId, setAppointmentId] = useState()
 
     // validate state
     const [isEmptySubject, setIsEmptySubject] = useState(true)
@@ -43,18 +43,17 @@ function AppointmentDetail(props, ref) {
     useEffect(() => {
         console.log(props.appointment)
         getAppointment(props.appointment)
-        
-        
     }, [])
-    const loadAppointment = (appointment) =>{
+    const loadAppointment = appointment => {
         setSubject(appointment.subject)
-        setParticipants(appointment.participants)
         setCommMethod(getCommMethod(appointment.commMethod))
         setCommUrl(appointment.commUrl)
         setNote(appointment.note)
+        setAppointmentId(appointment._id)
+        setParticipants(appointment.participants)
     }
-    const getAppointment = async(appointId) => {
-        const {token, userId} = await getAuthAsset()
+    const getAppointment = async appointId => {
+        const { token, userId } = await getAuthAsset()
         const payload = {
             headers: {
                 'schedu-token': token,
@@ -62,18 +61,28 @@ function AppointmentDetail(props, ref) {
             }
         }
         try {
-            const appointmentResult = await axios.get(`http://localhost:3000/appointment/${appointId}`, payload)
-            console.log("This for get appointment")
+            const appointmentResult = await axios.get(
+                `http://localhost:3000/appointment/${appointId}`,
+                payload
+            )
+            console.log('This for get appointment')
             console.log(appointmentResult.data.result)
             loadAppointment(appointmentResult.data.result)
-    }
-    catch(error){
-        if (checkExpiredToken(error)) {
-            await clearAuthAsset()
-            return navigation.navigate('SignIn')
+        } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
         }
     }
-}
+    // const getParticipant = (participantsList) => {
+    //     alert("enter")
+    //     const participants = participantsList.participants.map(participant => {
+    //         return {firstName: participant.firstName}
+    //     })
+    //     console.log(participants)
+    //     return participants
+    // }
     // FUNCTION: to reset all form state
     const resetState = () => {
         setSubject()
@@ -81,12 +90,16 @@ function AppointmentDetail(props, ref) {
         setCommUrl()
         setNote()
     }
-    const getCommMethod = (data) => {
+    const getCommMethod = data => {
         switch (data) {
-            case 'face': return { label: 'Face to Face', value: 'face' }
-            case 'msteam': return { label: 'Microsoft Teams', value: 'msteam' }
-            case 'meet': return { label: 'Google Meet', value: 'meet' }
-            case 'zoom': return { label: 'Zoom Application', value: 'zoom' }
+            case 'face':
+                return { label: 'Face to Face', value: 'face' }
+            case 'msteam':
+                return { label: 'Microsoft Teams', value: 'msteam' }
+            case 'meet':
+                return { label: 'Google Meet', value: 'meet' }
+            case 'zoom':
+                return { label: 'Zoom Application', value: 'zoom' }
         }
     }
 
@@ -94,6 +107,7 @@ function AppointmentDetail(props, ref) {
     const updateAppointmentCall = () => {
         if (subject) {
             const data = {
+                _id: appointId,
                 subject: subject,
                 participants: participants,
                 commMethod: commMethod ? commMethod.value : undefined,
