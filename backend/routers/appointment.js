@@ -75,10 +75,12 @@ router.get('/count', authMiddleware, async (req, res) => {
         })
 
         // Filter appointment that already end
-        let endedAppointments = appointments.filter(appointment => ['abandoned', 'done'].includes(appointment.status))
+        const endStates = ['abandoned', 'done']
+        let endedAppointments = appointments.filter(appointment => endStates.includes(appointment.status))
 
         // Filter appointment that already declined
         let declinedAppointments = appointments.filter(appointment => {
+            if (endStates.includes(appointment.status)) return false
             let meDeclined = appointment.participants.filter(participant => participant.userId === userId && !participant.join && participant.confirmed)
             return !!meDeclined.length
         })
@@ -86,17 +88,13 @@ router.get('/count', authMiddleware, async (req, res) => {
         let overallCount = appointments.length
         let requestCount = requestAppointments.length
         let endedCount = endedAppointments.length
-        let declinedCount = declinedAppointments.length
-        let ongoingCount = appointments.length - requestCount - declinedCount
-        let activeCount = ongoingCount - endedCount
+        let ongoingCount = appointments.length - requestCount - endedCount - declinedAppointments.length
 
         res.json({
             overall: overallCount,
             request: requestCount,
-            declined: declinedCount,
             ongoing: ongoingCount,
-            end: endedCount,
-            active: activeCount
+            end: endedCount
         })
 
     } catch (error) {
@@ -158,7 +156,6 @@ router.get('/:appointmentId', authMiddleware, async (req, res) => {
         const appointment = await getAppointmentFromId(appointmentId)
         res.json({result: appointment})
     } catch (error) {
-        console.log(error)
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 })
@@ -282,7 +279,6 @@ router.put('/', authMiddleware, async (req,res) => {
         const newStatus = await updateAppointmentStatus(updatedAppointment)
 
         // Create notification that appointment has been abandoned
-        console.log(newStatus)
         if (newStatus === 'abandoned') {
             // Mapping targets to [id1, id2, id3, ...] from [Object, Object, Object, ...] and remove current user from notify target
             let targets = appointmentData.participants.map(participant => participant.userId)
@@ -294,7 +290,6 @@ router.put('/', authMiddleware, async (req,res) => {
         res.json({message: `Successfully updated appointment with id: ${updatedAppointment._id}`})
 
     } catch(error){
-        console.log(error)
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 
