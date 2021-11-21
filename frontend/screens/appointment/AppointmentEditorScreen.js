@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import axios from 'axios'
 
@@ -18,8 +18,8 @@ export default function AppointmentEditorScreen({ route, navigation }) {
 
     const { contactId, date, participant } = route.params
 
-    const goChooseParticipants = payload => {
-        navigation.navigate('ChooseParticipants', payload)
+    const goChooseParticipants = data => {
+        navigation.navigate('ChooseParticipants', data)
     }
 
     const createAppointmentHandler = async data => {

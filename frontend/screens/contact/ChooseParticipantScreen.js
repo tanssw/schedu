@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import axios from 'axios'
 
 import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
@@ -7,10 +7,12 @@ import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import Participants from './components/Participants'
 
-import { colorCode, text } from '../../styles'
+import { colorCode } from '../../styles'
 
 export default function ChooseParticipantScreen(props) {
     const [contacts, setContacts] = useState([])
+    console.log(props.route.params.data)
+    const { participants } = props.route.params
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', async () => {
             try {
@@ -25,7 +27,6 @@ export default function ChooseParticipantScreen(props) {
                 const contactUsers = userResult.data.users
                 setContacts(contactUsers)
             } catch (error) {
-                console.log(error)
                 if (checkExpiredToken(error)) {
                     await clearAuthAsset()
                     return navigation.navigate('SignIn')
@@ -34,14 +35,28 @@ export default function ChooseParticipantScreen(props) {
         })
         return unsubscribe
     })
+
+    const goToCreateAppointment = payload => {
+        props.navigation.navigate('CreateAppointment', payload)
+    }
+
     const renderContact = contact => {
-        if (contact._id !== props.route.params.data.contactId) return <Participants contact={contact} key={contact._id} data={props.route.params.data} navigation={props.navigation} />
+        if (
+            contact._id !== props.route.params.data.contactId &&
+            !participants.find(item => item._id === contact._id)
+        )
+            return (
+                <Participants
+                    contact={contact}
+                    key={contact._id}
+                    data={props.route.params.data}
+                    choose={goToCreateAppointment}
+                />
+            )
     }
     return (
         <View style={styles.contactContainer}>
-            <View style={styles.listContainer}>
-                {contacts.map(contact => renderContact(contact))}
-            </View>
+            {contacts.map(contact => renderContact(contact))}
         </View>
     )
 }
@@ -51,39 +66,5 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         backgroundColor: 'white'
-    },
-    emptyContainer: {
-        minHeight: 144,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    emptyText: {
-        color: colorCode.grey,
-        marginTop: 8
-    },
-    listContainer: {},
-    listItem: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginVertical: 8,
-    },
-    header: {
-        fontWeight: 'bold',
-        fontSize: 18,
-        marginBottom: 8
-    },
-    personImage: {},
-    personDetail: {
-        flex: 1,
-        marginLeft: 16
-    },
-    personName: {
-        color: colorCode.dark
-    },
-    personRole: {
-        fontSize: 14,
-        fontWeight: '300',
-        color: colorCode.grey
     }
 })

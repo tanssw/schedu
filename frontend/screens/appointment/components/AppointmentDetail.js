@@ -35,6 +35,7 @@ function AppointmentDetail(props, ref) {
             checkParticipant()
         })
         return unsubscribe
+        // checkParticipant()
     })
 
     useImperativeHandle(
@@ -95,10 +96,13 @@ function AppointmentDetail(props, ref) {
             },
             {
                 text: 'Confirm',
-                onPress: () => setParticipants(participants.filter(item => target !== item))
+                onPress: () => {
+                    setParticipants(participants.filter(item => item !== target))
+                }
             }
         ])
     }
+
     const checkParticipant = () => {
         if (props.participant) {
             if (!participants.find(item => item._id === props.participant._id)) {

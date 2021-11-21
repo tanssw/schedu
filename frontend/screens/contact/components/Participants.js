@@ -6,29 +6,31 @@ import { colorCode, text } from '../../../styles'
 
 export default function Participants(props) {
     const [contact, SetContact] = useState(props.contact)
-    const [isSelected, setIsSelected] = useState(false)
 
     const { contactId, date, activeTime } = props.data
 
+    // const [participantData, setParticipantsData] = useState()
+
     const chooseHandler = () => {
-        if (isSelected) {
-            setIsSelected(!isSelected)
-
-        } else {
-
-            props.navigation.navigate('CreateAppointment', {
-                contactId: contactId,
-                date: date,
-                activeTime: activeTime,
-                participant: {_id:contact._id, firstName: contact.firstName, lastName: contact.lastName}
-            })
-        }
+        // setParticipantsData({
+        //     _id: contact._id,
+        //     firstName: contact.firstName,
+        //     lastName: contact.lastName
+        // })
+        props.choose({
+            contactId: contactId,
+            date: date,
+            activeTime: activeTime,
+            participant: {
+                _id: contact._id,
+                firstName: contact.firstName,
+                lastName: contact.lastName
+            }
+        })
     }
+
     return (
-        <TouchableOpacity
-            onPress={chooseHandler}
-            style={isSelected ? [styles.listItem, styles.selectedParticipant] : styles.listItem}
-        >
+        <TouchableOpacity onPress={chooseHandler} style={styles.listItem}>
             <FontAwesome
                 name="user-circle-o"
                 size={42}
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginVertical: 8,
-        padding: 8,
+        padding: 8
     },
     selectedParticipant: {
         backgroundColor: colorCode.green
