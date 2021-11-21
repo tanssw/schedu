@@ -101,7 +101,7 @@ export default function NotificationCenterScreen({navigation}) {
                         <Text style={styles.time}>{notifyTime}</Text>
                     </View>
                     <Text numberOfLines={2} style={styles.description}>
-                        "{item.detail.subject}" was abandoned by primary contact.
+                        Your appointment "{item.detail.subject}" was abandoned.
                     </Text>
                 </View>
             </TouchableOpacity>
