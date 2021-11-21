@@ -67,9 +67,9 @@ const updateAppointmentStatus = async (appointment) => {
             if (!receiver) return
             // Else, check if receiver is joined or not [join -> ongoing, decline -> abandoned]
             newStatus = receiver.join ? STATUS[1] : STATUS[2]
-            await appointmentModel.findByIdAndUpdate(appointmentId, {status: newStatus})
+            const result = await appointmentModel.updateOne({_id: appointment._id}, {status: newStatus})
+            return newStatus
     }
-    return newStatus
 
 }
 

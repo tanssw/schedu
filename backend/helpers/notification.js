@@ -20,7 +20,7 @@ const createRequestNotification = async (targets, appointmentId, appointmentDate
 
 // Create abandoned appointment notification
 const createAbandonedNotification = async (targets, appointmentId) => {
-    targetes = targets.map(target => ({userId: target, response: true}))
+    targets = targets.map(target => ({userId: target, response: true}))
     const data = {
         type: 'abandoned',
         targets: targets,

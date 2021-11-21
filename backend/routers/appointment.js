@@ -282,12 +282,13 @@ router.put('/', authMiddleware, async (req,res) => {
         const newStatus = await updateAppointmentStatus(updatedAppointment)
 
         // Create notification that appointment has been abandoned
+        console.log(newStatus)
         if (newStatus === 'abandoned') {
             // Mapping targets to [id1, id2, id3, ...] from [Object, Object, Object, ...] and remove current user from notify target
             let targets = appointmentData.participants.map(participant => participant.userId)
             targets.push(appointmentData.sender.userId)
             targets.splice(targets.indexOf(userId), 1)
-            createAbandonedNotification(targets, appointmentId)
+            await createAbandonedNotification(targets, appointmentId)
         }
 
         res.json({message: `Successfully updated appointment with id: ${updatedAppointment._id}`})
