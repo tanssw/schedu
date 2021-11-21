@@ -65,20 +65,20 @@ function AppointmentDetail(props, ref) {
     }
 
     // FUNCTION: to structure appointment data
-    // const createAppointment = () => {
-    //     if (subject) {
-    //         const data = {
-    //             subject: subject,
-    //             participants: participants.map(participant => participant._id),
-    //             commMethod: commMethod ? commMethod.value : undefined,
-    //             commUrl: commUrl,
-    //             note: note
-    //         }
-    //         props.onEditAppointment(data)
-    //     } else {
-    //         if (isEmptySubject) alert('Please enter Subject!')
-    //     }
-    // }
+    const updateAppointmentCall = () => {
+        if (subject) {
+            const data = {
+                subject: subject,
+                participants: participants,
+                commMethod: commMethod ? commMethod.value : undefined,
+                commUrl: commUrl,
+                note: note
+            }
+            props.updateAppointment(data)
+        } else {
+            if (isEmptySubject) alert('Please enter Subject!')
+        }
+    }
 
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item }) => {
@@ -161,7 +161,7 @@ function AppointmentDetail(props, ref) {
             </View>
             {/* Button */}
             <TouchableOpacity
-                // onPressOut={createAppointment}
+                onPress={updateAppointmentCall}
                 style={[styles.mainButton, background.blue]}
             >
                 <Text style={text.white}>Update Appointment</Text>

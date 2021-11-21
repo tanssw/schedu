@@ -14,7 +14,6 @@ const { initAppointmentStatus, formatAppointmentsBasic } = require('../helpers/a
 const { getUserIdFromToken } = require('../helpers/auth')
 const { authMiddleware } = require('../middlewares/auth')
 const { getDateRange } = require('../helpers/date')
-
 const router = express()
 
 // Get all appointments associate with userId
@@ -224,10 +223,49 @@ router.get('/recently', authMiddleware, async (req, res) => {
         res.status(500).send({message: 'Something went wrong. Please try again later.'})
     }
 })
+// Update Appointment
+router.put('/', authMiddleware, async (req,res) => {
 
+    try {
+
+        const  payload  = req.body
+        console.log(payload)
+        
+        // Mapping business_id of participants to an Object with some logic keys
+        // let participants = appointmentData.participants.map(participant => {
+        //     if (userId === participant.userId){
+        //        return {userId: userId, main: participant.main, confirmed: true, join: join}
+        //     } else {
+        //        return participant
+        //     }
+        // })
+
+        // Structuring payload data before saving into the database
+        const data = {
+            subject: payload.subject,
+            status: 'pending',
+            sender: payload.sender,
+            participants: payload.participants,
+            startAt: payload.startAt,
+            endAt: payload.endAt,
+            commMethod: payload.commMethod,
+            commUrl: payload.commUrl,
+            note: payload.note
+        }
+        console.log("this is a appointId")
+        console.log(payload._id)
+        const updatedAppointment = await appointmentModel.findByIdAndUpdate(payload._id, {$set: data})
+        res.json({message: `Successfully updated appointment`})
+
+    } catch(error){
+        console.error(error)
+        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+    }
+
+})
 
 // Update Accept/Decline Appointment Approval
-router.put('/', authMiddleware, async (req,res) => {
+router.put('/approval/', authMiddleware, async (req,res) => {
 
     try {
 
@@ -263,5 +301,6 @@ router.put('/', authMiddleware, async (req,res) => {
     }
 
 })
+
 
 module.exports = router
