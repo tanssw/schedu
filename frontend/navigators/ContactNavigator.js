@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { headerDefaultOptions } from '../styles'
 
 import ContactListScreen from '../screens/contact/ContactListScreen'
+import ChooseParticipantScreen from '../screens/contact/ChooseParticipantScreen'
 import AppointmentEditorScreen from '../screens/appointment/AppointmentEditorScreen'
 
 import ContactProfileScreen from '../screens/contactProfile/ContactProfileScreen'
@@ -23,6 +24,9 @@ const options = {
     contactProfile: {
         title: '',
         headerBackTitle: 'Contact'
+    },
+    chooseParticipantScreen: {
+        title: 'Choose Participants'
     }
 }
 export default function ContactNavigator() {
@@ -32,6 +36,7 @@ export default function ContactNavigator() {
             <ContactStack.Screen name="ContactList" component={ContactListScreen} options={options.contactList}/>
             <ContactStack.Screen name="ContactProfile" component={ContactProfileScreen} options={options.contactProfile} />
             <ContactStack.Screen name="CreateAppointment" component={AppointmentEditorScreen} options={options.createAppointment} />
+            <ContactStack.Screen name="ChooseParticipants" component={ChooseParticipantScreen} options={options.chooseParticipantScreen}/>
         </ContactStack.Navigator>
     )
 }

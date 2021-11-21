@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import axios from 'axios'
 
@@ -16,7 +16,11 @@ export default function AppointmentEditorScreen({ route, navigation }) {
     const [formattedStart, setFormattedStart] = useState()
     const [formattedEnd, setFormattedEnd] = useState()
 
-    const { contactId, date } = route.params
+    const { contactId, date, participant } = route.params
+
+    const goChooseParticipants = payload => {
+        navigation.navigate('ChooseParticipants', payload)
+    }
 
     const createAppointmentHandler = async data => {
         const { token, userId } = await getAuthAsset()
@@ -40,11 +44,10 @@ export default function AppointmentEditorScreen({ route, navigation }) {
                     note: data.note
                 }
                 const result = await axios.post(`${API_SERVER_DOMAIN}/appointment`, payload, header)
+                navigation.navigate('ContactProfile', { contactId: contactId })
                 timeSelectorComponent.current.resetChildState()
                 detailComponent.current.resetChildState()
-                navigation.navigate('ContactProfile', { contactId: contactId })
             } else alert('Please select appointment time!')
-            console.log(payload)
         } catch (error) {
             if (checkExpiredToken(error)) {
                 await clearAuthAsset()
@@ -65,7 +68,11 @@ export default function AppointmentEditorScreen({ route, navigation }) {
                 />
                 <AppointmentDetail
                     ref={detailComponent}
+                    data={{contactId: contactId, date: date, activeTime: route.params.activeTime}}
                     onCreateAppointment={createAppointmentHandler}
+                    navigation={navigation}
+                    participant={participant}
+                    chooseParticipant={goChooseParticipants}
                 />
             </View>
         </ScrollView>

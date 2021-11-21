@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import {
     View,
     Text,
@@ -6,12 +6,14 @@ import {
     TouchableOpacity,
     ScrollView,
     StyleSheet,
-    FlatList
+    FlatList,
+    Alert
 } from 'react-native'
 import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 
 import { background, text, shadow, colorCode } from '../../../styles'
+import { NavigationContainer } from '@react-navigation/native'
 
 function AppointmentDetail(props, ref) {
     // Component's States
@@ -27,6 +29,13 @@ function AppointmentDetail(props, ref) {
     const [isEmptyCommUrl, setIsEmptyCommUrl] = useState(true)
 
     const [participants, setParticipants] = useState([])
+
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', async () => {
+            checkParticipant()
+        })
+        return unsubscribe
+    })
 
     useImperativeHandle(
         ref,
@@ -65,16 +74,37 @@ function AppointmentDetail(props, ref) {
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item }) => {
         return (
-            <View>
+            <TouchableOpacity onPress={() => removeParticipant(item)}>
                 <FontAwesome
                     name="user-circle-o"
                     size={44}
                     color="grey"
                     style={styles.personImage}
                 />
-                <Text style={styles.personName}>{item.firstname}</Text>
-            </View>
+                <Text style={styles.personName}>{item.firstName}</Text>
+            </TouchableOpacity>
         )
+    }
+
+    const removeParticipant = target => {
+        Alert.alert('Are you sure?', 'This participant will be removed.', [
+            {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel'
+            },
+            {
+                text: 'Confirm',
+                onPress: () => setParticipants(participants.filter(item => target !== item))
+            }
+        ])
+    }
+    const checkParticipant = () => {
+        if (props.participant) {
+            if (!participants.find(item => item._id === props.participant._id)) {
+                setParticipants([...participants, props.participant])
+            }
+        }
     }
 
     return (
@@ -93,7 +123,15 @@ function AppointmentDetail(props, ref) {
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Participant</Text>
                 <View style={styles.participantContainer}>
-                    <TouchableOpacity style={styles.participantAdder}>
+                    <TouchableOpacity
+                        style={styles.participantAdder}
+                        onPress={() =>
+                            props.chooseParticipant({
+                                data: props.data,
+                                participants: participants
+                            })
+                        }
+                    >
                         <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity>

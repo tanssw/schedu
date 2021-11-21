@@ -47,7 +47,7 @@ router.get('/courses', authMiddleware, async (req, res) => {
         // Format study timetable
         const timetable = result[0]
         const formattedTimetable = formatDefaultTimetable(timetable)
-        res.send({timetable: formattedTimetable})
+        res.json({timetable: formattedTimetable})
 
     } catch (error) {
         res.status(500).send({message: 'Something went wrong. Please try again.'})

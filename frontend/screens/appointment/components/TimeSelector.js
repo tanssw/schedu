@@ -74,15 +74,16 @@ function TimeSelector(props, ref) {
 
     const validateTime = (value, type) => {
         if (type === 'start') {
-            if (value.value === start[0]) {
+            if (value.value === start[0]) { // choose hour that match to startAt hour
                 setStartMinuteItems(filterMinute(start[1], '55'))
                 setStartMinute({ label: start[1], value: start[1] })
-            } else if (value.value === end[0]) {
+            } else if (value.value === end[0]) { // choose hout that matht to endAt hour
                 setStartMinuteItems(filterMinute('00', end[1]))
                 setStartMinute({ label: start[1], value: start[1] })
             } else setStartMinuteItems(minuteItems)
+
         } else if (type === 'end') {
-            if (value.value === start[0]) setEndMinuteItems(filterMinute('00', end[1]))
+            if (value.value === start[0]) setEndMinuteItems(filterMinute(end[1], '55', true))
             else if (value.value === end[0]) {
                 setEndMinuteItems(filterMinute('00', end[1]))
                 setEndMinute({ label: end[1], value: end[1] })

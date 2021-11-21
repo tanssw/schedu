@@ -25,6 +25,7 @@ export default function CalendarOverviewScreen({ navigation }) {
                     token,
                     userId
                 )
+
                 const events = await loadEvents()
                 const studies = await loadStudies(token, userId)
 
@@ -36,7 +37,9 @@ export default function CalendarOverviewScreen({ navigation }) {
                 const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
                 const examDateMarks = buildExamDateMarks(studies, eventDateMarks)
                 updateMarkedDatesState(examDateMarks)
-            } catch (error) {}
+            } catch (error) {
+                console.log(error)
+            }
         })
         return unsubscribe
     })
@@ -53,7 +56,7 @@ export default function CalendarOverviewScreen({ navigation }) {
 
             const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
             const appointments = appointmentResult.data.appointments
-
+            
             // Update my appointments
             const ignoredStatus = ['abandoned', 'done']
             let myAppointments = appointments.filter(appointment => {
@@ -104,12 +107,12 @@ export default function CalendarOverviewScreen({ navigation }) {
                 'Schedu-UID': userId
             }
         }
-
+        
         try {
             const timetableResult = await axios.get(
                 `${API_SERVER_DOMAIN}/registrar/courses`,
                 payload
-            )
+                )
             const timetable = timetableResult.data.timetable
             return timetable
         } catch (error) {
