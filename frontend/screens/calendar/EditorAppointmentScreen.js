@@ -10,8 +10,8 @@ import dayjs from 'dayjs'
 
 import { checkExpiredToken } from '../../modules/auth'
 import { background, text, shadow, colorCode } from '../../styles'
-import TimeSelector from "../appointment/components/TimeSelector"
-import AppointmentDetail from "../appointment/components/AppointmentDetail"
+import CalendarAppointmentDetail from './components/CalendarAppointmentDetail'
+import CalendarTimeSelector from './components/CalendarTimeSelector'
 
 
 export default function EditAppointmentScreen({ route, navigation }) {
@@ -20,7 +20,6 @@ export default function EditAppointmentScreen({ route, navigation }) {
     const [formattedStart, setFormattedStart] = useState()
     const [formattedEnd, setFormattedEnd] = useState()
     useEffect(() => {
-        console.log(data)
         const date = dayjs(data.startAt).format('YYYY-MM-DD')
         setDate(data.startAt)
         const start = dayjs(data.startAt).format('HH:MM')
@@ -31,14 +30,14 @@ export default function EditAppointmentScreen({ route, navigation }) {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.innerContainer}>
-            {/* <TimeSelector
+            {/* <CalendarTimeSelector
                     ref={timeSelectorComponent}
                     date={date}
                     onStartChange={setFormattedStart}
                     onEndChange={setFormattedEnd}
                     activeTime={route.params.activeTime}
                 /> */}
-                <AppointmentDetail onCreateAppointment={data} /> 
+                <CalendarAppointmentDetail appointment={data} /> 
             </View>
         </ScrollView>
     )

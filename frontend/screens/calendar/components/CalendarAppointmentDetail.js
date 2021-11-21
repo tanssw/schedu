@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react'
 import {
     View,
     Text,
@@ -37,7 +37,17 @@ function AppointmentDetail(props, ref) {
         }),
         []
     )
-
+    useEffect(() => {
+        loadAppointment(props.appointment)
+        console.log(props.appointment)
+    }, [])
+    const loadAppointment = (appointment) =>{
+        setSubject(appointment.subject)
+        setParticipants(appointment.participants)
+        setCommMethod(getCommMethod(appointment.commMethod))
+        setCommUrl(appointment.commUrl)
+        setNote(appointment.note)
+    }
     // FUNCTION: to reset all form state
     const resetState = () => {
         setSubject()
@@ -45,22 +55,30 @@ function AppointmentDetail(props, ref) {
         setCommUrl()
         setNote()
     }
-
-    // FUNCTION: to structure appointment data
-    const createAppointment = () => {
-        if (subject) {
-            const data = {
-                subject: subject,
-                participants: participants.map(participant => participant._id),
-                commMethod: commMethod ? commMethod.value : undefined,
-                commUrl: commUrl,
-                note: note
-            }
-            props.onCreateAppointment(data)
-        } else {
-            if (isEmptySubject) alert('Please enter Subject!')
+    const getCommMethod = (data) => {
+        switch (data) {
+            case 'face': return { label: 'Face to Face', value: 'face' }
+            case 'msteam': return { label: 'Microsoft Teams', value: 'msteam' }
+            case 'meet': return { label: 'Google Meet', value: 'meet' }
+            case 'zoom': return { label: 'Zoom Application', value: 'zoom' }
         }
     }
+
+    // FUNCTION: to structure appointment data
+    // const createAppointment = () => {
+    //     if (subject) {
+    //         const data = {
+    //             subject: subject,
+    //             participants: participants.map(participant => participant._id),
+    //             commMethod: commMethod ? commMethod.value : undefined,
+    //             commUrl: commUrl,
+    //             note: note
+    //         }
+    //         props.onEditAppointment(data)
+    //     } else {
+    //         if (isEmptySubject) alert('Please enter Subject!')
+    //     }
+    // }
 
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item }) => {
@@ -72,7 +90,7 @@ function AppointmentDetail(props, ref) {
                     color="grey"
                     style={styles.personImage}
                 />
-                <Text style={styles.personName}>{item.firstname}</Text>
+                <Text style={styles.personName}>{item.firstName}</Text>
             </View>
         )
     }
@@ -124,7 +142,7 @@ function AppointmentDetail(props, ref) {
                 />
                 <TextInput
                     onChangeText={text => setCommUrl(text)}
-                    placeholder="https://www.url.com/join/"
+                    value={commUrl}
                     style={styles.inputUnderline}
                 />
             </View>
@@ -143,10 +161,10 @@ function AppointmentDetail(props, ref) {
             </View>
             {/* Button */}
             <TouchableOpacity
-                onPressOut={createAppointment}
+                // onPressOut={createAppointment}
                 style={[styles.mainButton, background.blue]}
             >
-                <Text style={text.white}>Create Appointment</Text>
+                <Text style={text.white}>Update Appointment</Text>
             </TouchableOpacity>
         </View>
     )
