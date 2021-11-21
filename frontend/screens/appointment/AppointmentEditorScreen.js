@@ -23,10 +23,8 @@ export default function AppointmentEditorScreen({ route, navigation }) {
     }
 
     const updateHandler = () => {
-        navigation.setParams({participant: null})
-
+        navigation.setParams({ participant: null })
     }
-
 
     const createAppointmentHandler = async data => {
         const { token, userId } = await getAuthAsset()
@@ -74,7 +72,7 @@ export default function AppointmentEditorScreen({ route, navigation }) {
                 />
                 <AppointmentDetail
                     ref={detailComponent}
-                    data={{contactId: contactId, date: date, activeTime: route.params.activeTime}}
+                    data={{ contactId: contactId, date: date, activeTime: route.params.activeTime }}
                     onCreateAppointment={createAppointmentHandler}
                     navigation={navigation}
                     participant={participant}

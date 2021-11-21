@@ -7,8 +7,6 @@ import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import Participants from './components/Participants'
 
-import { colorCode } from '../../styles'
-
 export default function ChooseParticipantScreen(props) {
     const [contacts, setContacts] = useState([])
     console.log(props.route.params.data)

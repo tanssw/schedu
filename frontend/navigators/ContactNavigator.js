@@ -26,7 +26,7 @@ const options = {
         headerBackTitle: 'Contact'
     },
     chooseParticipantScreen: {
-        title: 'Choose Participants',
+        title: 'Choose Participants'
     }
 }
 export default function ContactNavigator({ navigation }) {
