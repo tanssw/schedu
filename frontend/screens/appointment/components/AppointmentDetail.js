@@ -35,7 +35,6 @@ function AppointmentDetail(props, ref) {
             checkParticipant()
         })
         return unsubscribe
-        // checkParticipant()
     })
 
     useImperativeHandle(

@@ -12,7 +12,6 @@ export default function TimePicker(props) {
 
     const selectHourhandler = data => {
         setHour(data.value)
-        // setMinute('00')
         didUpdate()
     }
 
