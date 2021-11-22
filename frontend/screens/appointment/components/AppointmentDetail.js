@@ -75,7 +75,7 @@ function AppointmentDetail(props, ref) {
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item }) => {
         return (
-            <TouchableOpacity onPress={() => removeParticipant(item)}>
+            <TouchableOpacity onPress={() => removeParticipant(item)} style={styles.personBox}>
                 <FontAwesome
                     name="user-circle-o"
                     size={44}
@@ -227,6 +227,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginVertical: 3,
         marginHorizontal: 12
+    },
+    personBox: {
+        alignSelf: 'flex-end'
     },
     picker: {
         flex: 1,
