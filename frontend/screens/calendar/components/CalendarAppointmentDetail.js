@@ -41,7 +41,7 @@ function AppointmentDetail(props, ref) {
         []
     )
     useEffect(() => {
-        getAppointment(props.appointment)
+        getAppointment(props.appointmentId)
     }, [])
     const loadAppointment = appointment => {
         setSubject(appointment.subject)

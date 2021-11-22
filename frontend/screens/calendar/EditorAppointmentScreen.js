@@ -21,14 +21,14 @@ import CalendarAppointmentDetail from './components/CalendarAppointmentDetail'
 import CalendarTimeSelector from './components/CalendarTimeSelector'
 
 export default function EditAppointmentScreen({ route, navigation }) {
-    const { data } = route.params
+    const { id, appointment } = route.params
     const [receiverId, setReceiverId] = useState()
     const [formattedStart, setFormattedStart] = useState()
     const [formattedEnd, setFormattedEnd] = useState()
 
     const [activeTimeState, updateActiveTimeState] = useState(null)
     useEffect(() => {
-        getAppointment(data)
+        getAppointment(id)
     }, [])
     
     const getAppointment = async appointId => {
@@ -96,7 +96,6 @@ export default function EditAppointmentScreen({ route, navigation }) {
                 receiver: appointmentData.contactId,
                 status: appointmentData.status,
                 participants: appointmentData.participants,
-
                 startAt: formattedStart,
                 endAt: formattedEnd,
                 commMethod: appointmentData.commMethod,
@@ -124,7 +123,7 @@ export default function EditAppointmentScreen({ route, navigation }) {
                     activeTime={activeTimeState}
                 /> : null }
                 <CalendarAppointmentDetail
-                    appointment={data}
+                    appointmentId={id}
                     updateAppointment={updateAppointment}
                 />
             </View>

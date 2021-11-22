@@ -14,10 +14,22 @@ import EditAppointmentScreen from '../screens/calendar/EditorAppointmentScreen'
 const CalendarStack = createNativeStackNavigator()
 
 export default function CalendarNavigator({ navigation }) {
-    const [data, setData] = useState("Test for Calendar page")
     const [appointmentId, setAppointmentId] = useState("")
-    const getAppointmentId = (test) =>{
-        return setAppointmentId(test)
+    const [appointment, setAppointment] = useState({})
+    const [senderId, setSenderId] = useState()
+    const getAppointmentId = (id) =>{
+        return setAppointmentId(id)
+    }
+    const getAppointment = (appointment) => {
+        return setAppointment(appointment)
+    }
+    const senderAccess = (id) =>{
+        setSenderId(appointment.sender)
+        return senderId === id ? true : false
+    }
+    const receiverAccess = (id) => {
+        const receiver = appointment.participants.filter(participant => participant.main === true)
+        return receiver[0].userId === id ? true : false
     }
     return (
         <CalendarStack.Navigator
@@ -30,9 +42,9 @@ export default function CalendarNavigator({ navigation }) {
                     headerTitle: 'Calendar'
                 }}
             >
-            {props => <CalendarOverviewScreen {...props} getAppointmentId={getAppointmentId}/>}
+            {props => <CalendarOverviewScreen {...props} getAppointmentId={getAppointmentId} getAppointment={getAppointment}/>}
 
-                </CalendarStack.Screen>
+                </CalendarStack.Screen> 
             <CalendarStack.Screen
                 name="CalendarDetail"
                 component={CalendarDetailScreen}
@@ -47,7 +59,7 @@ export default function CalendarNavigator({ navigation }) {
                     headerRight: () => (
                         <Button
                             onPress={() => {
-                                navigation.navigate('EditAppointmentScreen', {data: appointmentId})}}
+                                navigation.navigate('EditAppointmentScreen', {id: appointmentId, appointment: appointment})}}
                             title="Edit"
                             color="white"
                         />
