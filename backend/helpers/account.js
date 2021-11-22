@@ -67,8 +67,15 @@ const getUserByObjectId = async (objectId) => {
     }
 }
 
+const formatAccountInformation = (account) => {
+    const { displayTel } = account.setting
+    if (!displayTel) account.contact.tel = null
+    return account
+}
+
 module.exports = {
     createNewUser,
     getUserByGoogleId,
-    getUserByObjectId
+    getUserByObjectId,
+    formatAccountInformation
 }

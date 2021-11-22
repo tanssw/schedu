@@ -23,10 +23,8 @@ const options = {
     }),
     contactProfile: {
         title: '',
-        headerBackTitle: 'Contact'
-    },
-    chooseParticipantScreen: {
-        title: 'Choose Participants'
+        headerBackTitle: 'Contact',
+
     }
 }
 export default function ContactNavigator({ navigation }) {

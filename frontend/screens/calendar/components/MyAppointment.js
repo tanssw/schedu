@@ -10,20 +10,25 @@ export default function MyAppointment(props) {
 
     const navigation = useNavigation()
 
+    const getParticipant = (sender, participants) => {
+        let personText
+        if (sender.userId === props.userId) {
+            let receiver = participants.filter(participant => participant.main === true)
+            personText = receiver.map((participant, index) => `${participant.firstName} ${participant.lastName[0]}.`)
+        } else {
+            personText = `${sender.firstName} ${sender.lastName[0]}.`
+        }
 
-    const getParticipant = (participants) => {
-        const receiver = participants.filter(participant => participant.main === true)
-        const receiverText = receiver.map((participant, index) => `${participant.firstName} ${participant.lastName[0]}.`)
+        let other = participants.filter(participant =>  participant.main !== true)
+        let otherText = other.length ? `and ${other.length} more` : ''
+        return `${personText} ${otherText}`
 
-        const other = participants.filter(participant =>  participant.main !== true)
-        const otherText = other.length ? `and ${other.length} more` : ''
-        return `${receiverText} ${otherText}`
     }
 
     const renderAppointment = (appointment) => {
         return (
             <TouchableOpacity key={appointment._id} style={styles.appointmentItem} onPress={() =>{
-                navigation.navigate('Appointment', { data: appointment })
+                navigation.navigate('Appointment', { data: appointment}, props.getAppointmentId(appointment._id))
             }}>
                 <View>
                     <View style={styles.appointmentDesc}>
@@ -35,7 +40,7 @@ export default function MyAppointment(props) {
                         </Text>
                     </View>
                     <Text style={styles.appointmentParticipant}>
-                        with {getParticipant(appointment.participants)}
+                        with {getParticipant(appointment.sender, appointment.participants)}
                     </Text>
                 </View>
                 <View style={styles.status}>

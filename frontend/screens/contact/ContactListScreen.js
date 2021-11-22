@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
 import axios from 'axios'
 
-import SuggestBar from './components/SuggestBar'
+import RecentlyContact from './components/RecentlyContact'
 import SearchBar from './components/SearchTab'
 
 import QueryBar from './components/QueryBar'
@@ -15,23 +15,23 @@ export default function ContactListScreen({ navigation }) {
 
     const [contacts, updateContacts] = useState([])
 
-    const [search, updateSearch] = useState('')
-    const [toggleSuggest, updateToggleSuggest] = useState(0)
-    const [toggleQuery, updateToggleQuery] = useState(0)
+    const [selectedRole, updateSelectedRole] = useState(null)
+    const [shownRecently, updateShownRecently] = useState(true)
+    const [shownQuery, updateShownQuery] = useState(true)
+
+    const recentlyRef = useRef()
 
     useEffect(() => {
-        if (search) {
-            getSearch(search)
-            updateToggleSuggest(1)
-            updateToggleQuery(1)
-        } else {
-            getContactUsers()
-            updateToggleSuggest(0)
-            updateToggleQuery(0)
-        }
-    }, [search])
+        const unsubscribe = navigation.addListener('focus', async () => {
+            await getContactUsers(selectedRole)
+            if (shownRecently) {
+                recentlyRef.current.loadRecentlyContacts()
+            }
+        })
+        return unsubscribe
+    }, [selectedRole])
 
-    const getSearch = async () => {
+    const getSearch = async (text) => {
         try {
             const { token, userId } = await getAuthAsset()
             const payload = {
@@ -40,11 +40,12 @@ export default function ContactListScreen({ navigation }) {
                     'Schedu-UID': userId
                 },
                 params: {
-                    word: search
+                    word: text
                 }
             }
-            const user = await axios.get(`${API_SERVER_DOMAIN}/account/search`, payload)
-            updateContacts(user.data)
+            const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/search`, payload)
+            const users = userResult.data.result
+            updateContacts(users)
         } catch (error) {
             if (checkExpiredToken(error)) {
                 await clearAuthAsset()
@@ -77,23 +78,25 @@ export default function ContactListScreen({ navigation }) {
         }
     }
 
-    // toggle display suggest and query bar
-    const suggestDisplay = () => {
-        if (!toggleSuggest) {
-            return <SuggestBar />
-        }
+    const searchHandler = (text) => {
+        if (text) getSearch(text)
+        else getContactUsers(selectedRole)
+        updateShownRecently(!text)
+        updateShownQuery(!text)
+    }
+
+    const roleChangeHandler = (role) => {
+        updateSelectedRole(role)
+        getContactUsers(role)
     }
 
     return (
         <View style={styles.container}>
-            <SearchBar
-                searchWord={updateSearch}
-                find={getSearch}
-            />
+            <SearchBar searchWord={searchHandler} />
             <ScrollView style={styles.scrollContainer}>
                 <View style={styles.innerContainer}>
-                    {suggestDisplay()}
-                    {toggleQuery ? null : <QueryBar onSelect={getContactUsers} />}
+                    {shownRecently ? <RecentlyContact ref={recentlyRef} /> : null}
+                    {shownQuery ? <QueryBar savedRole={selectedRole} onSelect={roleChangeHandler} /> : null}
                     <ContactTab contacts={contacts} headerText="Contact" />
                 </View>
             </ScrollView>

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Button } from 'react-native'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
@@ -11,7 +11,9 @@ import IncomingRequest from './components/IncomingRequest'
 import MyAppointment from './components/MyAppointment'
 import { colorCode } from '../../styles'
 
-export default function CalendarOverviewScreen({ navigation }) {
+export default function CalendarOverviewScreen({props, navigation, getAppointmentId}) {
+
+    const [userIdState, setUserIdState] = useState(null)
     const [markedDatesState, updateMarkedDatesState] = useState({})
     const [requestAppointmentsState, updateRequestAppointmentsState] = useState([])
     const [myAppointmentsState, updateMyAppointmentsState] = useState([])
@@ -37,9 +39,10 @@ export default function CalendarOverviewScreen({ navigation }) {
                 const eventDateMarks = buildEventDateMarks(events, appointmentDateMarks)
                 const examDateMarks = buildExamDateMarks(studies, eventDateMarks)
                 updateMarkedDatesState(examDateMarks)
-            } catch (error) {
-                console.log(error)
-            }
+
+                setUserIdState(userId)
+
+            } catch (error) {}
         })
         return unsubscribe
     })
@@ -56,9 +59,9 @@ export default function CalendarOverviewScreen({ navigation }) {
 
             const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
             const appointments = appointmentResult.data.appointments
-            
-            // Update my appointments
             const ignoredStatus = ['abandoned', 'done']
+
+            // Update my appointments
             let myAppointments = appointments.filter(appointment => {
                 const canShow = !ignoredStatus.includes(appointment.status)
                 const meConfirmedAndJoin = appointment.participants.filter(
@@ -71,6 +74,7 @@ export default function CalendarOverviewScreen({ navigation }) {
 
             // Update incoming request appointments
             let requestAppointments = appointments.filter(appointment => {
+                if (ignoredStatus.includes(appointment.status)) return false
                 const myself = appointment.participants.find(
                     participant => participant.userId === userId
                 )
@@ -125,7 +129,7 @@ export default function CalendarOverviewScreen({ navigation }) {
     }
 
     // To build an appointment object of MarkedDate to show in Calendar
-    const buildAppointmentDateMarks = (appointments, object = {}) => {
+    const buildAppointmentDateMarks = (appointments, object={}) => {
         appointments.forEach(appointment => {
             let date = dayjs(appointment.startAt).format('YYYY-MM-DD')
             let included = Object.keys(object).includes(date)
@@ -135,7 +139,7 @@ export default function CalendarOverviewScreen({ navigation }) {
     }
 
     // To build an event object of MarkedDate to show in Calendar
-    const buildEventDateMarks = (events, object = {}) => {
+    const buildEventDateMarks = (events, object={}) => {
         events.forEach(event => {
             if (!event.date) return
             let date = dayjs(event.date).format('YYYY-MM-DD')
@@ -146,7 +150,7 @@ export default function CalendarOverviewScreen({ navigation }) {
     }
 
     // To build an study timetable object of MarkedDte to show in Calendar
-    const buildExamDateMarks = (courses, object = {}) => {
+    const buildExamDateMarks = (courses, object={}) => {
         courses.forEach(course => {
             let date, included
             if (course.midterm.date) {
@@ -170,7 +174,8 @@ export default function CalendarOverviewScreen({ navigation }) {
         let selectedDay = date.format('YYYY-MM-DD')
         navigation.navigate('CalendarDetail', {
             title: `${formattedDay}`,
-            selectedDay: selectedDay
+            selectedDay: selectedDay,
+            userId: userIdState
         })
     }
 
@@ -179,7 +184,7 @@ export default function CalendarOverviewScreen({ navigation }) {
             <View style={styles.innerContainer}>
                 <CalendarOverview onDateSelect={viewMonthly} markedDates={markedDatesState} />
                 <IncomingRequest appointments={requestAppointmentsState} />
-                <MyAppointment appointments={myAppointmentsState} />
+                <MyAppointment appointments={myAppointmentsState}  userId={userIdState} getAppointmentId={getAppointmentId}/>
             </View>
         </ScrollView>
     )

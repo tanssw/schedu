@@ -4,17 +4,21 @@ import { SafeAreaView, StyleSheet, View } from 'react-native'
 import { shadow } from '../../styles'
 
 import NotificationCard from './components/NotificationCard'
+import General from './components/General'
 import Overview from './components/Overview'
 import RecentlyList from './components/RecentlyList'
-import SuggestedList from './components/SuggestedList'
 
 export default function HomeScreen({navigation}) {
 
+    const notificationRef = useRef()
     const overviewRef = useRef()
+    const recentlyRef = useRef()
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
+            notificationRef.current.loadNewest()
             overviewRef.current.loadOverview()
+            recentlyRef.current.loadRecentlyContacts()
         })
         return unsubscribe
     })
@@ -25,11 +29,11 @@ export default function HomeScreen({navigation}) {
 
     return (
         <View style={styles.container}>
-            <NotificationCard onAppointmentPress={gotoMyCalendar} />
+            <NotificationCard ref={notificationRef} onAppointmentPress={gotoMyCalendar} />
             <View style={[styles.mainContainer, shadow.boxTopMedium]}>
+                <General />
                 <Overview ref={overviewRef} />
-                <SuggestedList />
-                <RecentlyList />
+                <RecentlyList ref={recentlyRef} />
             </View>
         </View>
     )
@@ -43,7 +47,7 @@ const styles = StyleSheet.create({
         flex: 1,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
-        padding: 32,
+        padding: 24,
         zIndex: 2,
         backgroundColor: 'white'
     }

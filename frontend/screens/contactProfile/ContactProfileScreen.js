@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native'
 import axios from 'axios'
 
@@ -17,11 +17,18 @@ export default function ContactProfileScreen({ route, navigation }) {
     const [emailState, updateEmailState] = useState()
     const [phoneState, updatePhoneState] = useState()
     const [activeTimeState, updateActiveTimeState] = useState({startAt: null, endAt: null})
+    const [weekendReceiveState, updateWeekendReceiveState] = useState(false)
 
     const { contactId } = route.params
 
+    const calendarRef = useRef()
+
     useEffect(() => {
-        getUserProfile()
+        const unsubscribe = navigation.addListener('focus', () => {
+            getUserProfile()
+            calendarRef.current.loadContactEvent()
+        })
+        return unsubscribe
     }, [])
 
     const getUserProfile = async () => {
@@ -38,6 +45,7 @@ export default function ContactProfileScreen({ route, navigation }) {
             updateEmailState(user.contact.email)
             updatePhoneState(user.contact.tel)
             updateActiveTimeState(user.setting.activeTime)
+            updateWeekendReceiveState(user.setting.weekendReceive)
         } catch (error) {
             if (checkExpiredToken(error)) {
                 await clearAuthAsset()
@@ -56,7 +64,7 @@ export default function ContactProfileScreen({ route, navigation }) {
                 <ProfileHeader profile={profileState} />
                 <View style={[styles.mainContainer, shadow.boxTopMedium]}>
                     <View style={styles.calendarContainer}>
-                        <ProfileCalendar onDayPress={navigateToAppointmentCreator} />
+                        <ProfileCalendar ref={calendarRef} onDayPress={navigateToAppointmentCreator} isReceiveWeekend={weekendReceiveState} />
                     </View>
                     <ProfileInformation email={emailState} phone={phoneState} activeTime={activeTimeState} />
                 </View>

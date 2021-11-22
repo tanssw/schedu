@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react'
 import {
     View,
     Text,
@@ -6,22 +6,23 @@ import {
     TouchableOpacity,
     ScrollView,
     StyleSheet,
-    FlatList,
-    Alert
+    FlatList
 } from 'react-native'
 import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
+import axios from 'axios'
 
 import { background, text, shadow, colorCode } from '../../../styles'
-import { NavigationContainer } from '@react-navigation/native'
+import { getAuthAsset, checkExpiredToken } from '../../../modules/auth'
 
 function AppointmentDetail(props, ref) {
     // Component's States
     const [subject, setSubject] = useState()
-    const [commMethod, setCommMethod] = useState('face')
+    const [commMethod, setCommMethod] = useState()
     const [commUrl, setCommUrl] = useState()
     const [note, setNote] = useState()
     const [join, setJoin] = useState(false)
+    const [appointId, setAppointmentId] = useState()
 
     // validate state
     const [isEmptySubject, setIsEmptySubject] = useState(true)
@@ -29,14 +30,6 @@ function AppointmentDetail(props, ref) {
     const [isEmptyCommUrl, setIsEmptyCommUrl] = useState(true)
 
     const [participants, setParticipants] = useState([])
-
-    useEffect(() => {
-        const unsubscribe = props.navigation.addListener('focus', async () => {
-            checkParticipant()
-        })
-        return unsubscribe
-        // checkParticipant()
-    })
 
     useImperativeHandle(
         ref,
@@ -47,7 +40,39 @@ function AppointmentDetail(props, ref) {
         }),
         []
     )
-
+    useEffect(() => {
+        getAppointment(props.appointment)
+    }, [])
+    const loadAppointment = appointment => {
+        setSubject(appointment.subject)
+        setCommMethod(getCommMethod(appointment.commMethod))
+        setCommUrl(appointment.commUrl)
+        setNote(appointment.note)
+        setAppointmentId(appointment._id)
+        setParticipants(appointment.participants)
+    }
+    const getAppointment = async appointId => {
+        try {
+        const { token, userId } = await getAuthAsset()
+        const payload = {
+            headers: {
+                'schedu-token': token,
+                'schedu-uid': userId
+            }
+        }
+        
+            const appointmentResult = await axios.get(
+                `http://localhost:3000/appointment/${appointId}`,
+                payload
+            )
+            loadAppointment(appointmentResult.data.result)
+        } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
+        }
+    }
     // FUNCTION: to reset all form state
     const resetState = () => {
         setSubject()
@@ -55,27 +80,40 @@ function AppointmentDetail(props, ref) {
         setCommUrl()
         setNote()
     }
+    const getCommMethod = data => {
+        switch (data) {
+            case 'face':
+                return { label: 'Face to Face', value: 'face' }
+            case 'msteam':
+                return { label: 'Microsoft Teams', value: 'msteam' }
+            case 'meet':
+                return { label: 'Google Meet', value: 'meet' }
+            case 'zoom':
+                return { label: 'Zoom Application', value: 'zoom' }
+        }
+    }
 
     // FUNCTION: to structure appointment data
-    const createAppointment = () => {
+    const updateAppointmentCall = () => {
         if (subject) {
             const data = {
+                _id: appointId,
                 subject: subject,
-                participants: participants.map(participant => participant._id),
+                participants: participants,
                 commMethod: commMethod ? commMethod.value : undefined,
                 commUrl: commUrl,
                 note: note
             }
-            props.onCreateAppointment(data)
+            props.updateAppointment(data)
         } else {
-            if (isEmptySubject) alert("Please enter an appointment's subject")
+            if (isEmptySubject) alert('Please enter Subject!')
         }
     }
 
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item }) => {
         return (
-            <TouchableOpacity onPress={() => removeParticipant(item)}>
+            <View>
                 <FontAwesome
                     name="user-circle-o"
                     size={44}
@@ -83,33 +121,8 @@ function AppointmentDetail(props, ref) {
                     style={styles.personImage}
                 />
                 <Text style={styles.personName}>{item.firstName}</Text>
-            </TouchableOpacity>
+            </View>
         )
-    }
-
-    const removeParticipant = target => {
-        Alert.alert('Are you sure?', 'This participant will be removed.', [
-            {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel'
-            },
-            {
-                text: 'Confirm',
-                onPress: () => {
-                    setParticipants(participants.filter(item => item !== target))
-                }
-            }
-        ])
-    }
-
-    const checkParticipant = () => {
-        if (props.participant) {
-            if (!participants.find(item => item._id === props.participant._id)) {
-                setParticipants([...participants, props.participant])
-                props.onUpdateParticipant()
-            }
-        }
     }
 
     return (
@@ -128,15 +141,7 @@ function AppointmentDetail(props, ref) {
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Participant</Text>
                 <View style={styles.participantContainer}>
-                    <TouchableOpacity
-                        style={styles.participantAdder}
-                        onPress={() =>
-                            props.chooseParticipant({
-                                data: props.data,
-                                participants: participants
-                            })
-                        }
-                    >
+                    <TouchableOpacity style={styles.participantAdder}>
                         <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity>
@@ -167,7 +172,7 @@ function AppointmentDetail(props, ref) {
                 />
                 <TextInput
                     onChangeText={text => setCommUrl(text)}
-                    placeholder="https://www.url.com/join/"
+                    value={commUrl}
                     style={styles.inputUnderline}
                 />
             </View>
@@ -186,10 +191,10 @@ function AppointmentDetail(props, ref) {
             </View>
             {/* Button */}
             <TouchableOpacity
-                onPressOut={createAppointment}
+                onPress={updateAppointmentCall}
                 style={[styles.mainButton, background.blue]}
             >
-                <Text style={text.white}>Create Appointment</Text>
+                <Text style={text.white}>Update Appointment</Text>
             </TouchableOpacity>
         </View>
     )
