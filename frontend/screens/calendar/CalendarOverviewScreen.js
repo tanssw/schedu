@@ -27,6 +27,7 @@ export default function CalendarOverviewScreen({props, navigation, getAppointmen
                     token,
                     userId
                 )
+
                 const events = await loadEvents()
                 const studies = await loadStudies(token, userId)
 
@@ -58,7 +59,6 @@ export default function CalendarOverviewScreen({props, navigation, getAppointmen
 
             const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment`, payload)
             const appointments = appointmentResult.data.appointments
-
             const ignoredStatus = ['abandoned', 'done']
 
             // Update my appointments
@@ -111,12 +111,12 @@ export default function CalendarOverviewScreen({props, navigation, getAppointmen
                 'Schedu-UID': userId
             }
         }
-
+        
         try {
             const timetableResult = await axios.get(
                 `${API_SERVER_DOMAIN}/registrar/courses`,
                 payload
-            )
+                )
             const timetable = timetableResult.data.timetable
             return timetable
         } catch (error) {

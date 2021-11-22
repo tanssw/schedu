@@ -68,8 +68,6 @@ export default function EditAppointmentScreen({ route, navigation }) {
             }
             const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/${receiver[0].userId}`, payload)
             const user = userResult.data.user
-            console.log("test uesr")
-            console.log(user.setting.activeTime)
             updateActiveTimeState(user.setting.activeTime)
             
         } catch (error) {

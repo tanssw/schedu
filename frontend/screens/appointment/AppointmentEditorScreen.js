@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import axios from 'axios'
 
@@ -16,7 +16,15 @@ export default function AppointmentEditorScreen({ route, navigation }) {
     const [formattedStart, setFormattedStart] = useState()
     const [formattedEnd, setFormattedEnd] = useState()
 
-    const { contactId, date } = route.params
+    const { contactId, date, participant } = route.params
+
+    const goChooseParticipants = data => {
+        navigation.navigate('ChooseParticipants', data)
+    }
+
+    const updateHandler = () => {
+        navigation.setParams({ participant: null })
+    }
 
     const createAppointmentHandler = async data => {
         const { token, userId } = await getAuthAsset()
@@ -66,7 +74,12 @@ export default function AppointmentEditorScreen({ route, navigation }) {
                 />
                 <AppointmentDetail
                     ref={detailComponent}
+                    data={{ contactId: contactId, date: date, activeTime: route.params.activeTime }}
                     onCreateAppointment={createAppointmentHandler}
+                    navigation={navigation}
+                    participant={participant}
+                    chooseParticipant={goChooseParticipants}
+                    onUpdateParticipant={updateHandler}
                 />
             </View>
         </ScrollView>

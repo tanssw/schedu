@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { Picker } from 'react-native-woodpicker'
 
-import { hourItems, minuteItems } from '../../../assets/data/timeItems'
+import { hourItems, minuteItems, filterHour, filterMinute } from '../../../assets/data/timeItems'
 
 export default function TimePicker(props) {
     const splitTime = props.data.split(':')
@@ -20,6 +20,10 @@ export default function TimePicker(props) {
         didUpdate()
     }
 
+    const formatter = time => {
+        return { label: time, value: time }
+    }
+
     const didUpdate = () => {
         props.update({ hour: hour, topic: props.topic, time: `${hour}:${minute}` })
     }
@@ -28,9 +32,9 @@ export default function TimePicker(props) {
             <Text style={[styles.textComponentStyle]}>{props.topic} of Active time</Text>
             <View style={styles.calendarData}>
                 <Picker
-                    item={hour}
-                    items={hourItems}
-                    placeholder={hour}
+                    item={formatter(hour)}
+                    items={props.rangeHour}
+                    placeholder={formatter(hour)}
                     title="Hour"
                     isNullable={false}
                     style={styles.picker}
@@ -38,10 +42,10 @@ export default function TimePicker(props) {
                 />
                 <Text style={[styles.textComponentStyle]}> : </Text>
                 <Picker
-                    item={minute}
-                    items={minuteItems}
+                    item={formatter(minute)}
+                    items={props.rangeMinute}
                     title="Minute"
-                    placeholder={minute}
+                    placeholder={formatter(minute)}
                     isNullable={false}
                     style={styles.picker}
                     onItemChange={selectMinutehandler}
