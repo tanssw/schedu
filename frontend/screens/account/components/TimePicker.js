@@ -20,6 +20,10 @@ export default function TimePicker(props) {
         didUpdate()
     }
 
+    const formatter = (time) => {
+        return {label: time, value: time}
+    }
+
     const didUpdate = () => {
         props.update({ hour: hour, topic: props.topic, time: `${hour}:${minute}` })
     }
@@ -28,7 +32,7 @@ export default function TimePicker(props) {
             <Text style={[styles.textComponentStyle]}>{props.topic} of Active time</Text>
             <View style={styles.calendarData}>
                 <Picker
-                    item={hour}
+                    item={formatter(hour)}
                     items={hourItems}
                     placeholder={hour}
                     title="Hour"
@@ -38,7 +42,7 @@ export default function TimePicker(props) {
                 />
                 <Text style={[styles.textComponentStyle]}> : </Text>
                 <Picker
-                    item={minute}
+                    item={formatter(minute)}
                     items={minuteItems}
                     title="Minute"
                     placeholder={minute}
