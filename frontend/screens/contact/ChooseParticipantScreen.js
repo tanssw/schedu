@@ -9,7 +9,6 @@ import Participants from './components/Participants'
 
 export default function ChooseParticipantScreen(props) {
     const [contacts, setContacts] = useState([])
-    console.log(props.route.params.data)
     const { participants } = props.route.params
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', async () => {

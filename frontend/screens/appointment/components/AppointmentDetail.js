@@ -18,7 +18,7 @@ import { NavigationContainer } from '@react-navigation/native'
 function AppointmentDetail(props, ref) {
     // Component's States
     const [subject, setSubject] = useState()
-    const [commMethod, setCommMethod] = useState('face')
+    const [commMethod, setCommMethod] = useState({ label: 'Face to Face', value: 'face' })
     const [commUrl, setCommUrl] = useState()
     const [note, setNote] = useState()
     const [join, setJoin] = useState(false)

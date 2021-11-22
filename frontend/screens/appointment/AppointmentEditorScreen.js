@@ -48,7 +48,6 @@ export default function AppointmentEditorScreen({ route, navigation }) {
                     note: data.note
                 }
                 const result = await axios.post(`${API_SERVER_DOMAIN}/appointment`, payload, header)
-                navigation.navigate('ContactProfile', { contactId: contactId })
                 timeSelectorComponent.current.resetChildState()
                 detailComponent.current.resetChildState()
                 navigation.navigate('ContactProfile', { contactId: contactId })

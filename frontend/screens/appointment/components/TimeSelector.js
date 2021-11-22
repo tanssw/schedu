@@ -46,8 +46,10 @@ function TimeSelector(props, ref) {
 
     // FUNCTION: to reset all form state
     const resetState = () => {
-        setStart()
-        setEnd()
+        setStartHour()
+        setStartMinute()
+        setEndHour()
+        setEndMinute()
     }
 
     // FUNCTION: to format the time into JS time string
