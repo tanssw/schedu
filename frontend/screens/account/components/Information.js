@@ -25,6 +25,7 @@ export default function Information(props) {
                 editable={editState}
                 onChangeText={changeDataHandler}
                 placeholder="empty"
+                keyboardType={props.keyboard}
             >
                 {props.data}
             </TextInput>

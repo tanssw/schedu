@@ -14,7 +14,7 @@ export default function ProfileScreen({ route, navigation, userData }) {
             <View style={[styles.userProfileContainer, shadow.boxTopMedium]}>
                 <View style={styles.dataBlock}>
                     <Text style={styles.userProfileMenu}>General</Text>
-                    <Information topicData="Fullname" data={`${userData.firstName} ${userData.lastName}`} edit={false} style={styles.topSection}/>
+                    <Information topicData="Full Name" data={`${userData.firstName} ${userData.lastName}`} edit={false} style={styles.topSection}/>
                     <Information topicData="Role" data={userData.role} edit={false} />
                 </View>
 
