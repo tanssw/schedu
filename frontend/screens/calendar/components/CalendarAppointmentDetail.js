@@ -32,7 +32,6 @@ function AppointmentDetail(props, ref) {
         ref,
         () => ({
             initComponent(participants, appointmentState) {
-                console.log('shown', participants)
                 checkParticipant(participants)
                 loadAppointment(appointmentState, participants)
             }
