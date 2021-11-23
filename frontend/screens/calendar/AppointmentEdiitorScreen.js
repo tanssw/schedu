@@ -15,6 +15,8 @@ import CalendarTimeSelector from './components/CalendarTimeSelector'
 import Participants from './components/Participants'
 
 export default function EditAppointmentScreen({ route, navigation }) {
+
+    const scrollViewRef = useRef()
     const CalendarAppointmentDetailRef = useRef()
     const [formattedStart, setFormattedStart] = useState()
     const [formattedEnd, setFormattedEnd] = useState()
@@ -124,7 +126,7 @@ export default function EditAppointmentScreen({ route, navigation }) {
         navigation.navigate('ChooseParticipants', data)
     }
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({animated: true})} contentContainerStyle={styles.container}>
             <View style={styles.innerContainer}>
                 {formattedStart && formattedEnd && activeTimeState ? (
                     <CalendarTimeSelector

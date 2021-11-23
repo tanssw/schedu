@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, Image } from 'react-native'
+import { Text, View, StyleSheet, Image, ScrollView } from 'react-native'
 
 import { colorCode, shadow } from '../../styles'
 
@@ -7,14 +7,14 @@ import Information from './components/Information'
 
 export default function ProfileScreen({ route, navigation, userData }) {
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.imageContainer}>
                 <Image style={styles.profileImage} source={{ url: userData.image }} />
             </View>
             <View style={[styles.userProfileContainer, shadow.boxTopMedium]}>
                 <View style={styles.dataBlock}>
                     <Text style={styles.userProfileMenu}>General</Text>
-                    <Information topicData="Fullname" data={`${userData.firstName} ${userData.lastName}`} edit={false} style={styles.topSection}/>
+                    <Information topicData="Full Name" data={`${userData.firstName} ${userData.lastName}`} edit={false} style={styles.topSection}/>
                     <Information topicData="Role" data={userData.role} edit={false} />
                 </View>
 
@@ -24,13 +24,13 @@ export default function ProfileScreen({ route, navigation, userData }) {
                     <Information topicData="Phone Number" data={userData.contact.tel} edit={false} />
                 </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         alignItems: 'center'
     },
     imageContainer: {

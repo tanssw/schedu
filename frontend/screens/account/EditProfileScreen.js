@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'
+import React, { useRef, useState } from 'react'
+import { Text, View, StyleSheet, Image, TouchableOpacity, Alert, ScrollView } from 'react-native'
 
 import { getAuthAsset, clearAuthAsset, checkExpiredToken } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
@@ -11,6 +11,8 @@ import { text, shadow, colorCode } from '../../styles'
 // import components
 import Information from './components/Information'
 export default function ProfileScreen({ route, navigation, userData, onProfileUpdated }) {
+
+    const scrollViewRef = useRef()
 
     const updateDataHandler = data => {
         switch (data.topic) {
@@ -76,7 +78,7 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
     const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel)
 
     return (
-        <View style={styles.container}>
+        <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({animated: true})} contentContainerStyle={styles.container}>
             <View style={styles.imageContainer}>
                 <Image style={styles.profileImage} source={{ url: userData.image }} />
             </View>
@@ -85,27 +87,31 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>General</Text>
                         <Information
-                            topicData={'First name'}
+                            topicData='First name'
                             data={newFirstName}
                             edit={true}
                             update={updateDataHandler}
                             style={styles.topSection}
+                            keyboard='default'
                         />
                         <Information
                             topicData={'Last name'}
                             data={newLastName}
                             edit={true}
                             update={updateDataHandler}
+                            keyboard='default'
                         />
                     </View>
                     <View style={styles.dataBlock}>
                         <Text style={styles.userProfileMenu}>Contact</Text>
                         <Information
-                            topicData={'Phone number'}
+                            topicData='Phone number'
                             data={newPhoneNumber}
                             edit={true}
                             update={updateDataHandler}
                             style={styles.topSection}
+                            keyboard='phone-pad'
+                            last={true}
                         />
                     </View>
                 </View>
@@ -115,13 +121,13 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         alignItems: 'center'
     },
     imageContainer: {

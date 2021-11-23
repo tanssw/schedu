@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, ScrollView } from 'react-native'
 import axios from 'axios'
 
 import SettingData from './components/SettingData'
@@ -110,7 +110,7 @@ export default function SettingScreen({ route, navigation, setting, onSettingUpd
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.dataBlock}>
                 <Text style={styles.settingMenu}>Calendar</Text>
                 <TimePicker
@@ -147,7 +147,7 @@ export default function SettingScreen({ route, navigation, setting, onSettingUpd
                     style={styles.topSection}
                 />
             </View>
-        </View>
+        </ScrollView>
     )
 }
 

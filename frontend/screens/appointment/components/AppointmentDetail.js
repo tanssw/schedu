@@ -16,6 +16,8 @@ import { background, text, shadow, colorCode } from '../../../styles'
 
 function AppointmentDetail(props, ref) {
     // Component's States
+    const [keyboardHeight, updateKeyboardHeight] = useState(0)
+
     const [subject, setSubject] = useState()
     const [commMethod, setCommMethod] = useState({ label: 'Face to Face', value: 'face' })
     const [commUrl, setCommUrl] = useState()
@@ -50,6 +52,11 @@ function AppointmentDetail(props, ref) {
         setCommMethod()
         setCommUrl()
         setNote()
+    }
+
+    // FUNCTION: to update if last field on focus/blur
+    const toggleKeyboardHeight = (openKeyboard) => {
+        openKeyboard ? updateKeyboardHeight(184) : updateKeyboardHeight(0)
     }
 
     // FUNCTION: to structure appointment data
@@ -177,9 +184,12 @@ function AppointmentDetail(props, ref) {
                         multiline
                         numberOfLines={4}
                         placeholder="This is a note ..."
+                        onFocus={() => {toggleKeyboardHeight(true)}}
+                        onBlur={() => {toggleKeyboardHeight(false)}}
                     />
                 </ScrollView>
             </View>
+            <View style={{marginBottom: keyboardHeight}}></View>
             {/* Button */}
             <TouchableOpacity
                 onPressOut={createAppointment}
