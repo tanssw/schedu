@@ -7,11 +7,12 @@ import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 import Participants from './components/Participants'
 
-export default function ChooseParticipantScreen(props) {
+export default function ChooseParticipantScreen({route, navigation}) {
     const [contacts, setContacts] = useState([])
-    const { participants } = props.route.params
+
+    const { participants, appointId } = route.params
     useEffect(() => {
-        const unsubscribe = props.navigation.addListener('focus', async () => {
+        const unsubscribe = navigation.addListener('focus', async () => {
             try {
                 const { token, userId } = await getAuthAsset()
                 const payload = {
@@ -34,21 +35,13 @@ export default function ChooseParticipantScreen(props) {
     })
 
     const goToCreateAppointment = payload => {
-        props.navigation.navigate('CreateAppointment', payload)
+        navigation.navigate('EditAppointmentScreen', {data: payload.data, participants:[...participants, payload.participant]})
     }
 
     const renderContact = contact => {
-        if (
-            contact._id !== props.route.params.data.contactId &&
-            !participants.find(item => item._id === contact._id)
-        )
+        if (!participants.find(item => item.userId === contact._id))
             return (
-                <Participants
-                    contact={contact}
-                    key={contact._id}
-                    data={props.route.params.data}
-                    choose={goToCreateAppointment}
-                />
+                <Participants contact={contact} key={contact._id} choose={goToCreateAppointment} appointId={appointId} />
             )
     }
     return (

@@ -49,9 +49,9 @@ const options = {
     }
 }
 
-export default function MainNavigator(props) {
+export default function MainNavigator() {
     return (
-        <Tab.Navigator screenOptions={({ route }) => options.navigator}>
+        <Tab.Navigator screenOptions={() => options.navigator}>
             <Tab.Screen name="Home" component={HomeScreen} options={options.home} />
             <Tab.Screen name="Contact" component={ContactNavigator} options={options.contact} />
             <Tab.Screen name="Calendar" component={CalendarNavigator} options={options.calendar} />

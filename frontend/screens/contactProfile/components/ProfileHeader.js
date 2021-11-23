@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 
 import { colorCode } from '../../../styles'
@@ -11,7 +11,9 @@ export default function ContactHeader(props) {
                 <View style={styles.profile}>
                     <FontAwesome name="user-circle" size={48} color={colorCode.blue} />
                     <View style={styles.profileText}>
-                        <Text style={styles.profileName}>{props.profile.firstName} {props.profile.lastName}</Text>
+                        <Text style={styles.profileName}>
+                            {props.profile.firstName} {props.profile.lastName}
+                        </Text>
                         <Text style={styles.profileRole}>{props.profile.role}</Text>
                     </View>
                 </View>

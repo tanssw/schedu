@@ -8,8 +8,7 @@ import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../modules/a
 import { colorCode } from '../../styles'
 import dayjs from 'dayjs'
 
-export default function NotificationCenterScreen({navigation}) {
-
+export default function NotificationCenterScreen({ navigation }) {
     const [myNotifications, updateMyNotifications] = useState([])
 
     useEffect(() => {
@@ -28,7 +27,10 @@ export default function NotificationCenterScreen({navigation}) {
                     'Schedu-UID': userId
                 }
             }
-            const notificationResult = await axios.get(`${API_SERVER_DOMAIN}/notification/all`, payload)
+            const notificationResult = await axios.get(
+                `${API_SERVER_DOMAIN}/notification/all`,
+                payload
+            )
             const notifications = notificationResult.data.notifications
             updateMyNotifications(notifications)
         } catch (error) {
@@ -49,11 +51,14 @@ export default function NotificationCenterScreen({navigation}) {
                     'Schedu-UID': userId
                 }
             }
-            const appointmentResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/${appointmentId}`, payload)
+            const appointmentResult = await axios.get(
+                `${API_SERVER_DOMAIN}/appointment/${appointmentId}`,
+                payload
+            )
             const appointment = appointmentResult.data.result
             navigation.navigate('Calendar', {
                 screen: 'AppointmentApproval',
-                params: {data: appointment},
+                params: { data: appointment },
                 initial: false
             })
         } catch (error) {
@@ -65,14 +70,23 @@ export default function NotificationCenterScreen({navigation}) {
     }
 
     // Render notification for appointment request
-    const renderRequestNotification = (item, index) => {
+    const renderRequestNotification = item => {
         const sender = `${item.detail.sender.firstName} ${item.detail.sender.lastName}`
         const differenceDay = dayjs(item.createdAt).day() !== dayjs().day()
         const notifyTime = dayjs(item.createdAt).format(differenceDay ? 'DD MMM' : 'HH:mm')
         return (
-            <TouchableOpacity onPress={() => {navigateToApproval(item.appointmentId, item.response)}} style={styles.notificationCard}>
+            <TouchableOpacity
+                onPress={() => {
+                    navigateToApproval(item.appointmentId, item.response)
+                }}
+                style={styles.notificationCard}
+            >
                 <View>
-                    <Ionicons name={item.response ? 'mail-open-outline' : 'mail-outline'} size={42} color={item.response ? colorCode.grey: colorCode.green} />
+                    <Ionicons
+                        name={item.response ? 'mail-open-outline' : 'mail-outline'}
+                        size={42}
+                        color={item.response ? colorCode.grey : colorCode.green}
+                    />
                 </View>
                 <View style={styles.textContainer}>
                     <View style={styles.headerBox}>
@@ -93,7 +107,11 @@ export default function NotificationCenterScreen({navigation}) {
         return (
             <TouchableOpacity style={styles.notificationCard}>
                 <View>
-                    <MaterialCommunityIcons name="pause-octagon-outline" size={42} color={colorCode.red} />
+                    <MaterialCommunityIcons
+                        name="pause-octagon-outline"
+                        size={42}
+                        color={colorCode.red}
+                    />
                 </View>
                 <View style={styles.textContainer}>
                     <View style={styles.headerBox}>
@@ -109,17 +127,23 @@ export default function NotificationCenterScreen({navigation}) {
     }
 
     // To make an decision on rendering notification card depends on type of notification
-    const decisionRendering = ({item, index}) => {
+    const decisionRendering = ({ item, index }) => {
         switch (item.type) {
-            case 'request': return renderRequestNotification(item, index)
-            case 'abandoned': return renderAbandonedNotification(item, index)
+            case 'request':
+                return renderRequestNotification(item, index)
+            case 'abandoned':
+                return renderAbandonedNotification(item, index)
         }
     }
 
     // Render flat list if notification is available
     const renderFlatList = () => {
         return (
-            <FlatList data={myNotifications} renderItem={decisionRendering} keyExtractor={item => item._id} />
+            <FlatList
+                data={myNotifications}
+                renderItem={decisionRendering}
+                keyExtractor={item => item._id}
+            />
         )
     }
 
@@ -156,10 +180,6 @@ const styles = StyleSheet.create({
         marginTop: 8,
         color: colorCode.lightGrey
     },
-    borderTop: {
-        borderTopWidth: 0.75,
-        borderTopColor: colorCode.lightGrey,
-    },
     notificationCard: {
         padding: 16,
         flexDirection: 'row',
@@ -176,7 +196,7 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 16
     },
     time: {
         fontSize: 12,

@@ -5,8 +5,7 @@ const { forceUpdateAppointmentStatus, getAppointmentFromId } = require('../helpe
 const { acknowledgeRequestNotification, createAbandonedNotification } = require('./notification')
 
 // Schedule the status update for an appointment
-const scheduleAppointmentUpdate = (appointment) => {
-
+const scheduleAppointmentUpdate = appointment => {
     const startAt = dayjs(appointment.startAt).format()
     const endAt = dayjs(appointment.endAt).format()
 
@@ -25,9 +24,7 @@ const scheduleAppointmentUpdate = (appointment) => {
                 targets.push(currentData.sender)
                 await createAbandonedNotification(targets, appointment._id)
             }
-        } catch (error) {
-
-        }
+        } catch (error) {}
     })
 
     // If the appointment is end then change status to 'done'
@@ -43,9 +40,7 @@ const scheduleAppointmentUpdate = (appointment) => {
                     await acknowledgeRequestNotification(target, appointment._id)
                 }
             }
-        } catch (error) {
-
-        }
+        } catch (error) {}
     })
 }
 

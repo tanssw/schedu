@@ -1,10 +1,12 @@
-const dayjs = require('dayjs')
-
 const { getUserByObjectId } = require('./account')
 
 const conn = require('../config/connectionMongoDB/ScheduConnect')
 const appointmentSchema = require('../schema/appointmentSchema')
-const appointmentModel = conn.model('appointments', appointmentSchema, process.env.APPOINTMENTS_COLLECTION)
+const appointmentModel = conn.model(
+    'appointments',
+    appointmentSchema,
+    process.env.APPOINTMENTS_COLLECTION
+)
 
 const STATUS = {
     0: 'pending',
@@ -41,8 +43,8 @@ const formatAppointmentsBasic = async appointments => {
     return formattedAppointments
 }
 
-const getAppointmentFromId = async (appointmentId) => {
-    const appointment = await appointmentModel.findOne({_id: appointmentId})
+const getAppointmentFromId = async appointmentId => {
+    const appointment = await appointmentModel.findOne({ _id: appointmentId })
     return appointment
 }
 
@@ -53,7 +55,7 @@ const isParticipate = async (appointmentId, userId) => {
             { sender: userId },
             {
                 particiapants: {
-                    $elemMatch: {userId: userId}
+                    $elemMatch: { userId: userId }
                 }
             }
         ]
@@ -61,23 +63,28 @@ const isParticipate = async (appointmentId, userId) => {
     return !!appointment
 }
 
-const updateAppointmentStatus = async (appointment) => {
+const updateAppointmentStatus = async appointment => {
     let newStatus
     switch (appointment.status) {
         // For 'pending' status, will change to 'ongoing' if main participant is confirmed
         case STATUS[0]:
-            const receiver = appointment.participants.find(participant => participant.main && participant.confirmed)
+            const receiver = appointment.participants.find(
+                participant => participant.main && participant.confirmed
+            )
             // If receiver not confirmed yet. Do nothing
             if (!receiver) return
             // Else, check if receiver is joined or not [join -> ongoing, decline -> abandoned]
             newStatus = receiver.join ? STATUS[1] : STATUS[2]
-            const result = await appointmentModel.updateOne({_id: appointment._id}, {status: newStatus})
+            const result = await appointmentModel.updateOne(
+                { _id: appointment._id },
+                { status: newStatus }
+            )
             return newStatus
     }
 }
 
 const forceUpdateAppointmentStatus = async (appointmentId, newStatus) => {
-    const result = await appointmentModel.updateOne({_id: appointmentId}, {status: newStatus})
+    const result = await appointmentModel.updateOne({ _id: appointmentId }, { status: newStatus })
 }
 
 module.exports = {

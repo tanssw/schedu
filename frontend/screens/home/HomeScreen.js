@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { SafeAreaView, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { shadow } from '../../styles'
 
@@ -8,8 +8,7 @@ import General from './components/General'
 import Overview from './components/Overview'
 import RecentlyList from './components/RecentlyList'
 
-export default function HomeScreen({navigation}) {
-
+export default function HomeScreen({ navigation }) {
     const notificationRef = useRef()
     const overviewRef = useRef()
     const recentlyRef = useRef()

@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button } from 'react-native'
 import dayjs from 'dayjs'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -23,11 +22,13 @@ const options = {
     }),
     contactProfile: {
         title: '',
-        headerBackTitle: 'Contact',
-
+        headerBackTitle: 'Contact'
+    },
+    chooseParticipantScreen: {
+        title: 'Choose Participant'
     }
 }
-export default function ContactNavigator({ navigation }) {
+export default function ContactNavigator() {
     return (
         <ContactStack.Navigator initialRouteName="ContactList" screenOptions={headerDefaultOptions}>
             <ContactStack.Screen

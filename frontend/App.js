@@ -11,7 +11,7 @@ export default function App() {
     return (
         <>
             <SafeAreaView style={styles.safeArea} />
-                <AuthNavigator />
+            <AuthNavigator />
         </>
     )
 }

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
 import dayjs from 'dayjs'

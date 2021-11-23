@@ -10,15 +10,20 @@ import { API_SERVER_DOMAIN } from '../../../modules/apis'
 import { colorCode } from '../../../styles'
 
 function Overview(props, ref) {
-
     const [appointmentCount, updateAppointmentCount] = useState(0)
     const [requestCount, updateRequestCount] = useState(0)
 
     const navigation = useNavigation()
 
-    useImperativeHandle(ref, () => ({
-        loadOverview() { loadCounter() }
-    }), [])
+    useImperativeHandle(
+        ref,
+        () => ({
+            loadOverview() {
+                loadCounter()
+            }
+        }),
+        []
+    )
 
     const loadCounter = async () => {
         const { token, userId } = await getAuthAsset()
@@ -84,7 +89,7 @@ const styles = StyleSheet.create({
         marginBottom: 4
     },
     title: {
-        fontSize: 14,
+        fontSize: 14
     },
     counter: {
         fontSize: 24,

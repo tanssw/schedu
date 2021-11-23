@@ -1,42 +1,50 @@
-import React, { forwardRef, useImperativeHandle, useState, useEffect, useCallback } from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList, Linking, Alert } from 'react-native'
+import React, { useState, useEffect, useCallback } from 'react'
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    ScrollView,
+    StyleSheet,
+    FlatList,
+    Linking,
+    Alert
+} from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
-import axios from 'axios'
 
-import { background, text, shadow, colorCode } from '../../styles'
-import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
+import { shadow, colorCode } from '../../styles'
 
 import TimeDisplay from '../appointment/components/TimeDisplay'
 
-export default function AppointmentScreen({props, route, navigation}) {
-
-    const { data} = route.params
+export default function AppointmentScreen({ route, navigation }) {
+    const { data } = route.params
 
     const [displayCommMethod, setDisplayCommMethod] = useState()
 
     useEffect(() => {
         // getCommMethod()
         const unsubscribe = navigation.addListener('focus', async () => {
-            try {
-                getCommMethod()
-            } catch (error) {}
+            getCommMethod()
         })
+        return unsubscribe
     })
 
     //FUNCTION: return commMethods for details
     const getCommMethod = () => {
         switch (data.commMethod) {
-            case 'face': return setDisplayCommMethod('Face to Face')
-            case 'msteam': return setDisplayCommMethod('Microsoft Teams')
-            case 'meet': return setDisplayCommMethod('Google meet')
-            case 'zoom': return setDisplayCommMethod('Zoom Application')
+            case 'face':
+                return setDisplayCommMethod('Face to Face')
+            case 'msteam':
+                return setDisplayCommMethod('Microsoft Teams')
+            case 'meet':
+                return setDisplayCommMethod('Google meet')
+            case 'zoom':
+                return setDisplayCommMethod('Zoom Application')
         }
     }
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item, index }) => {
         return (
-            <View style={[styles.profile, index ? {marginLeft: 16} : null]}>
+            <View style={[styles.profile, index ? { marginLeft: 16 } : null]}>
                 <FontAwesome
                     name="user-circle-o"
                     size={44}
@@ -82,7 +90,9 @@ export default function AppointmentScreen({props, route, navigation}) {
                         <Text style={styles.header}>Communication Method</Text>
                         <TouchableOpacity onPress={linktoExternal} style={styles.commMethodBox}>
                             <Text style={styles.commMethodHeader}>{displayCommMethod}</Text>
-                            <Text numberOfLines={1} style={styles.commMethodURL}>URL: {data.commUrl ? data.commUrl : '[Not provided]'}</Text>
+                            <Text numberOfLines={1} style={styles.commMethodURL}>
+                                URL: {data.commUrl ? data.commUrl : '[Not provided]'}
+                            </Text>
                         </TouchableOpacity>
                     </View>
                     {/* Note to participant Textbox */}
@@ -155,19 +165,6 @@ const styles = StyleSheet.create({
     },
     textBox: {
         fontWeight: '300'
-    },
-    decisionContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end'
-    },
-    mainButton: {
-        width: '47.5%',
-        padding: 16,
-        borderRadius: 16,
-        justifyContent: 'center',
-        alignItems: 'center'
     },
     profile: {
         justifyContent: 'space-between'
