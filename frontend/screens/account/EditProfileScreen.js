@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Text, View, StyleSheet, Image, TouchableOpacity, Alert, ScrollView } from 'react-native'
 
 import { getAuthAsset, clearAuthAsset, checkExpiredToken } from '../../modules/auth'
@@ -11,6 +11,8 @@ import { text, shadow, colorCode } from '../../styles'
 // import components
 import Information from './components/Information'
 export default function ProfileScreen({ route, navigation, userData, onProfileUpdated }) {
+
+    const scrollViewRef = useRef()
 
     const updateDataHandler = data => {
         switch (data.topic) {
@@ -76,7 +78,7 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
     const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel)
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({animated: true})} contentContainerStyle={styles.container}>
             <View style={styles.imageContainer}>
                 <Image style={styles.profileImage} source={{ url: userData.image }} />
             </View>
@@ -109,6 +111,7 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
                             update={updateDataHandler}
                             style={styles.topSection}
                             keyboard='phone-pad'
+                            last={true}
                         />
                     </View>
                 </View>

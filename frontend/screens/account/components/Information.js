@@ -1,34 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Text, View, StyleSheet, TextInput } from 'react-native'
 import { colorCode } from '../../../styles'
 
 export default function Information(props) {
 
+    const [keyboardHeight, updateKeyboardHeight] = useState(0)
+
     const changeDataHandler = text => {
         props.update({ topic: props.topicData, data: text })
+    }
+
+    const toggleKeyboardHeight = (openKeyboard) => {
+        if (props.last) {
+            openKeyboard ? updateKeyboardHeight(128) : updateKeyboardHeight(0)
+        }
     }
 
     let editState = props.edit
 
     return (
-        <View style={[styles.userData, styles.bottomLine, props.style]}>
-            <Text
-                style={styles.topic}
-            >
-                {props.topicData}
-            </Text>
-            <TextInput
-                style={[
-                    styles.data,
-                    editState ? styles.editable : ''
-                ]}
-                editable={editState}
-                onChangeText={changeDataHandler}
-                placeholder="empty"
-                keyboardType={props.keyboard}
-            >
-                {props.data}
-            </TextInput>
+        <View>
+            <View style={[styles.userData, styles.bottomLine, props.style]}>
+                <Text
+                    style={styles.topic}
+                >
+                    {props.topicData}
+                </Text>
+                <TextInput
+                    style={[
+                        styles.data,
+                        editState ? styles.editable : ''
+                    ]}
+                    editable={editState}
+                    onChangeText={changeDataHandler}
+                    placeholder="empty"
+                    keyboardType={props.keyboard}
+                    onFocus={() => {toggleKeyboardHeight(true)}}
+                    onBlur={() => {toggleKeyboardHeight(false)}}
+                >
+                    {props.data}
+                </TextInput>
+            </View>
+            <View style={{marginBottom: keyboardHeight}}></View>
         </View>
     )
 }
