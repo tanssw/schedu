@@ -222,12 +222,13 @@ router.get('/:year/:month', authMiddleware, async (req, res) => {
         let appointments = await appointmentModel.find({
             $and: [
                 {
-                    startAt: { $gte: minDate, $lt: maxDate }
+                    startAt: { $gte: minDate, $lt: maxDate },
+                    status: {$nin: ['abandoned', 'done']}
                 },
                 {
                     $or: [
                         {
-                            sender: userId
+                            sender: userId,
                         },
                         {
                             participants: {
