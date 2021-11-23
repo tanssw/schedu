@@ -286,7 +286,7 @@ router.post('/', authMiddleware, async (req, res) => {
         await createRequestNotification(participantToNotify, result._id, appointmentRequest.startAt)
 
         // Schedule the appointment status handler
-        scheduleAppointmentUpdate(appointment)
+        await scheduleAppointmentUpdate(appointment)
 
         res.json({ message: `Successfully create new appointment (ID: ${result._id})` })
     } catch (error) {
