@@ -10,10 +10,15 @@ const account = require('./routers/account')
 const appointment = require('./routers/appointment')
 const registrar = require('./routers/registrar')
 const event = require('./routers/event')
-
 const notification = require('./routers/notification')
 
+// Utilities
+const { rescheduleOnStart } = require('./helpers/schedule')
+
 const PORT = process.env.PORT
+
+// Do the re-scheduling
+rescheduleOnStart()
 
 // Initialize Express Application
 const app = express()
@@ -26,8 +31,6 @@ app.use('/appointment', appointment)
 app.use('/account', account)
 app.use('/event', event)
 app.use('/registrar', registrar)
-
-// Inactive Routers
 app.use('/notification', notification)
 
 app.get('/health', (req, res) => {
