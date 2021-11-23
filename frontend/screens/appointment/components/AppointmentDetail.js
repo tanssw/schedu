@@ -13,7 +13,6 @@ import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
 
 import { background, text, shadow, colorCode } from '../../../styles'
-import { NavigationContainer } from '@react-navigation/native'
 
 function AppointmentDetail(props, ref) {
     // Component's States
@@ -25,8 +24,6 @@ function AppointmentDetail(props, ref) {
 
     // validate state
     const [isEmptySubject, setIsEmptySubject] = useState(true)
-    const [isEmptyCommMethod, setIsEmptyCommMethod] = useState(true)
-    const [isEmptyCommUrl, setIsEmptyCommUrl] = useState(true)
 
     const [participants, setParticipants] = useState([])
 

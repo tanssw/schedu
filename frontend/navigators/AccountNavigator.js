@@ -16,7 +16,6 @@ import SettingScreen from '../screens/account/SettingScreen'
 const AccountStack = createNativeStackNavigator()
 
 export default function AccountNavigator({ navigation }) {
-
     const [userData, setUserData] = useState({})
 
     useEffect(() => {
@@ -40,7 +39,7 @@ export default function AccountNavigator({ navigation }) {
         }
     }
 
-    const updateUserData = (newUserData) => {
+    const updateUserData = newUserData => {
         setUserData(newUserData)
     }
 
@@ -56,17 +55,35 @@ export default function AccountNavigator({ navigation }) {
                 name="Profile"
                 options={{
                     headerRight: () => (
-                        <Button onPress={() => {navigation.navigate('EditProfile', userData)}} title="Edit" color="white" />
+                        <Button
+                            onPress={() => {
+                                navigation.navigate('EditProfile', userData)
+                            }}
+                            title="Edit"
+                            color="white"
+                        />
                     )
                 }}
             >
                 {props => <ProfileScreen {...props} userData={userData} />}
             </AccountStack.Screen>
             <AccountStack.Screen name="EditProfile" options={{ headerTitle: 'Edit Profile' }}>
-                {props => <EditProfileScreen {...props} userData={userData} onProfileUpdated={updateUserData} />}
+                {props => (
+                    <EditProfileScreen
+                        {...props}
+                        userData={userData}
+                        onProfileUpdated={updateUserData}
+                    />
+                )}
             </AccountStack.Screen>
             <AccountStack.Screen name="Setting">
-                {props => <SettingScreen {...props} setting={userData.setting} onSettingUpdated={updateUserData} />}
+                {props => (
+                    <SettingScreen
+                        {...props}
+                        setting={userData.setting}
+                        onSettingUpdated={updateUserData}
+                    />
+                )}
             </AccountStack.Screen>
         </AccountStack.Navigator>
     )

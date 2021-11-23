@@ -1,6 +1,10 @@
 const notificationSchema = require('../schema/notificationSchema')
 var conn = require('../config/connectionMongoDB/ScheduConnect')
-const notificationModel = conn.model('notifications', notificationSchema, process.env.NOTIFICATIONS_COLLECTION)
+const notificationModel = conn.model(
+    'notifications',
+    notificationSchema,
+    process.env.NOTIFICATIONS_COLLECTION
+)
 
 const express = require('express')
 
@@ -10,16 +14,17 @@ const { authMiddleware } = require('../middlewares/auth')
 const { getAppointmentFromId } = require('../helpers/appointment')
 const { formatNotification } = require('../helpers/notification')
 
-
 // Get all notification of request client
 router.get('/all', authMiddleware, async (req, res) => {
     try {
         const userId = req.headers['schedu-uid']
-        const notifications = await notificationModel.find({
-            targets: {
-                $elemMatch: {userId: userId}
-            }
-        }).sort([['createdAt', -1]])
+        const notifications = await notificationModel
+            .find({
+                targets: {
+                    $elemMatch: { userId: userId }
+                }
+            })
+            .sort([['createdAt', -1]])
 
         let formattedNotifications = []
         for (let notification of notifications) {
@@ -27,9 +32,9 @@ router.get('/all', authMiddleware, async (req, res) => {
             formattedNotifications.push(formattedNotification)
         }
 
-        res.json({notifications: formattedNotifications})
+        res.json({ notifications: formattedNotifications })
     } catch (error) {
-        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+        res.status(500).send({ message: 'Something went wrong. Please try again later.' })
     }
 })
 
@@ -38,12 +43,14 @@ router.get('/active', authMiddleware, async (req, res) => {
     try {
         const userId = req.headers['schedu-uid']
         // Get notification which not expire and sorting them from newest one
-        const notifications = await notificationModel.find({
-            targets: {
-                $elemMatch: {userId: userId, response: false}
-            },
-            expireAt: {$gte: new Date()}
-        }).sort([['createdAt', -1]])
+        const notifications = await notificationModel
+            .find({
+                targets: {
+                    $elemMatch: { userId: userId, response: false }
+                },
+                expireAt: { $gte: new Date() }
+            })
+            .sort([['createdAt', -1]])
 
         let formattedNotifications = []
         for (let notification of notifications) {
@@ -51,9 +58,9 @@ router.get('/active', authMiddleware, async (req, res) => {
             formattedNotifications.push(formattedNotification)
         }
 
-        res.json({notifications: formattedNotifications})
+        res.json({ notifications: formattedNotifications })
     } catch (error) {
-        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+        res.status(500).send({ message: 'Something went wrong. Please try again later.' })
     }
 })
 
@@ -61,17 +68,19 @@ router.get('/active', authMiddleware, async (req, res) => {
 router.get('/newest', authMiddleware, async (req, res) => {
     try {
         const userId = req.headers['schedu-uid']
-        const notifications = await notificationModel.find({
-            targets: {
-                $elemMatch: {userId: userId, response: false}
-            },
-            expireAt: {$gte: new Date()}
-        }).sort([['createdAt', -1]])
+        const notifications = await notificationModel
+            .find({
+                targets: {
+                    $elemMatch: { userId: userId, response: false }
+                },
+                expireAt: { $gte: new Date() }
+            })
+            .sort([['createdAt', -1]])
 
         let result = notifications.length ? await formatNotification(notifications[0], userId) : {}
-        res.json({notification: result})
+        res.json({ notification: result })
     } catch (error) {
-        res.status(500).send({message: 'Something went wrong. Please try again later.'})
+        res.status(500).send({ message: 'Something went wrong. Please try again later.' })
     }
 })
 

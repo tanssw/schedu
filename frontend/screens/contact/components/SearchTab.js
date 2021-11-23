@@ -44,7 +44,4 @@ const styles = StyleSheet.create({
         marginLeft: 16,
         borderRadius: 4
     },
-    history: {
-        marginLeft: 16
-    }
 })

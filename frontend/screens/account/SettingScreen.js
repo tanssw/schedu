@@ -7,8 +7,7 @@ import TimePicker from './components/TimePicker'
 
 import { getAuthAsset, clearAuthAsset, checkExpiredToken } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
-import { hourItems, minuteItems, filterHour, filterMinute } from '../../assets/data/timeItems'
-import dayjs from 'dayjs'
+import { minuteItems, filterHour, filterMinute } from '../../assets/data/timeItems'
 
 import { colorCode } from '../../styles'
 

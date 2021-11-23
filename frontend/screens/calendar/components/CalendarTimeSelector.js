@@ -2,12 +2,12 @@ import React, { useImperativeHandle, forwardRef, useState, useEffect } from 'rea
 import { View, Text, StyleSheet } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { Picker } from 'react-native-woodpicker'
-import { hourItems, minuteItems, filterHour, filterMinute } from '../../../assets/data/timeItems'
+import { minuteItems, filterHour, filterMinute } from '../../../assets/data/timeItems'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
-import { colorCode, shadow } from '../../../styles'
+import { shadow } from '../../../styles'
 
 dayjs.extend(utc)
 

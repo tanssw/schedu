@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import dayjs from 'dayjs'

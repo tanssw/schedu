@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Text, View, StyleSheet, Image } from 'react-native'
 
 import { colorCode, shadow } from '../../styles'

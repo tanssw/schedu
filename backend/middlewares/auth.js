@@ -6,12 +6,11 @@ const authMiddleware = async (req, res, next) => {
     try {
         const token = req.headers[AUTH_TOKEN_HEADER_NAME]
         const userId = await getUserIdFromToken(token)
-        if (!userId) throw "UserID not found"
+        if (!userId) throw 'UserID not found'
         next()
     } catch (error) {
-        res.status(403).send({message: 'Unauthorized Request'})
+        res.status(403).send({ message: 'Unauthorized Request' })
     }
-
 }
 
 module.exports = {

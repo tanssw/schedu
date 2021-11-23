@@ -34,31 +34,31 @@ router.get('/courses', authMiddleware, async (req, res) => {
         const conn = await pool.getConnection()
         await conn.beginTransaction()
 
-        const result = await conn.query(`
+        const result = await conn.query(
+            `
             SELECT registrar.subject_id, registrar.section_id, study_start,study_end, day, title_en, mid_exam, mid_start, mid_end, final_exam, final_start, final_end
             FROM registrar
             INNER JOIN section ON registrar.subject_id = section.subject_id AND registrar.section_id = section.section_id
             INNER JOIN subject ON registrar.subject_id = subject.subject_id
             WHERE student_id = ?
-        `, [businessId])
+        `,
+            [businessId]
+        )
 
         conn.release()
 
         // Format study timetable
         const timetable = result[0]
         const formattedTimetable = formatDefaultTimetable(timetable)
-        res.json({timetable: formattedTimetable})
-
+        res.json({ timetable: formattedTimetable })
     } catch (error) {
-        res.status(500).send({message: 'Something went wrong. Please try again.'})
+        res.status(500).send({ message: 'Something went wrong. Please try again.' })
     }
 })
 
 // Get Timetable by year and month from User ID
 router.get('/courses/:year/:month', authMiddleware, async (req, res) => {
-
     const { year, month } = req.params
-
 
     try {
         let { minDate, maxDate } = getDateRange(year, month)
@@ -72,7 +72,8 @@ router.get('/courses/:year/:month', authMiddleware, async (req, res) => {
         const conn = await pool.getConnection()
         await conn.beginTransaction()
 
-        const result = await conn.query(`
+        const result = await conn.query(
+            `
             SELECT registrar.subject_id, registrar.section_id, study_start,study_end, day, title_en, mid_exam, mid_start, mid_end, final_exam, final_start, final_end
             FROM registrar
             INNER JOIN section ON registrar.subject_id = section.subject_id AND registrar.section_id = section.section_id
@@ -82,17 +83,18 @@ router.get('/courses/:year/:month', authMiddleware, async (req, res) => {
                 mid_exam BETWEEN ? AND ? OR final_exam BETWEEN ? AND ?
             )
 
-        `, [businessId, minDate, maxDate, minDate, maxDate])
+        `,
+            [businessId, minDate, maxDate, minDate, maxDate]
+        )
 
         conn.release()
 
         // Format study timetable
         const timetable = result[0]
         const formattedTimetable = formatMonthTimetable(timetable, year, month)
-        res.send({timetable: formattedTimetable})
-
+        res.send({ timetable: formattedTimetable })
     } catch (error) {
-        res.status(500).send({message: 'Something went wrong. Please try again.'})
+        res.status(500).send({ message: 'Something went wrong. Please try again.' })
     }
 })
 

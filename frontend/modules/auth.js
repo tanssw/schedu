@@ -7,7 +7,7 @@ const getAuthAsset = async () => {
     const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY)
     const userId = await SecureStore.getItemAsync(AUTH_USER_ID)
     if (token && userId) return { token, userId }
-    throw "No Authentication found"
+    throw 'No Authentication found'
 }
 
 const setAuthAsset = async (token, uid) => {
@@ -20,7 +20,7 @@ const clearAuthAsset = async () => {
     await SecureStore.deleteItemAsync(AUTH_USER_ID, {})
 }
 
-const checkExpiredToken = (error) => {
+const checkExpiredToken = error => {
     try {
         const status = error.response.status
         if (status !== 403) return false

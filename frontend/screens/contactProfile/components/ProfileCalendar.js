@@ -6,7 +6,6 @@ import dayjs from 'dayjs'
 import { colorCode } from '../../../styles'
 import axios from 'axios'
 import { API_SERVER_DOMAIN } from '../../../modules/apis'
-import { getAuthAsset } from '../../../modules/auth'
 
 const calendarTheme = {
     arrowColor: colorCode.blue,
@@ -16,12 +15,17 @@ const calendarTheme = {
 }
 
 function ProfileCalendar(props, ref) {
-
     const [eventState, updateEventState] = useState({})
 
-    useImperativeHandle(ref, () => ({
-        loadContactEvent() { loadEvent() }
-    }), [])
+    useImperativeHandle(
+        ref,
+        () => ({
+            loadContactEvent() {
+                loadEvent()
+            }
+        }),
+        []
+    )
 
     const loadEvent = async () => {
         try {
@@ -34,7 +38,7 @@ function ProfileCalendar(props, ref) {
     }
 
     // To build an event object of MarkedDate to show in Calendar
-    const buildEventDateMarks = (events, object={}) => {
+    const buildEventDateMarks = (events, object = {}) => {
         events.forEach(event => {
             if (!event.date) return
             let date = dayjs(event.date).format('YYYY-MM-DD')
@@ -52,9 +56,11 @@ function ProfileCalendar(props, ref) {
         return dayjs().add(2, 'week').format('YYYY-MM-DD')
     }
 
-    const dayPressHandler = (day) => {
-
-        const alert = () => Alert.alert("Can't choose this day", "Maybe this contact is in busy.", [{text: 'Close', style: 'cancel'}])
+    const dayPressHandler = day => {
+        const alert = () =>
+            Alert.alert("Can't choose this day", 'Maybe this contact is in busy.', [
+                { text: 'Close', style: 'cancel' }
+            ])
 
         // If contact is receiving weekend
         if (props.isReceiveWeekend) return props.onDayPress(day.dateString)
@@ -67,8 +73,6 @@ function ProfileCalendar(props, ref) {
         if (Object.keys(eventState).includes(date.format('YYYY-MM-DD'))) return alert()
 
         return props.onDayPress(day.dateString)
-
-
     }
 
     return (
@@ -76,7 +80,9 @@ function ProfileCalendar(props, ref) {
             theme={calendarTheme}
             minDate={getMinDate()}
             maxDate={getMaxDate()}
-            onDayPress={(day) => {dayPressHandler(day)}}
+            onDayPress={day => {
+                dayPressHandler(day)
+            }}
             markedDates={eventState}
         />
     )

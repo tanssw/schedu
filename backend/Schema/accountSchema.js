@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const accountSchema = new Schema({
@@ -8,7 +8,7 @@ const accountSchema = new Schema({
     lastName: String,
     role: String,
     contact: {
-        email : String,
+        email: String,
         tel: String
     },
     image: String,
@@ -16,7 +16,7 @@ const accountSchema = new Schema({
         displayTel: Boolean,
         weekendReceive: Boolean,
         activeTime: {
-            startAt : String,
+            startAt: String,
             endAt: String
         }
     }

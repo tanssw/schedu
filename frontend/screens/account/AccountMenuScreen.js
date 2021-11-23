@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { StyleSheet, Image, Text, View, TouchableOpacity, Alert } from 'react-native'
 import axios from 'axios'
 
@@ -11,7 +11,7 @@ export default function AccountMenuScreen({ navigation, userData }) {
 
     const signOut = async () => {
         try {
-            const { token, userId } = await getAuthAsset()
+            const { token } = await getAuthAsset()
             const payload = {
                 headers: {
                     'Schedu-Token': token

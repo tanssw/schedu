@@ -1,25 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native'
+import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { FontAwesome, Feather } from '@expo/vector-icons'
-import { colorCode, text } from '../../../styles'
+import { colorCode } from '../../../styles'
 
 export default function ContactTab(props) {
-
-    const [headerText, updateHeaderText] = useState('Contact')
-
     const navigation = useNavigation()
 
     // Navigate to contact profile screen of selected contact.
-    const navigateToProfile = (userId) => {
+    const navigateToProfile = userId => {
         navigation.navigate('ContactProfile', { contactId: userId })
     }
 
-    const renderContact = (contact) => {
+    const renderContact = contact => {
         return (
-            <TouchableOpacity onPress={() => {navigateToProfile(contact._id)}} key={contact._id} style={styles.listItem}>
-                <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} style={styles.personImage} />
+            <TouchableOpacity
+                onPress={() => {
+                    navigateToProfile(contact._id)
+                }}
+                key={contact._id}
+                style={styles.listItem}
+            >
+                <FontAwesome name="user-circle-o" size={42} color={colorCode.blue} />
                 <View style={styles.personDetail}>
                     <Text style={styles.personName}>
                         {contact.firstName} {contact.lastName}
@@ -40,8 +43,10 @@ export default function ContactTab(props) {
     return (
         <View style={styles.contactContainer}>
             <Text style={styles.header}>{props.headerText}</Text>
-            <View style={styles.listContainer}>
-                {props.contacts.length ? props.contacts.map(contact => renderContact(contact)) : renderEmptyContact}
+            <View>
+                {props.contacts.length
+                    ? props.contacts.map(contact => renderContact(contact))
+                    : renderEmptyContact}
             </View>
         </View>
     )
@@ -61,9 +66,6 @@ const styles = StyleSheet.create({
         color: colorCode.grey,
         marginTop: 8
     },
-    listContainer: {
-
-    },
     listItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -74,9 +76,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18,
         marginBottom: 8
-    },
-    personImage: {
-
     },
     personDetail: {
         flex: 1,
