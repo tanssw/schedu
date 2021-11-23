@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native'
+import { Text, View, StyleSheet, Image, TouchableOpacity, Alert, ScrollView } from 'react-native'
 
 import { getAuthAsset, clearAuthAsset, checkExpiredToken } from '../../modules/auth'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
@@ -76,7 +76,7 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
     const [newPhoneNumber, setNewPhoneNumber] = useState(userData.contact.tel)
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' :'height'} style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.imageContainer}>
                 <Image style={styles.profileImage} source={{ url: userData.image }} />
             </View>
@@ -118,13 +118,13 @@ export default function ProfileScreen({ route, navigation, userData, onProfileUp
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAvoidingView>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         alignItems: 'center'
     },
     imageContainer: {
