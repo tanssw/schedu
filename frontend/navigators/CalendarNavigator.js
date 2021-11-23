@@ -9,7 +9,7 @@ import CalendarOverviewScreen from '../screens/calendar/CalendarOverviewScreen'
 import CalendarDetailScreen from '../screens/calendar/CalendarDetailScreen'
 import AppointmentScreen from '../screens/appointment/AppointmentScreen'
 import AppointmentApprovalScreen from '../screens/appointment/AppointmentApprovalScreen'
-import EditAppointmentScreen from '../screens/calendar/EditorAppointmentScreen'
+import AppointmentEditorScreen from '../screens/calendar/AppointmentEdiitorScreen'
 import ChooseParticipantScreen from '../screens/calendar/ChooseParticipantInEditScreen'
 
 const CalendarStack = createNativeStackNavigator()
@@ -46,7 +46,7 @@ export default function CalendarNavigator({ navigation }) {
                     headerRight: () => (
                         <Button
                             onPress={() => {
-                                navigation.navigate('EditAppointmentScreen', {
+                                navigation.navigate('AppointmentEditorScreen', {
                                     data: appointmentId,
                                     participants: []
                                 })
@@ -63,8 +63,8 @@ export default function CalendarNavigator({ navigation }) {
                 options={{ headerTitle: 'Approval' }}
             />
             <CalendarStack.Screen
-                name="EditAppointmentScreen"
-                component={EditAppointmentScreen}
+                name="AppointmentEditorScreen"
+                component={AppointmentEditorScreen}
                 options={{ headerTitle: 'Edit Appointment' }}
             ></CalendarStack.Screen>
             <CalendarStack.Screen

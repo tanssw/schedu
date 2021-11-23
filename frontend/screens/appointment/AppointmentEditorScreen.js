@@ -10,6 +10,8 @@ import AppointmentDetail from './components/AppointmentDetail'
 import { checkExpiredToken } from '../../modules/auth'
 
 export default function AppointmentEditorScreen({ route, navigation }) {
+
+    const scrollViewRef = useRef()
     const timeSelectorComponent = useRef()
     const detailComponent = useRef()
 
@@ -67,7 +69,7 @@ export default function AppointmentEditorScreen({ route, navigation }) {
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({animated: true})} contentContainerStyle={styles.container}>
             <View style={styles.innerContainer}>
                 <TimeSelector
                     ref={timeSelectorComponent}
