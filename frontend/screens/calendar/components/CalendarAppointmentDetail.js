@@ -16,6 +16,8 @@ import { background, text, shadow, colorCode } from '../../../styles'
 
 function AppointmentDetail(props, ref) {
     // Component's States
+    const [keyboardHeight, updateKeyboardHeight] = useState(0)
+
     const [subject, setSubject] = useState()
     const [commMethod, setCommMethod] = useState()
     const [commUrl, setCommUrl] = useState()
@@ -32,7 +34,6 @@ function AppointmentDetail(props, ref) {
         ref,
         () => ({
             initComponent(participants, appointmentState) {
-                console.log('shown', participants)
                 checkParticipant(participants)
                 loadAppointment(appointmentState, participants)
             }
@@ -60,6 +61,11 @@ function AppointmentDetail(props, ref) {
             case 'zoom':
                 return { label: 'Zoom Application', value: 'zoom' }
         }
+    }
+
+    // FUNCTION: to update if last field on focus/blur
+    const toggleKeyboardHeight = (openKeyboard) => {
+        openKeyboard ? updateKeyboardHeight(184) : updateKeyboardHeight(0)
     }
 
     // FUNCTION: to structure appointment data
@@ -186,9 +192,12 @@ function AppointmentDetail(props, ref) {
                         multiline
                         numberOfLines={4}
                         placeholder="This is a note ..."
+                        onFocus={() => {toggleKeyboardHeight(true)}}
+                        onBlur={() => {toggleKeyboardHeight(false)}}
                     />
                 </ScrollView>
             </View>
+            <View style={{marginBottom: keyboardHeight}}></View>
             {/* Button */}
             <TouchableOpacity
                 onPress={updateAppointmentCall}
