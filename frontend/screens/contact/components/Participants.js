@@ -6,12 +6,11 @@ import { colorCode } from '../../../styles'
 
 export default function Participants(props) {
     const [contact, SetContact] = useState(props.contact)
-
     const chooseHandler = () => {
         props.choose({
-            contactId: contactId,
-            date: date,
-            activeTime: activeTime,
+            contactId: props.data.contactId,
+            date: props.data.date,
+            activeTime: props.data.activeTime,
             participant: {
                 _id: contact._id,
                 firstName: contact.firstName,
