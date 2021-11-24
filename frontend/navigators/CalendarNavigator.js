@@ -9,7 +9,7 @@ import CalendarOverviewScreen from '../screens/calendar/CalendarOverviewScreen'
 import CalendarDetailScreen from '../screens/calendar/CalendarDetailScreen'
 import AppointmentScreen from '../screens/appointment/AppointmentScreen'
 import AppointmentApprovalScreen from '../screens/appointment/AppointmentApprovalScreen'
-import AppointmentEditorScreen from '../screens/calendar/AppointmentEdiitorScreen'
+import AppointmentEditorScreen from '../screens/calendar/AppointmentEditorScreen'
 import ChooseParticipantScreen from '../screens/calendar/ChooseParticipantInEditScreen'
 
 const CalendarStack = createNativeStackNavigator()
