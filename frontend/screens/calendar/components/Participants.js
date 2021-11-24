@@ -10,7 +10,7 @@ export default function Participants(props) {
     const chooseHandler = () => {
         props.choose({
             data: props.appointId,
-            participant: 
+            participant:
             {
                 _id: contact._id,
                 firstName: contact.firstName,
@@ -45,8 +45,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginVertical: 8,
-        padding: 8
+        padding: 16
     },
     personDetail: {
         flex: 1,
