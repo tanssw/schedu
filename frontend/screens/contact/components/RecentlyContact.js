@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
@@ -18,6 +18,10 @@ function RecentlyContact(props, ref) {
     useImperativeHandle(ref, () => ({
         loadRecentlyContacts() { loadContacts() }
     }), [])
+
+    useEffect(() => {
+        loadContacts()
+    }, [])
 
     const loadContacts = async () => {
         try {
