@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { SafeAreaView, StyleSheet, View } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
 
 import { shadow } from '../../styles'
 
@@ -8,8 +8,7 @@ import General from './components/General'
 import Overview from './components/Overview'
 import RecentlyList from './components/RecentlyList'
 
-export default function HomeScreen({navigation}) {
-
+export default function HomeScreen({ navigation }) {
     const notificationRef = useRef()
     const overviewRef = useRef()
     const recentlyRef = useRef()
@@ -28,20 +27,20 @@ export default function HomeScreen({navigation}) {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <NotificationCard ref={notificationRef} onAppointmentPress={gotoMyCalendar} />
             <View style={[styles.mainContainer, shadow.boxTopMedium]}>
                 <General />
                 <Overview ref={overviewRef} />
                 <RecentlyList ref={recentlyRef} />
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flexGrow: 1
     },
     mainContainer: {
         flex: 1,

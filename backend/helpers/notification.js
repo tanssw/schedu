@@ -1,13 +1,17 @@
 const notificationSchema = require('../schema/notificationSchema')
 let conn = require('../config/connectionMongoDB/ScheduConnect')
-const notificationModel = conn.model('notifications', notificationSchema, process.env.NOTIFICATIONS_COLLECTION)
+const notificationModel = conn.model(
+    'notifications',
+    notificationSchema,
+    process.env.NOTIFICATIONS_COLLECTION
+)
 
 const { getAppointmentFromId } = require('./appointment')
 const { getUserByObjectId } = require('./account')
 
 // Create appointment request notification
 const createRequestNotification = async (targets, appointmentId, appointmentDatetime) => {
-    targets = targets.map(target => ({userId: target, response: false}))
+    targets = targets.map(target => ({ userId: target, response: false }))
     const data = {
         type: 'request',
         targets: targets,
@@ -20,7 +24,7 @@ const createRequestNotification = async (targets, appointmentId, appointmentDate
 
 // Create abandoned appointment notification
 const createAbandonedNotification = async (targets, appointmentId) => {
-    targets = targets.map(target => ({userId: target, response: true}))
+    targets = targets.map(target => ({ userId: target, response: true }))
     const data = {
         type: 'abandoned',
         targets: targets,
@@ -34,9 +38,12 @@ const createAbandonedNotification = async (targets, appointmentId) => {
 // Format notification depend on its type
 const formatNotification = async (notification, userId) => {
     switch (notification.type) {
-        case 'request': return await formatRequestNotification(notification, userId)
-        case 'abandoned': return await formatAbandonedNotification(notification, userId)
-        default: return notification
+        case 'request':
+            return await formatRequestNotification(notification, userId)
+        case 'abandoned':
+            return await formatAbandonedNotification(notification, userId)
+        default:
+            return notification
     }
 }
 
@@ -54,7 +61,7 @@ const formatRequestNotification = async (notification, userId) => {
             endAt: appointment.endAt
         }
     }
-    result.response = (notification._doc.targets.find(target => target.userId === userId)).response
+    result.response = notification._doc.targets.find(target => target.userId === userId).response
     delete result.targets
     return result
 }
@@ -67,20 +74,23 @@ const formatAbandonedNotification = async (notification, userId) => {
             subject: appointment.subject
         }
     }
-    result.response = (notification._doc.targets.find(target => target.userId === userId)).response
+    result.response = notification._doc.targets.find(target => target.userId === userId).response
     delete result.targets
     return result
 }
 
 // Update user's notification state
 const acknowledgeRequestNotification = async (userId, appointmentId) => {
-    const result = await notificationModel.findOneAndUpdate({
-        type: 'request',
-        appointmentId: appointmentId,
-        targets: {
-            $elemMatch: {userId: userId}
-        }
-    }, {'targets.$.response': true})
+    const result = await notificationModel.findOneAndUpdate(
+        {
+            type: 'request',
+            appointmentId: appointmentId,
+            targets: {
+                $elemMatch: { userId: userId }
+            }
+        },
+        { 'targets.$.response': true }
+    )
 }
 
 module.exports = {

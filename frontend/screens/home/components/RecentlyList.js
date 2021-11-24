@@ -9,14 +9,19 @@ import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../../module
 import { colorCode } from '../../../styles'
 
 function RecentlyList(props, ref) {
-
     const [recentlyContacts, updateRecentlyContacts] = useState([])
 
     const navigation = useNavigation()
 
-    useImperativeHandle(ref, () => ({
-        loadRecentlyContacts() { loadContacts() }
-    }), [])
+    useImperativeHandle(
+        ref,
+        () => ({
+            loadRecentlyContacts() {
+                loadContacts()
+            }
+        }),
+        []
+    )
 
     const loadContacts = async () => {
         try {
@@ -27,7 +32,10 @@ function RecentlyList(props, ref) {
                     'Schedu-UID': userId
                 }
             }
-            const contactResult = await axios.get(`${API_SERVER_DOMAIN}/appointment/recently`, payload)
+            const contactResult = await axios.get(
+                `${API_SERVER_DOMAIN}/appointment/recently`,
+                payload
+            )
             const contacts = contactResult.data.result
             updateRecentlyContacts(contacts)
         } catch (error) {
@@ -38,19 +46,31 @@ function RecentlyList(props, ref) {
         }
     }
 
-    const navigateToProfile = (userId) => {
+    const navigateToProfile = userId => {
         navigation.navigate('Contact', {
             screen: 'ContactProfile',
-            params: {contactId: userId},
+            params: { contactId: userId },
             initial: false
         })
     }
 
-    const renderContact = ({item, index}) => {
+    const renderContact = ({ item, index }) => {
         return (
-            <TouchableOpacity onPress={() => {navigateToProfile(item.userId)}} style={[styles.personBox, index ? styles.contactBoxMargin: '']}>
-                <FontAwesome name="user-circle-o" size={48} color={colorCode.blue} style={styles.personImage} />
-                <Text numberOfLines={1} style={styles.personName}>{item.firstName} {item.lastName[0]}.</Text>
+            <TouchableOpacity
+                onPress={() => {
+                    navigateToProfile(item.userId)
+                }}
+                style={[styles.personBox, index ? styles.contactBoxMargin : '']}
+            >
+                <FontAwesome
+                    name="user-circle-o"
+                    size={48}
+                    color={colorCode.blue}
+                    style={styles.personImage}
+                />
+                <Text numberOfLines={1} style={styles.personName}>
+                    {item.firstName} {item.lastName[0]}.
+                </Text>
             </TouchableOpacity>
         )
     }
@@ -59,14 +79,17 @@ function RecentlyList(props, ref) {
         return (
             <View style={styles.container}>
                 <Text style={styles.header}>Recently Contact</Text>
-                <FlatList horizontal data={recentlyContacts} renderItem={renderContact} keyExtractor={(item, index) => index}/>
+                <FlatList
+                    horizontal
+                    data={recentlyContacts}
+                    renderItem={renderContact}
+                    keyExtractor={(item, index) => index}
+                />
             </View>
         )
     }
 
-    return (
-        <View>{recentlyContacts.length ? renderFlatList() : null}</View>
-    )
+    return <View>{recentlyContacts.length ? renderFlatList() : null}</View>
 }
 
 export default forwardRef(RecentlyList)
@@ -76,9 +99,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         marginBottom: 18
-    },
-    footer: {
-        marginBottom: 32
     },
     contactBoxMargin: {
         marginLeft: 12

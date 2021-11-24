@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Image, Text, View, TouchableOpacity, Alert } from 'react-native'
+import React from 'react'
+import { StyleSheet, Image, Text, View, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import axios from 'axios'
 
 import { clearAuthAsset, getAuthAsset } from '../../modules/auth'
@@ -11,7 +11,7 @@ export default function AccountMenuScreen({ navigation, userData }) {
 
     const signOut = async () => {
         try {
-            const { token, userId } = await getAuthAsset()
+            const { token } = await getAuthAsset()
             const payload = {
                 headers: {
                     'Schedu-Token': token
@@ -36,7 +36,7 @@ export default function AccountMenuScreen({ navigation, userData }) {
     )
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.profileContainer}>
                 <Image style={styles.profileImage} source={{ url: userData.image }} />
                 <Text style={[styles.userFullname, text.blue]}>
@@ -66,13 +66,13 @@ export default function AccountMenuScreen({ navigation, userData }) {
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         alignItems: 'center'
     },
     profileContainer: {

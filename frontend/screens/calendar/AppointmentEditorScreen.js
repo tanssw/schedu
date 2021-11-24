@@ -1,55 +1,61 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import {
     View,
-    Text,
-    TextInput,
-    TouchableOpacity,
     ScrollView,
     StyleSheet,
-    FlatList
 } from 'react-native'
 import axios from 'axios'
 
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 import { clearAuthAsset, getAuthAsset } from '../../modules/auth'
 
-import dayjs from 'dayjs'
-
 import { checkExpiredToken } from '../../modules/auth'
-import { background, text, shadow, colorCode } from '../../styles'
 import CalendarAppointmentDetail from './components/CalendarAppointmentDetail'
 import CalendarTimeSelector from './components/CalendarTimeSelector'
+import Participants from './components/Participants'
 
 export default function EditAppointmentScreen({ route, navigation }) {
-    const { data } = route.params
-    const [receiverId, setReceiverId] = useState()
+
+    const scrollViewRef = useRef()
+    const CalendarAppointmentDetailRef = useRef()
+
     const [formattedStart, setFormattedStart] = useState()
     const [formattedEnd, setFormattedEnd] = useState()
-
     const [activeTimeState, updateActiveTimeState] = useState(null)
+
+    const { data, participants } = route.params
+
     useEffect(() => {
-        getAppointment(data)
-    }, [])
-    
-    const getAppointment = async appointId => {
+        const unsubscribe = navigation.addListener('focus', async () => {
+            await getAppointment(data, participants)
+        })
+        return unsubscribe
+    })
+
+    const getAppointment = async (appointmentId, participants) => {
         try {
-        const { token, userId } = await getAuthAsset()
-        const payload = {
-            headers: {
-                'schedu-token': token,
-                'schedu-uid': userId
+            const { token, userId } = await getAuthAsset()
+            const payload = {
+                headers: {
+                    'schedu-token': token,
+                    'schedu-uid': userId
+                }
             }
-        }
-        
+
             const appointmentResult = await axios.get(
-                `http://localhost:3000/appointment/${appointId}`,
+                `${API_SERVER_DOMAIN}/appointment/${appointmentId}`,
                 payload
             )
             const appointment = appointmentResult.data.result
-            const receiver = appointment.participants.filter(participant => participant.main === true)
+            const receiver = appointment.participants.filter(
+                participant => participant.main === true
+            )
             getActiveTime(receiver)
             setFormattedStart(appointment.startAt)
             setFormattedEnd(appointment.endAt)
+            let shownParticipants = (participants.length) ? participants : appointment.participants
+            CalendarAppointmentDetailRef.current.initComponent(shownParticipants, appointment)
+
         } catch (error) {
             if (checkExpiredToken(error)) {
                 await clearAuthAsset()
@@ -57,19 +63,20 @@ export default function EditAppointmentScreen({ route, navigation }) {
             }
         }
     }
-    const getActiveTime = async (receiver) => {
-        
+    const getActiveTime = async receiver => {
         try {
-            const {token} = await getAuthAsset()
+            const { token } = await getAuthAsset()
             const payload = {
                 headers: {
                     'Schedu-Token': token
                 }
             }
-            const userResult = await axios.get(`${API_SERVER_DOMAIN}/account/${receiver[0].userId}`, payload)
+            const userResult = await axios.get(
+                `${API_SERVER_DOMAIN}/account/${receiver[0].userId}`,
+                payload
+            )
             const user = userResult.data.user
             updateActiveTimeState(user.setting.activeTime)
-            
         } catch (error) {
             if (checkExpiredToken(error)) {
                 await clearAuthAsset()
@@ -102,7 +109,7 @@ export default function EditAppointmentScreen({ route, navigation }) {
                 note: appointmentData.note
             }
 
-            await axios.put(`http://localhost:3000/appointment/`, payload, header)
+            await axios.put(`${API_SERVER_DOMAIN}/appointment/`, payload, header)
             navigation.navigate('Appointment', { data: payload })
         } catch (error) {
             if (checkExpiredToken(error)) {
@@ -111,19 +118,32 @@ export default function EditAppointmentScreen({ route, navigation }) {
             }
         }
     }
+    const updateHandler = () => {
+        navigation.setParams({ participants: null })
+    }
+
+    const goChooseParticipant = data => {
+        navigation.navigate('ChooseParticipants', data)
+    }
+
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView ref={scrollViewRef} onContentSizeChange={() => {scrollViewRef.current.scrollToEnd({animated: true})}} contentContainerStyle={styles.container}>
             <View style={styles.innerContainer}>
-               { formattedStart && formattedEnd  && activeTimeState ? <CalendarTimeSelector
-                    onStartChange={setFormattedStart}
-                    onEndChange={setFormattedEnd}
-                    loadStart={formattedStart}
-                    loadEnd={formattedEnd}
-                    activeTime={activeTimeState}
-                /> : null }
+                {formattedStart && formattedEnd && activeTimeState ? (
+                    <CalendarTimeSelector
+                        onStartChange={setFormattedStart}
+                        onEndChange={setFormattedEnd}
+                        loadStart={formattedStart}
+                        loadEnd={formattedEnd}
+                        activeTime={activeTimeState}
+                    />
+                ) : null}
                 <CalendarAppointmentDetail
-                    appointment={data}
+                    ref={CalendarAppointmentDetailRef}
                     updateAppointment={updateAppointment}
+                    chooseParticipant={goChooseParticipant}
+                    navigation={navigation}
+                    onUpdateParticipant={updateHandler}
                 />
             </View>
         </ScrollView>

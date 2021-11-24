@@ -1,18 +1,24 @@
 const dayjs = require('dayjs')
 const pool = require('../config/mysql')
 
-const getFullDayOfWeek = (character) => {
+const getFullDayOfWeek = character => {
     switch (character) {
-        case 'M': return 'Monday'
-        case 'T': return 'Tueday'
-        case 'W': return 'Wednesday'
-        case 'R': return 'Thursday'
-        case 'F': return 'Friday'
-        default: return null
+        case 'M':
+            return 'Monday'
+        case 'T':
+            return 'Tueday'
+        case 'W':
+            return 'Wednesday'
+        case 'R':
+            return 'Thursday'
+        case 'F':
+            return 'Friday'
+        default:
+            return null
     }
 }
 
-const formatDefaultTimetable = (timetable) => {
+const formatDefaultTimetable = timetable => {
     let formattedTimetable = []
     timetable.forEach(subject => {
         let formattedSubject = {
@@ -22,7 +28,7 @@ const formatDefaultTimetable = (timetable) => {
                 title: subject.title_en,
                 day: getFullDayOfWeek(subject.day),
                 startAt: subject.study_start,
-                endAt: subject.study_end,
+                endAt: subject.study_end
             },
             midterm: {
                 date: subject.mid_exam,
@@ -43,7 +49,6 @@ const formatDefaultTimetable = (timetable) => {
 const formatMonthTimetable = (timetable, year, month) => {
     let formattedTimetable = []
     timetable.forEach(subject => {
-
         let formattedSubject = {
             subjectId: subject.subject_id,
             sectionId: subject.section_id,
@@ -53,7 +58,7 @@ const formatMonthTimetable = (timetable, year, month) => {
             endAt: subject.study_end
         }
 
-        month = (month.length === 1) ? `0${month}`: month
+        month = month.length === 1 ? `0${month}` : month
         let isMidterm = dayjs(subject.mid_exam).format('YYYY-MM') === `${year}-${month}`
         let isFinal = dayjs(subject.final_exam).format('YYYY-MM') === `${year}-${month}`
 

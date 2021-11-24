@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { Picker } from 'react-native-woodpicker'
-
-import { hourItems, minuteItems, filterHour, filterMinute } from '../../../assets/data/timeItems'
 
 export default function TimePicker(props) {
     const splitTime = props.data.split(':')

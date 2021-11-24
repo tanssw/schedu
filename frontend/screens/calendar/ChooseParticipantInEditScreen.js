@@ -10,12 +10,12 @@ import Participants from './components/Participants'
 import { Feather } from '@expo/vector-icons'
 import { colorCode } from '../../styles'
 
-export default function ChooseParticipantScreen(props) {
+export default function ChooseParticipantScreen({ route, navigation }) {
     const [contacts, setContacts] = useState([])
-    const { participants } = props.route.params
 
+    const { participants, appointId } = route.params
     useEffect(() => {
-        const unsubscribe = props.navigation.addListener('focus', async () => {
+        const unsubscribe = navigation.addListener('focus', async () => {
             try {
                 const { token, userId } = await getAuthAsset()
                 const payload = {
@@ -38,7 +38,10 @@ export default function ChooseParticipantScreen(props) {
     })
 
     const goToCreateAppointment = payload => {
-        props.navigation.navigate('CreateAppointment', payload)
+        navigation.navigate('EditAppointmentScreen', {
+            data: payload.data,
+            participants: [...participants, payload.participant]
+        })
     }
 
     const renderEmptyContact = () => {
@@ -50,25 +53,21 @@ export default function ChooseParticipantScreen(props) {
         )
     }
 
-    const renderContact = (contact, index) => {
-        if (
-            contact._id !== props.route.params.data.contactId &&
-            !participants.find(item => item._id === contact._id)
-        )
+    const renderContact = contact => {
+        if (!participants.find(item => item.userId === contact._id))
             return (
                 <Participants
                     contact={contact}
                     key={contact._id}
-                    data={props.route.params.data}
                     choose={goToCreateAppointment}
-                    index={index}
+                    appointId={appointId}
                 />
             )
     }
     return (
         <ScrollView contentContainerStyle={styles.contactContainer}>
-            {contacts.length !== participants.length + 1
-                ? contacts.map((contact, index) => renderContact(contact, index))
+            {contacts.length !== participants.length
+                ? contacts.map(contact => renderContact(contact))
                 : renderEmptyContact()}
         </ScrollView>
     )

@@ -2,12 +2,12 @@ import React, { useImperativeHandle, forwardRef, useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { Picker } from 'react-native-woodpicker'
-import { hourItems, minuteItems, filterHour, filterMinute } from '../../../assets/data/timeItems'
+import { minuteItems, filterHour, filterMinute } from '../../../assets/data/timeItems'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
-import { colorCode, shadow } from '../../../styles'
+import { shadow } from '../../../styles'
 
 dayjs.extend(utc)
 
@@ -76,14 +76,15 @@ function TimeSelector(props, ref) {
 
     const validateTime = (value, type) => {
         if (type === 'start') {
-            if (value.value === start[0]) { // choose hour that match to startAt hour
+            if (value.value === start[0]) {
+                // choose hour that match to startAt hour
                 setStartMinuteItems(filterMinute(start[1], '55'))
                 setStartMinute({ label: start[1], value: start[1] })
-            } else if (value.value === end[0]) { // choose hout that matht to endAt hour
+            } else if (value.value === end[0]) {
+                // choose hout that matht to endAt hour
                 setStartMinuteItems(filterMinute('00', end[1]))
                 setStartMinute({ label: start[1], value: start[1] })
             } else setStartMinuteItems(minuteItems)
-
         } else if (type === 'end') {
             if (value.value === start[0]) setEndMinuteItems(filterMinute(end[1], '55', true))
             else if (value.value === end[0]) {

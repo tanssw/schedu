@@ -12,7 +12,6 @@ import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../modules/a
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
 export default function ContactListScreen({ navigation }) {
-
     const [contacts, updateContacts] = useState([])
 
     const [selectedRole, updateSelectedRole] = useState(null)
@@ -31,7 +30,7 @@ export default function ContactListScreen({ navigation }) {
         return unsubscribe
     }, [selectedRole])
 
-    const getSearch = async (text) => {
+    const getSearch = async text => {
         try {
             const { token, userId } = await getAuthAsset()
             const payload = {
@@ -55,7 +54,7 @@ export default function ContactListScreen({ navigation }) {
     }
 
     // Query all users in the system
-    const getContactUsers = async (role=null) => {
+    const getContactUsers = async (role = null) => {
         try {
             const { token, userId } = await getAuthAsset()
             const payload = {
@@ -78,14 +77,14 @@ export default function ContactListScreen({ navigation }) {
         }
     }
 
-    const searchHandler = (text) => {
+    const searchHandler = text => {
         if (text) getSearch(text)
         else getContactUsers(selectedRole)
         updateShownRecently(!text)
         updateShownQuery(!text)
     }
 
-    const roleChangeHandler = (role) => {
+    const roleChangeHandler = role => {
         updateSelectedRole(role)
         getContactUsers(role)
     }
@@ -96,7 +95,9 @@ export default function ContactListScreen({ navigation }) {
             <ScrollView style={styles.scrollContainer}>
                 <View style={styles.innerContainer}>
                     {shownRecently ? <RecentlyContact ref={recentlyRef} /> : null}
-                    {shownQuery ? <QueryBar savedRole={selectedRole} onSelect={roleChangeHandler} /> : null}
+                    {shownQuery ? (
+                        <QueryBar savedRole={selectedRole} onSelect={roleChangeHandler} />
+                    ) : null}
                     <ContactTab contacts={contacts} headerText="Contact" />
                 </View>
             </ScrollView>
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     scrollContainer: {
-        flexGrow: 1,
+        flexGrow: 1
     },
     innerContainer: {
         flex: 1

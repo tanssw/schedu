@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import {
     View,
     Text,
@@ -6,80 +6,50 @@ import {
     TouchableOpacity,
     ScrollView,
     StyleSheet,
-    FlatList
+    FlatList,
+    Alert
 } from 'react-native'
 import { Picker } from 'react-native-woodpicker'
 import { EvilIcons, FontAwesome } from '@expo/vector-icons'
-import axios from 'axios'
 
 import { background, text, shadow, colorCode } from '../../../styles'
-import { getAuthAsset, checkExpiredToken } from '../../../modules/auth'
 
 function AppointmentDetail(props, ref) {
     // Component's States
+    const [keyboardHeight, updateKeyboardHeight] = useState(0)
+
     const [subject, setSubject] = useState()
     const [commMethod, setCommMethod] = useState()
     const [commUrl, setCommUrl] = useState()
     const [note, setNote] = useState()
-    const [join, setJoin] = useState(false)
     const [appointId, setAppointmentId] = useState()
 
     // validate state
     const [isEmptySubject, setIsEmptySubject] = useState(true)
-    const [isEmptyCommMethod, setIsEmptyCommMethod] = useState(true)
-    const [isEmptyCommUrl, setIsEmptyCommUrl] = useState(true)
+
 
     const [participants, setParticipants] = useState([])
 
     useImperativeHandle(
         ref,
         () => ({
-            resetChildState() {
-                resetState()
+            initComponent(participants, appointmentState) {
+                checkParticipant(participants)
+                loadAppointment(appointmentState, participants)
             }
         }),
         []
     )
-    useEffect(() => {
-        getAppointment(props.appointment)
-    }, [])
-    const loadAppointment = appointment => {
+
+    const loadAppointment = (appointment, participants) => {
         setSubject(appointment.subject)
         setCommMethod(getCommMethod(appointment.commMethod))
         setCommUrl(appointment.commUrl)
         setNote(appointment.note)
         setAppointmentId(appointment._id)
-        setParticipants(appointment.participants)
+        setParticipants(participants)
     }
-    const getAppointment = async appointId => {
-        try {
-        const { token, userId } = await getAuthAsset()
-        const payload = {
-            headers: {
-                'schedu-token': token,
-                'schedu-uid': userId
-            }
-        }
-        
-            const appointmentResult = await axios.get(
-                `http://localhost:3000/appointment/${appointId}`,
-                payload
-            )
-            loadAppointment(appointmentResult.data.result)
-        } catch (error) {
-            if (checkExpiredToken(error)) {
-                await clearAuthAsset()
-                return navigation.navigate('SignIn')
-            }
-        }
-    }
-    // FUNCTION: to reset all form state
-    const resetState = () => {
-        setSubject()
-        setCommMethod()
-        setCommUrl()
-        setNote()
-    }
+
     const getCommMethod = data => {
         switch (data) {
             case 'face':
@@ -91,6 +61,11 @@ function AppointmentDetail(props, ref) {
             case 'zoom':
                 return { label: 'Zoom Application', value: 'zoom' }
         }
+    }
+
+    // FUNCTION: to update if last field on focus/blur
+    const toggleKeyboardHeight = (openKeyboard) => {
+        openKeyboard ? updateKeyboardHeight(184) : updateKeyboardHeight(0)
     }
 
     // FUNCTION: to structure appointment data
@@ -111,9 +86,9 @@ function AppointmentDetail(props, ref) {
     }
 
     // FUNCTION: to render the participant into a Flatlist
-    const renderParticipant = ({ item }) => {
-        return (
-            <View>
+    const renderParticipant = ({ item, index }) => {
+        return !item.main ? (
+            <TouchableOpacity onPress={() => removeParticipant(item)} style={styles.personBox}>
                 <FontAwesome
                     name="user-circle-o"
                     size={44}
@@ -121,8 +96,31 @@ function AppointmentDetail(props, ref) {
                     style={styles.personImage}
                 />
                 <Text style={styles.personName}>{item.firstName}</Text>
-            </View>
-        )
+            </TouchableOpacity>
+        ) : null
+    }
+
+    const removeParticipant = target => {
+        Alert.alert('Are you sure?', 'This participant will be removed.', [
+            {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel'
+            },
+            {
+                text: 'Confirm',
+                onPress: () => {
+                    setParticipants(participants.filter(item => item !== target))
+                }
+            }
+        ])
+    }
+
+    const checkParticipant = participant => {
+        if (participant) {
+            setParticipants([...participants, participant])
+            props.onUpdateParticipant()
+        }
     }
 
     return (
@@ -141,7 +139,15 @@ function AppointmentDetail(props, ref) {
             <View style={styles.spaceBetweenInput}>
                 <Text style={styles.header}>Participant</Text>
                 <View style={styles.participantContainer}>
-                    <TouchableOpacity style={styles.participantAdder}>
+                    <TouchableOpacity
+                        style={styles.participantAdder}
+                        onPress={() =>
+                            props.chooseParticipant({
+                                appointId: appointId,
+                                participants: participants
+                            })
+                        }
+                    >
                         <EvilIcons name="plus" size={64} color={colorCode.blue} />
                         <Text style={styles.personName}>Add</Text>
                     </TouchableOpacity>
@@ -149,7 +155,7 @@ function AppointmentDetail(props, ref) {
                         horizontal
                         data={participants}
                         renderItem={renderParticipant}
-                        keyExtractor={person => person._id}
+                        keyExtractor={(person, index) => index}
                     />
                 </View>
             </View>
@@ -186,9 +192,12 @@ function AppointmentDetail(props, ref) {
                         multiline
                         numberOfLines={4}
                         placeholder="This is a note ..."
+                        onFocus={() => {toggleKeyboardHeight(true)}}
+                        onBlur={() => {toggleKeyboardHeight(false)}}
                     />
                 </ScrollView>
             </View>
+            <View style={{marginBottom: keyboardHeight}}></View>
             {/* Button */}
             <TouchableOpacity
                 onPress={updateAppointmentCall}
@@ -227,6 +236,9 @@ const styles = StyleSheet.create({
     personName: {
         textAlign: 'center',
         marginTop: 4
+    },
+    personBox: {
+        alignSelf: 'flex-end'
     },
     personImage: {
         textAlign: 'center',

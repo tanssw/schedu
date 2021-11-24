@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import axios from 'axios'
 
 import { checkExpiredToken, clearAuthAsset, getAuthAsset } from '../../modules/auth'
@@ -12,11 +12,10 @@ import ProfileCalendar from './components/ProfileCalendar'
 import ProfileInformation from './components/ProfileInformation'
 
 export default function ContactProfileScreen({ route, navigation }) {
-
     const [profileState, updateProfileState] = useState({})
     const [emailState, updateEmailState] = useState()
     const [phoneState, updatePhoneState] = useState()
-    const [activeTimeState, updateActiveTimeState] = useState({startAt: null, endAt: null})
+    const [activeTimeState, updateActiveTimeState] = useState({ startAt: null, endAt: null })
     const [weekendReceiveState, updateWeekendReceiveState] = useState(false)
 
     const { contactId } = route.params
@@ -54,8 +53,12 @@ export default function ContactProfileScreen({ route, navigation }) {
         }
     }
 
-    const navigateToAppointmentCreator = (selectedDate) => {
-        navigation.navigate('CreateAppointment', { contactId: contactId, date: selectedDate, activeTime: activeTimeState })
+    const navigateToAppointmentCreator = selectedDate => {
+        navigation.navigate('CreateAppointment', {
+            contactId: contactId,
+            date: selectedDate,
+            activeTime: activeTimeState
+        })
     }
 
     return (
@@ -64,9 +67,17 @@ export default function ContactProfileScreen({ route, navigation }) {
                 <ProfileHeader profile={profileState} />
                 <View style={[styles.mainContainer, shadow.boxTopMedium]}>
                     <View style={styles.calendarContainer}>
-                        <ProfileCalendar ref={calendarRef} onDayPress={navigateToAppointmentCreator} isReceiveWeekend={weekendReceiveState} />
+                        <ProfileCalendar
+                            ref={calendarRef}
+                            onDayPress={navigateToAppointmentCreator}
+                            isReceiveWeekend={weekendReceiveState}
+                        />
                     </View>
-                    <ProfileInformation email={emailState} phone={phoneState} activeTime={activeTimeState} />
+                    <ProfileInformation
+                        email={emailState}
+                        phone={phoneState}
+                        activeTime={activeTimeState}
+                    />
                 </View>
             </View>
         </ScrollView>

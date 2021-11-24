@@ -19,6 +19,10 @@ function RecentlyContact(props, ref) {
         loadRecentlyContacts() { loadContacts() }
     }), [])
 
+    useEffect(() => {
+        loadContacts()
+    }, [])
+
     const loadContacts = async () => {
         try {
             const { token, userId } = await getAuthAsset()

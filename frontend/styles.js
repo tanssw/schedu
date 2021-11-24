@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from 'react-native'
 
 const colorCode = {
     blue: '#001e6a',
@@ -58,13 +58,13 @@ const shadow = StyleSheet.create({
     boxBottomSmall: {
         shadowColor: 'black',
         shadowRadius: 8,
-        shadowOffset: {width: 0, height: 4},
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2
     },
     boxTopMedium: {
         shadowColor: 'black',
         shadowRadius: 16,
-        shadowOffset: {width: 0, height: -8},
+        shadowOffset: { width: 0, height: -8 },
         shadowOpacity: 0.2
     }
 })
@@ -80,10 +80,4 @@ const headerDefaultOptions = {
     headerTintColor: 'white'
 }
 
-export {
-    colorCode,
-    background,
-    text,
-    shadow,
-    headerDefaultOptions
-}
+export { colorCode, background, text, shadow, headerDefaultOptions }

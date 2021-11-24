@@ -41,18 +41,19 @@ var minuteItems = [
 ]
 
 const filterHour = (start, stop, isShift, isPop) => {
-    const hour = hourItems.filter((item) => item.label >= start && item.label <= stop)
+    const hour = hourItems.filter(item => item.label >= start && item.label <= stop)
     if (isShift) hour.shift()
     if (isPop) hour.pop()
     return hour
 }
 
 const filterMinute = (start, stop, isShift, isPop) => {
-    const minute = minuteItems.filter((item) => item.label >= Math.min(start, stop) && item.label <= Math.max(start, stop))
+    const minute = minuteItems.filter(
+        item => item.label >= Math.min(start, stop) && item.label <= Math.max(start, stop)
+    )
     if (isShift) minute.shift()
     if (isPop) minute.pop()
     return minute
 }
 
 export { hourItems, minuteItems, filterHour, filterMinute }
-

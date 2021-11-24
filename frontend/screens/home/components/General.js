@@ -7,7 +7,7 @@ export default function General() {
     return (
         <View style={styles.container}>
             <View style={[styles.informationCard, shadow.boxBottomSmall]}>
-                <View style={styles.decorationContainer}>
+                <View>
                     <View style={styles.line} />
                 </View>
                 <View style={styles.textContainer}>
@@ -30,9 +30,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
-    decorationContainer: {
-
-    },
     textContainer: {
         marginLeft: 16
     },
@@ -50,6 +47,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: 8,
         backgroundColor: colorCode.yellow,
-        borderRadius: 256,
-    },
+        borderRadius: 256
+    }
 })

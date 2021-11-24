@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Agenda } from 'react-native-calendars'
 import axios from 'axios'
 import dayjs from 'dayjs'
@@ -103,6 +103,10 @@ export default function CalendarDetailScreen({route, navigation}) {
         }
     }
 
+    const navigateToAppointment = (appointment) => {
+        navigation.navigate('Appointment', {data: appointment} )
+    }
+
     // Create empty date arrays for agenda
     const createAgendaTemplate = (year, month) => {
         const minDate = dayjs(`${year}-${month}-01`)
@@ -126,13 +130,13 @@ export default function CalendarDetailScreen({route, navigation}) {
 
     const renderAppointment = (item, firstItem) => {
         return (
-            <View style={[styles.eventBox, shadow.boxBottomSmall, {marginTop: (firstItem) ? 16: 6}]}>
+            <TouchableOpacity onPress={() => {navigateToAppointment(item)}} style={[styles.eventBox, shadow.boxBottomSmall, {marginTop: (firstItem) ? 16: 6}]}>
                 <Text style={styles.eventTime}>
                     {dayjs(item.startAt).format('HH:mm')} - {dayjs(item.endAt).format('HH:mm')}
                 </Text>
                 <Text numberOfLines={1} style={styles.eventHeader}>{item.subject}</Text>
                 <Text style={styles.eventDesc}>with {getParticipant(item.participants)}</Text>
-            </View>
+            </TouchableOpacity>
         )
     }
 

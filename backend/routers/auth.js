@@ -13,13 +13,17 @@ router.post('/', async (req, res) => {
     const authData = req.body
     const emailDomain = authData.user.email.split('@')[1]
 
-    if (!isAllowEmailDomain(emailDomain)) res.status(403).send({error: 'This account has no permission to perform the authentication.'})
+    if (!isAllowEmailDomain(emailDomain))
+        res.status(403).send({
+            error: 'This account has no permission to perform the authentication.'
+        })
 
     try {
         const tokenData = await getTokenData(authData.accessToken)
 
         // If user id in token data not match with requested one, then reject it
-        if (tokenData.user_id !== authData.user.id) res.status(403).send({error: 'Authentication ID not match.'})
+        if (tokenData.user_id !== authData.user.id)
+            res.status(403).send({ error: 'Authentication ID not match.' })
 
         // If not user inside the collection then create one and response back the user data
         let user = await getUserByGoogleId(authData.user.id)
@@ -28,10 +32,9 @@ router.post('/', async (req, res) => {
         // Generate authentication token
         const authToken = await generateAuthToken(user._id)
 
-        res.json({user: user, token: authToken})
-
+        res.json({ user: user, token: authToken })
     } catch (error) {
-        res.status(403).send({error: 'Authentication Error'})
+        res.status(403).send({ error: 'Authentication Error' })
     }
 })
 
@@ -41,11 +44,10 @@ router.post('/token', async (req, res) => {
     try {
         const userObjectId = await getUserIdFromToken(token)
         const user = await getUserByObjectId(userObjectId)
-        res.json({user: user})
+        res.json({ user: user })
     } catch (error) {
-        res.status(403).send({error: 'Authentication Error'})
+        res.status(403).send({ error: 'Authentication Error' })
     }
-
 })
 
 // Delete Account Token
@@ -53,9 +55,9 @@ router.delete('/', authMiddleware, async (req, res) => {
     try {
         const token = req.headers['schedu-token']
         await deleteAuthToken(token)
-        res.json({message: 'Account has been successfully signed-out'})
+        res.json({ message: 'Account has been successfully signed-out' })
     } catch (error) {
-        res.status(500).send({message: 'Error occured while signing out from the system'})
+        res.status(500).send({ message: 'Error occured while signing out from the system' })
     }
 })
 

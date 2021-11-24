@@ -5,7 +5,7 @@ const authSchema = require('../schema/authSchema')
 const authModel = conn.model('authentications', authSchema, process.env.AUTH_COLLECTION)
 
 // Generate auth token, save it into the database and send token back
-const generateAuthToken = async (userId) => {
+const generateAuthToken = async userId => {
     const document = {
         token: uuidv4(),
         userId: userId,
@@ -24,18 +24,18 @@ const generateAuthToken = async (userId) => {
 }
 
 // Delete authentication token
-const deleteAuthToken = async (token) => {
+const deleteAuthToken = async token => {
     try {
-        const result = await authModel.findOneAndDelete({token: token})
+        const result = await authModel.findOneAndDelete({ token: token })
     } catch (error) {
         throw error
     }
 }
 
 // Get user from authentication token
-const getUserIdFromToken = async (token) => {
+const getUserIdFromToken = async token => {
     try {
-        const result = await authModel.findOne({token: token})
+        const result = await authModel.findOne({ token: token })
         const userObjectId = result.userId
         return userObjectId
     } catch (error) {

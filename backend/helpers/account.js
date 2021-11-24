@@ -6,8 +6,7 @@ DEFAULT_START_AT = '08:30'
 DEFAULT_END_AT = '16:30'
 
 // Create new user document into the user collection
-const createNewUser = async (data) => {
-
+const createNewUser = async data => {
     const emailAccount = data.email.split('@')[0]
 
     const isStudent = !isNaN(emailAccount)
@@ -21,7 +20,7 @@ const createNewUser = async (data) => {
         lastName: data.familyName,
         role: role,
         contact: {
-            email : data.email,
+            email: data.email,
             tel: null
         },
         image: data.photoUrl,
@@ -29,10 +28,10 @@ const createNewUser = async (data) => {
             displayTel: false,
             weekendReceive: false,
             activeTime: {
-                startAt : DEFAULT_START_AT,
+                startAt: DEFAULT_START_AT,
                 endAt: DEFAULT_END_AT
             }
-        },
+        }
     }
 
     const user = new accountModel(document)
@@ -46,9 +45,9 @@ const createNewUser = async (data) => {
 }
 
 // Check if google id is already exist in the collection
-const getUserByGoogleId = async (googleId) => {
+const getUserByGoogleId = async googleId => {
     try {
-        const user = await accountModel.findOne({googleId: googleId})
+        const user = await accountModel.findOne({ googleId: googleId })
         return user
     } catch (error) {
         console.log(`Error occured in getUserByGoogleId() of helper/user.js`)
@@ -57,9 +56,9 @@ const getUserByGoogleId = async (googleId) => {
 }
 
 // Get user data from its own object id
-const getUserByObjectId = async (objectId) => {
+const getUserByObjectId = async objectId => {
     try {
-        const user = await accountModel.findOne({_id: objectId})
+        const user = await accountModel.findOne({ _id: objectId })
         return user
     } catch (error) {
         console.log(`Error occured in getUserByObjectId() of helper/user.js`)
@@ -67,7 +66,7 @@ const getUserByObjectId = async (objectId) => {
     }
 }
 
-const formatAccountInformation = (account) => {
+const formatAccountInformation = account => {
     const { displayTel } = account.setting
     if (!displayTel) account.contact.tel = null
     return account

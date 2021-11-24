@@ -1,17 +1,16 @@
-import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react'
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, FlatList, Alert } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, FlatList, Alert } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 
-import { background, text, shadow, colorCode } from '../../styles'
+import { shadow, colorCode } from '../../styles'
 import { getAuthAsset, checkExpiredToken, clearAuthAsset } from '../../modules/auth'
 
 import TimeDisplay from '../appointment/components/TimeDisplay'
 import { API_SERVER_DOMAIN } from '../../modules/apis'
 
-export default function AppointmentApprovalScreen({ props, route }) {
-
+export default function AppointmentApprovalScreen({ route }) {
     const { data } = route.params
     const navigation = useNavigation()
 
@@ -24,10 +23,14 @@ export default function AppointmentApprovalScreen({ props, route }) {
     //FUNCTION: return commMethods for details
     const getCommMethod = () => {
         switch (data.commMethod) {
-            case 'face': return setDisplayCommMethod('Face to Face')
-            case 'msteam': return setDisplayCommMethod('Microsoft Teams')
-            case 'meet': return setDisplayCommMethod('Google meet')
-            case 'zoom': return setDisplayCommMethod('Zoom Application')
+            case 'face':
+                return setDisplayCommMethod('Face to Face')
+            case 'msteam':
+                return setDisplayCommMethod('Microsoft Teams')
+            case 'meet':
+                return setDisplayCommMethod('Google meet')
+            case 'zoom':
+                return setDisplayCommMethod('Zoom Application')
         }
     }
 
@@ -55,21 +58,28 @@ export default function AppointmentApprovalScreen({ props, route }) {
     }
 
     // FUNCTION : User can decline or approve to join the appointment
-    const responseRequest = (join) => (
+    const responseRequest = join =>
         Alert.alert(
             join ? 'Accept an appointment' : 'Decline an appointment',
-            join ? 'This appointment will move into your list.' : 'Are you sure? This action cannot be undo.',
+            join
+                ? 'This appointment will move into your list.'
+                : 'Are you sure? This action cannot be undo.',
             [
-                {text: 'Cancel', style: 'cancel'},
-                {text: 'Confirm', style: join ? 'default' : 'destructive', onPress: () => {submit(join, data._id)}}
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Confirm',
+                    style: join ? 'default' : 'destructive',
+                    onPress: () => {
+                        submit(join, data._id)
+                    }
+                }
             ]
         )
-    )
 
     // FUNCTION: to render the participant into a Flatlist
     const renderParticipant = ({ item, index }) => {
         return (
-            <View style={[styles.profile, index ? {marginLeft: 16} : null]}>
+            <View style={[styles.profile, index ? { marginLeft: 16 } : null]}>
                 <FontAwesome
                     name="user-circle-o"
                     size={44}
@@ -106,10 +116,17 @@ export default function AppointmentApprovalScreen({ props, route }) {
                     <View style={styles.spaceBetweenInput}>
                         <Text style={styles.header}>Communication Method</Text>
                         <View style={styles.commMethodBox}>
-                            <Text style={[styles.commMethodHeader, data.commMethod ? '' : {color: colorCode.grey}]}>
+                            <Text
+                                style={[
+                                    styles.commMethodHeader,
+                                    data.commMethod ? '' : { color: colorCode.grey }
+                                ]}
+                            >
                                 {data.commMethod ? displayCommMethod : 'Not Provided'}
                             </Text>
-                            <Text style={styles.commMethodURL}>URL: {data.commUrl ? data.commUrl : '[Not provided]'}</Text>
+                            <Text style={styles.commMethodURL}>
+                                URL: {data.commUrl ? data.commUrl : '[Not provided]'}
+                            </Text>
                         </View>
                     </View>
                     {/* Note to participant Textbox */}
@@ -119,10 +136,20 @@ export default function AppointmentApprovalScreen({ props, route }) {
                     </View>
                     {/* Button */}
                     <View style={styles.decisionContainer}>
-                        <TouchableOpacity style={[styles.mainButton, styles.declineButton]} onPress={() => { responseRequest(false) }}>
+                        <TouchableOpacity
+                            style={[styles.mainButton, styles.declineButton]}
+                            onPress={() => {
+                                responseRequest(false)
+                            }}
+                        >
                             <Text style={styles.declineText}>Decline</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.mainButton, styles.acceptButton]} onPress={() => { responseRequest(true) }}>
+                        <TouchableOpacity
+                            style={[styles.mainButton, styles.acceptButton]}
+                            onPress={() => {
+                                responseRequest(true)
+                            }}
+                        >
                             <Text style={styles.acceptText}>Accept</Text>
                         </TouchableOpacity>
                     </View>
