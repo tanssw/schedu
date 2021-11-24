@@ -50,7 +50,7 @@ export default function ChooseParticipantScreen(props) {
         )
     }
 
-    const renderContact = contact => {
+    const renderContact = (contact, index) => {
         if (
             contact._id !== props.route.params.data.contactId &&
             !participants.find(item => item._id === contact._id)
@@ -61,13 +61,14 @@ export default function ChooseParticipantScreen(props) {
                     key={contact._id}
                     data={props.route.params.data}
                     choose={goToCreateAppointment}
+                    index={index}
                 />
             )
     }
     return (
         <ScrollView contentContainerStyle={styles.contactContainer}>
             {contacts.length !== participants.length + 1
-                ? contacts.map(contact => renderContact(contact))
+                ? contacts.map((contact, index) => renderContact(contact, index))
                 : renderEmptyContact()}
         </ScrollView>
     )
@@ -76,7 +77,6 @@ export default function ChooseParticipantScreen(props) {
 const styles = StyleSheet.create({
     contactContainer: {
         flexGrow: 1,
-        padding: 16,
         backgroundColor: 'white'
     },
     emptyContainer: {

@@ -76,7 +76,6 @@ export default function ChooseParticipantScreen({ route, navigation }) {
 const styles = StyleSheet.create({
     contactContainer: {
         flexGrow: 1,
-        padding: 16,
         backgroundColor: 'white'
     },
     emptyContainer: {

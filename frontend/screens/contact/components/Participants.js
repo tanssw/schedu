@@ -37,8 +37,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginVertical: 8,
-        padding: 8
+        padding: 16
     },
     personDetail: {
         flex: 1,
