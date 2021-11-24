@@ -99,6 +99,10 @@ export default function CalendarDetailScreen({route, navigation}) {
             const timetable = timetableResult.data.timetable
             return timetable
         } catch (error) {
+            if (checkExpiredToken(error)) {
+                await clearAuthAsset()
+                return navigation.navigate('SignIn')
+            }
             return []
         }
     }
