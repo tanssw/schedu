@@ -9,7 +9,8 @@
 - Leave the Schedu Database blank with 5 collection
 - Define environments as .env file both in directory `/backend/` and `/frontend/`. (Same place with `.env.example`)
 - Install packages with `yarn install` in root directory, `'backend/`, and `/frontend/`. (All packages were listed in `package.json` of each directory)
-- 
+- Run backend server using `nodemon server.js` in backend directory.
+- Run mobile application using `expo start` in frontend directory.
 
 ### Frontend Environment
 ```
