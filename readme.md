@@ -19,10 +19,6 @@ IOS_CLIENT_ID=
 // Hostname and Port of your backend server. (Example: http://localhost:3000) <= No '/' at the end
 API_SERVER_DOMAIN=
 ```
-**.plist File with IOS_CLIENT_ID inside.**
-![.plist File Download](https://firebasestorage.googleapis.com/v0/b/schedu-f727e.appspot.com/o/Screenshot%202021-11-09%20143454.png?alt=media&token=f0995f08-83d2-495a-9543-1181e602ba87)
-**Firebase Initialization Values**
-![Firebase Initialization](https://firebasestorage.googleapis.com/v0/b/schedu-f727e.appspot.com/o/Screenshot%202021-11-09%20143518.png?alt=media&token=8432273d-e7a1-43ff-8ff0-357c4604cd6d)
 ## Backend Environment
 ```
 // Port of your server
